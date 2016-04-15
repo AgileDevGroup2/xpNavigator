@@ -22,7 +22,7 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
  */
 public class TrelloClient extends OAuthBaseClient {
 	public static final Class<? extends Api> REST_API_CLASS = TrelloApi.class; // Change this
-	public static final String REST_URL = "http://api.toggle.com"; // Change this, base API URL
+	public static final String REST_URL = "http://api.toggle.com"; //wwwChange this, base API URL
 	public static final String REST_CONSUMER_KEY = "81e692a4c7305deef90c59e2a79393bc";       // Change this
 	public static final String REST_CONSUMER_SECRET = "462a62c3b68ee9675470d94eb0cc903c9876efc3fe985ad24aeeb83470c9f00e"; // Change this
 	public static final String REST_CALLBACK_URL = "oauth://xpNavigator"; // Change this (here and in manifest)
