@@ -7,7 +7,7 @@ import android.content.Context;
  * including the image cache in memory and on disk. This also adds a singleton
  * for accessing the relevant rest client.
  *
- *     RestClient client = TrelloApplication.getRestClient();
+ *     TrelloClient client = TrelloApplication.getRestClient();
  *     // use client to send requests to API
  *
  */
@@ -20,7 +20,7 @@ public class TrelloApplication extends com.activeandroid.app.Application {
 		TrelloApplication.context = this;
 	}
 
-	public static RestClient getRestClient() {
-		return (RestClient) RestClient.getInstance(RestClient.class, TrelloApplication.context);
+	public static TrelloClient getRestClient() {
+		return (TrelloClient) TrelloClient.getInstance(TrelloClient.class, TrelloApplication.context);
 	}
 }

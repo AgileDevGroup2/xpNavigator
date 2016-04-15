@@ -1,22 +1,25 @@
 package com.github.agiledevgroup2.xpnavigator;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
-import android.view.MenuItem;
+import android.widget.Button;
 
 import com.codepath.oauth.OAuthLoginActionBarActivity;
 
-public class LoginActivity  extends OAuthLoginActionBarActivity<RestClient> {
+public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        ((Button) findViewById(R.id.login_button)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getClient().connect();
+            }
+        });
     }
 
 
@@ -31,23 +34,19 @@ public class LoginActivity  extends OAuthLoginActionBarActivity<RestClient> {
     // i.e Display application "homepage"
     @Override
     public void onLoginSuccess() {
-        //To something, e.g. show new activity:
-        // Intent i = new Intent(this, PhotosActivity.class);
-        // startActivity(i);
+       initMainLayout();
     }
 
     // OAuth authentication flow failed, handle the error
     // i.e Display an error dialog or toast
     @Override
     public void onLoginFailure(Exception e) {
+        System.out.println("err");
         e.printStackTrace();
     }
 
-    // Click handler method for the button used to start OAuth flow
-    // Uses the client to initiate OAuth authorization
-    // This should be tied to a button used to login
-    public void loginToRest(View view) {
-        getClient().connect();
+    protected void initMainLayout() {
+        setContentView(R.layout.activity_main);
     }
 
 }
