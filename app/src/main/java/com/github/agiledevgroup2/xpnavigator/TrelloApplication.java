@@ -2,25 +2,28 @@ package com.github.agiledevgroup2.xpnavigator;
 
 import android.content.Context;
 
-/*
- * This is the Android application itself and is used to configure various settings
- * including the image cache in memory and on disk. This also adds a singleton
- * for accessing the relevant rest client.
+/**
+ * Class Handles the OAuth communication. <br/>
  *
- *     TrelloClient client = TrelloApplication.getRestClient();
- *     // use client to send requests to API
- *
+ * TrelloClient client = TrelloApplication.getTrelloClient(); *
  */
 public class TrelloApplication extends com.activeandroid.app.Application {
 	private static Context context;
 
+    /**
+     * initiates the Trello application
+     */
 	@Override
 	public void onCreate() {
 		super.onCreate();
 		TrelloApplication.context = this;
 	}
 
-	public static TrelloClient getRestClient() {
+	/**
+	 * Method to get a trello client
+	 * @return trello client to use endpoint calls
+	 */
+	public static TrelloClient getTrelloClient() {
 		return (TrelloClient) TrelloClient.getInstance(TrelloClient.class, TrelloApplication.context);
 	}
 }

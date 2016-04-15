@@ -1,27 +1,31 @@
 package com.github.agiledevgroup2.xpnavigator;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.preference.PreferenceActivity;
 import android.view.View;
 import android.view.Menu;
 import android.widget.Button;
 import android.widget.TextView;
 
+//Library stuff
 import org.apache.http.Header;
-
 import com.codepath.oauth.OAuthLoginActionBarActivity;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
+//JSON
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
-import java.util.Iterator;
-
+/**
+ * This class represents the apps main activity
+ * Todo: might rename this class to something like "MainActivity"...
+ */
 public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> {
 
+    /**
+     * creates the view and initiates the login dialog Todo: Statemachine for views?
+     * @param savedInstanceState saved data to restore view (e.g. after rotating the phone)
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,21 +46,27 @@ public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> {
         return true;
     }
 
-    // OAuth authenticated successfully, launch primary authenticated activity
-    // i.e Display application "homepage"
+    /**
+     * Callback method for successful login
+     */
     @Override
     public void onLoginSuccess() {
        initMainLayout();
     }
 
-    // OAuth authentication flow failed, handle the error
-    // i.e Display an error dialog or toast
+    /**
+     * Callback method if login failed Todo: remove Generic Exception
+     * @param e cause of the error
+     */
     @Override
     public void onLoginFailure(Exception e) {
         System.out.println("err");
         e.printStackTrace();
     }
 
+    /**
+     * Method to initiate the main layout Todo: maybe using a state machine for different layouts?
+     */
     protected void initMainLayout() {
         setContentView(R.layout.activity_main);
 
@@ -64,12 +74,20 @@ public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> {
     }
 
     /**
-     * This is only a test, we should not do it that way...
+     * This is only a test, should move such calls into another class
+     * The test fetches a users groups and displays them on the display as text items
      */
     protected void test() {
         // SomeActivity.java
-        TrelloClient client = TrelloApplication.getRestClient();
+        TrelloClient client = TrelloApplication.getTrelloClient();
         client.getBoards(new JsonHttpResponseHandler() {
+
+            /**
+             * Failure handler if only one JSONObject is received
+             * @param statusCode should be exactly what it sounds like...
+             * @param headers http headers (not necessary)
+             * @param response JSON Object containing the received data
+             */
             @Override
             public void onSuccess(int statusCode,
                                   Header[] headers,
@@ -84,6 +102,13 @@ public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> {
                     System.err.println(e.toString());
                 }
             }
+
+            /**
+             * Failure handler if a JSON Array is received
+             * @param statusCode should be exactly what it sounds like...
+             * @param headers http headers (not necessary)
+             * @param response JSON Array containing the received data
+             */
             @Override
             public void onSuccess(int statusCode,
                                   Header[] headers,
@@ -100,6 +125,12 @@ public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> {
                 }
             }
 
+            /**
+             * Failure handler with string response
+             * @param statusCode should be exactly what it sounds like...
+             * @param headers http headers (not necessary)
+             * @param responseString explanation why it failed
+             */
             @Override
             public void onFailure(int statusCode,
                                   Header[] headers,
@@ -108,6 +139,12 @@ public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> {
                 System.out.println("failed: " + responseString);
             }
 
+            /**
+             * Failure handler with JSON response
+             * @param statusCode should be exactly what it sounds like...
+             * @param headers http headers (not necessary)
+             * @param response explanation why it failed
+             */
             @Override
             public void onFailure(int statusCode,
                                   Header[] headers,
