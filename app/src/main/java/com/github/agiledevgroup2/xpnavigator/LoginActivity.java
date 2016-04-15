@@ -6,13 +6,19 @@ import android.preference.PreferenceActivity;
 import android.view.View;
 import android.view.Menu;
 import android.widget.Button;
+import android.widget.TextView;
+
 import org.apache.http.Header;
 
 import com.codepath.oauth.OAuthLoginActionBarActivity;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
+
+import java.util.Iterator;
 
 public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> {
 
@@ -57,6 +63,9 @@ public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> {
         test();
     }
 
+    /**
+     * This is only a test, we should not do it that way...
+     */
     protected void test() {
         // SomeActivity.java
         TrelloClient client = TrelloApplication.getRestClient();
@@ -67,13 +76,28 @@ public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> {
                                   JSONObject response) {
                 System.out.println("Json Object: ");
                 System.out.println(response.toString());
+
+                TextView text = (TextView) findViewById(R.id.main_text);
+                try {
+                    text.setText(text.getText().toString() + response.getString("name") + "\n");
+                } catch (JSONException e) {
+                    System.err.println(e.toString());
+                }
             }
             @Override
             public void onSuccess(int statusCode,
                                   Header[] headers,
                                   JSONArray response) {
-                System.out.println("Json Array: ");
-                System.out.println(response.toString());
+
+                //itterate over all objects of the json array
+                for (int i = 0; i < response.length(); i++) {
+                    try {
+                        // forward success call to handle each object separately
+                        onSuccess(statusCode, headers, response.getJSONObject(i));
+                    } catch (JSONException e) {
+                        System.err.println(e.toString());
+                    }
+                }
             }
 
             @Override
