@@ -2,11 +2,17 @@ package com.github.agiledevgroup2.xpnavigator;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceActivity;
 import android.view.View;
 import android.view.Menu;
 import android.widget.Button;
+import org.apache.http.Header;
 
 import com.codepath.oauth.OAuthLoginActionBarActivity;
+import com.loopj.android.http.JsonHttpResponseHandler;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> {
 
@@ -47,6 +53,45 @@ public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> {
 
     protected void initMainLayout() {
         setContentView(R.layout.activity_main);
+
+        test();
+    }
+
+    protected void test() {
+        // SomeActivity.java
+        TrelloClient client = TrelloApplication.getRestClient();
+        client.getBoards(new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode,
+                                  Header[] headers,
+                                  JSONObject response) {
+                System.out.println("Json Object: ");
+                System.out.println(response.toString());
+            }
+            @Override
+            public void onSuccess(int statusCode,
+                                  Header[] headers,
+                                  JSONArray response) {
+                System.out.println("Json Array: ");
+                System.out.println(response.toString());
+            }
+
+            @Override
+            public void onFailure(int statusCode,
+                                  Header[] headers,
+                                  java.lang.String responseString,
+                                  java.lang.Throwable throwable){
+                System.out.println("failed: " + responseString);
+            }
+
+            @Override
+            public void onFailure(int statusCode,
+                                  Header[] headers,
+                                  java.lang.Throwable throwable,
+                                  JSONObject response){
+                System.out.println("failed: " + throwable.toString());
+            }
+        });
     }
 
 }
