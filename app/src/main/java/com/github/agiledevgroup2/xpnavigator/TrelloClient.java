@@ -43,5 +43,5 @@ public class TrelloClient extends OAuthBaseClient {
         RequestParams params = new RequestParams();
         client.get(apiUrl, params, handler);
     }
-
+    
 }
