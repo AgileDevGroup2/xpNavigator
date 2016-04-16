@@ -18,12 +18,12 @@ import org.json.JSONObject;
 
 /**
  * This class represents the apps main activity
- * Todo: might rename this class to something like "MainActivity"...
+ * TODO: might rename this class to something like "MainActivity"...
  */
 public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> {
 
     /**
-     * creates the view and initiates the login dialog Todo: Statemachine for views?
+     * creates the view and initiates the login dialog TODO: Statemachine for views?
      * @param savedInstanceState saved data to restore view (e.g. after rotating the phone)
      */
     @Override
@@ -55,7 +55,7 @@ public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> {
     }
 
     /**
-     * Callback method if login failed Todo: remove Generic Exception
+     * Callback method if login failed TODO: remove Generic Exception
      * @param e cause of the error
      */
     @Override
@@ -65,7 +65,7 @@ public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> {
     }
 
     /**
-     * Method to initiate the main layout Todo: maybe using a state machine for different layouts?
+     * Method to initiate the main layout TODO: maybe using a state machine for different layouts?
      */
     protected void initMainLayout() {
         setContentView(R.layout.activity_main);
