@@ -89,6 +89,7 @@ public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> {
              * @param response JSON Object containing the received data
              */
             @Override
+            @SuppressWarnings( "deprecation" )
             public void onSuccess(int statusCode,
                                   Header[] headers,
                                   JSONObject response) {
@@ -110,6 +111,7 @@ public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> {
              * @param response JSON Array containing the received data
              */
             @Override
+            @SuppressWarnings( "deprecation" )
             public void onSuccess(int statusCode,
                                   Header[] headers,
                                   JSONArray response) {
@@ -132,6 +134,7 @@ public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> {
              * @param responseString explanation why it failed
              */
             @Override
+            @SuppressWarnings( "deprecation" )
             public void onFailure(int statusCode,
                                   Header[] headers,
                                   java.lang.String responseString,
@@ -146,6 +149,7 @@ public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> {
              * @param response explanation why it failed
              */
             @Override
+            @SuppressWarnings( "deprecation" )
             public void onFailure(int statusCode,
                                   Header[] headers,
                                   java.lang.Throwable throwable,
