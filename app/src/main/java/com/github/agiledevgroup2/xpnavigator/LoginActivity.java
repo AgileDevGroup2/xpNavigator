@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Menu;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 
 //Library stuff
@@ -96,9 +98,8 @@ public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> {
                 System.out.println("Json Object: ");
                 System.out.println(response.toString());
 
-                TextView text = (TextView) findViewById(R.id.main_text);
                 try {
-                    text.setText(text.getText().toString() + response.getString("name") + "\n");
+                    addBoardButton(response.getString("name"));
                 } catch (JSONException e) {
                     System.err.println(e.toString());
                 }
@@ -157,6 +158,20 @@ public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> {
                 System.out.println("failed: " + throwable.toString());
             }
         });
+    }
+
+    /**
+     * Adding buttons for each board dynamically
+     * @param buttonText The name of the board received from the JSON "name"
+     */
+    public void addBoardButton(String buttonText){
+         /*Generate a button for each Board*/
+        Button boardButton = new Button(getApplicationContext());
+        LinearLayout btnLayout = (LinearLayout) findViewById(R.id.buttonLayout);
+        LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        btnLayout.addView(boardButton,lp);
+        boardButton.setText(boardButton.getText()+ " " + buttonText);
+
     }
 
 }
