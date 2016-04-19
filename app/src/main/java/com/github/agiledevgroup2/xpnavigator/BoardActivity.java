@@ -23,7 +23,6 @@ public class BoardActivity extends AppCompatActivity {
         setContentView(R.layout.activity_board);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 
 
@@ -31,8 +30,10 @@ public class BoardActivity extends AppCompatActivity {
 
         Intent previousIntent = getIntent();
         boardId = previousIntent.getStringExtra(LoginActivity.BOARD_EXTRA_ID);
-        /*Check that boardID was transferred*/
+        /*DEBUG PURPOSE*/
         Toast.makeText(getApplicationContext(),boardId, Toast.LENGTH_SHORT).show();
+
+        /*DEBUG PURPOSE*/
         test();
 
     }
