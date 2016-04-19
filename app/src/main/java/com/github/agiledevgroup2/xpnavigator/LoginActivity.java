@@ -1,10 +1,14 @@
 package com.github.agiledevgroup2.xpnavigator;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Menu;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
+import android.widget.Toast;
 
 //Library stuff
 import org.apache.http.Header;
@@ -95,9 +99,8 @@ public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> {
                 System.out.println("Json Object: ");
                 System.out.println(response.toString());
 
-                TextView text = (TextView) findViewById(R.id.main_text);
                 try {
-                    text.setText(text.getText().toString() + response.getString("name") + "\n");
+                    addBoardButton(response.getString("name"));
                 } catch (JSONException e) {
                     System.err.println(e.toString());
                 }
@@ -153,6 +156,34 @@ public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> {
                 System.out.println("failed: " + throwable.toString());
             }
         });
+    }
+
+    /**
+     * Adding buttons for each board dynamically
+     * @param buttonText The name of the board received from the JSON "name"
+     *  TODO Implement Button Event Handler, passing params to new Intent for displaying the cards of a board?
+     */
+    public void addBoardButton(String buttonText){
+         /*Generate a button for each Board*/
+        final Button boardButton = new Button(getApplicationContext());
+        LinearLayout btnLayout = (LinearLayout) findViewById(R.id.buttonLayout);
+        LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        btnLayout.addView(boardButton,lp);
+        boardButton.setText(boardButton.getText() + " " + buttonText);
+
+        /*Event Handler for each boardButton*/
+        boardButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(),boardButton.getText()+ " was clicked!", Toast.LENGTH_SHORT).show();
+                Intent clickedBoard = new Intent(BoardView.class);
+                //Get the name to pass, or better save ID of board somewhere
+                clickedBoard.putExtra("BOARD",boardButton.getText());
+                /*In BoardView.onCreate: String boardName = getExtra("BOARD")
+                * Make API calls for that board
+                * */
+            }
+        });
+
     }
 
 }
