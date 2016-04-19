@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.github.agiledevgroup2.xpnavigator">
+    package="com.github.agiledevgroup2.xpnavigator" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -10,17 +10,18 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme" >
         <meta-data
             android:name="AA_DB_NAME"
             android:value="RestClient.db" />
         <meta-data
             android:name="AA_DB_VERSION"
             android:value="1" />
+
         <activity
-            android:name="com.github.agiledevgroup2.xpnavigator.LoginActivity"
+            android:name=".LoginActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -36,6 +37,11 @@
                     android:host="xpNavigator"
                     android:scheme="oauth" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".BoardActivity"
+            android:label="@string/title_activity_board"
+            android:theme="@style/AppTheme.NoActionBar" >
         </activity>
     </application>
 

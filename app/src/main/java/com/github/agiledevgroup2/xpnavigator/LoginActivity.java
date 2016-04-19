@@ -20,14 +20,19 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Console;
+
 /**
  * This class represents the apps main activity
  * TODO: might rename this class to something like "MainActivity"...
  */
 public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> {
 
+    public final static String BOARD_EXTRA_ID = "BOARD_ID";
+
     /**
      * creates the view and initiates the login dialog TODO: Statemachine for views?
+     *
      * @param savedInstanceState saved data to restore view (e.g. after rotating the phone)
      */
     @Override
@@ -55,11 +60,12 @@ public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> {
      */
     @Override
     public void onLoginSuccess() {
-       initMainLayout();
+        initMainLayout();
     }
 
     /**
      * Callback method if login failed TODO: remove Generic Exception
+     *
      * @param e cause of the error
      */
     @Override
@@ -93,7 +99,7 @@ public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> {
              * @param response JSON Object containing the received data
              */
             @Override
-            @SuppressWarnings( "deprecation" )
+            @SuppressWarnings("deprecation")
             public void onSuccess(int statusCode,
                                   Header[] headers,
                                   JSONObject response) {
@@ -101,7 +107,8 @@ public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> {
                 System.out.println(response.toString());
 
                 try {
-                    addBoardButton(response.getString("name"));
+                    addBoardButton(response.getString("name"), response.getString("id"));
+
                 } catch (JSONException e) {
                     System.err.println(e.toString());
                 }
@@ -114,7 +121,7 @@ public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> {
              * @param response JSON Array containing the received data
              */
             @Override
-            @SuppressWarnings( "deprecation" )
+            @SuppressWarnings("deprecation")
             public void onSuccess(int statusCode,
                                   Header[] headers,
                                   JSONArray response) {
@@ -137,11 +144,11 @@ public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> {
              * @param responseString explanation why it failed
              */
             @Override
-            @SuppressWarnings( "deprecation" )
+            @SuppressWarnings("deprecation")
             public void onFailure(int statusCode,
                                   Header[] headers,
                                   java.lang.String responseString,
-                                  java.lang.Throwable throwable){
+                                  java.lang.Throwable throwable) {
                 System.out.println("failed: " + responseString);
             }
 
@@ -152,11 +159,11 @@ public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> {
              * @param response explanation why it failed
              */
             @Override
-            @SuppressWarnings( "deprecation" )
+            @SuppressWarnings("deprecation")
             public void onFailure(int statusCode,
                                   Header[] headers,
                                   java.lang.Throwable throwable,
-                                  JSONObject response){
+                                  JSONObject response) {
                 System.out.println("failed: " + throwable.toString());
             }
         });
@@ -164,27 +171,31 @@ public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> {
 
     /**
      * Adding buttons for each board dynamically
+     *
      * @param buttonText The name of the board received from the JSON "name"
-     *  TODO Implement Button Event Handler, passing params to new Intent for displaying the cards of a board?
+     *                   TODO Implement Button Event Handler, passing params to new Intent for displaying the cards of a board?
      */
-    public void addBoardButton(String buttonText){
+    public void addBoardButton(String buttonText, String boardId) {
          /*Generate a button for each Board*/
         final Button boardButton = new Button(getApplicationContext());
+        final String id = boardId;
         LinearLayout btnLayout = (LinearLayout) findViewById(R.id.buttonLayout);
         LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-        btnLayout.addView(boardButton,lp);
+        btnLayout.addView(boardButton, lp);
         boardButton.setText(boardButton.getText() + " " + buttonText);
+
 
         /*Event Handler for each boardButton*/
         boardButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(),boardButton.getText()+ " was clicked!", Toast.LENGTH_SHORT).show();
-                Intent clickedBoard = new Intent(BoardView.class);
+
+                /*Launch new Activity for that board*/
+                Toast.makeText(getApplicationContext(), boardButton.getText() + " was clicked!", Toast.LENGTH_SHORT).show();
+                Intent clickedBoard = new Intent(getApplicationContext(), BoardActivity.class);
                 //Get the name to pass, or better save ID of board somewhere
-                clickedBoard.putExtra("BOARD",boardButton.getText());
-                /*In BoardView.onCreate: String boardName = getExtra("BOARD")
-                * Make API calls for that board
-                * */
+                clickedBoard.putExtra(BOARD_EXTRA_ID,id);
+                startActivity(clickedBoard);
+
             }
         });
 
