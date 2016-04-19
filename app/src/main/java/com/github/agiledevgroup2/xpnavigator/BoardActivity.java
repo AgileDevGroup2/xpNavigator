@@ -3,10 +3,8 @@ package com.github.agiledevgroup2.xpnavigator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,7 +41,7 @@ public class BoardActivity extends AppCompatActivity {
     protected void test() {
         // SomeActivity.java
         TrelloClient client = TrelloApplication.getTrelloClient();
-        client.getCards(boardId,new JsonHttpResponseHandler() {
+        client.getLists(boardId,new JsonHttpResponseHandler() {
 
             /**
              * Failure handler if only one JSONObject is received

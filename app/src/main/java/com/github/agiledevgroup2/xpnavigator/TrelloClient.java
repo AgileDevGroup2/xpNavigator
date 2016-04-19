@@ -43,11 +43,24 @@ public class TrelloClient extends OAuthBaseClient {
         RequestParams params = new RequestParams();
         client.get(apiUrl, params, handler);
     }
-    public void getCards( String boardId,AsyncHttpResponseHandler handler){
-        String apiUrl = getApiUrl("1/boards/"+boardId+"/cards");
+
+    public void getLists(String boardId, AsyncHttpResponseHandler handler) {
+        String apiUrl = getApiUrl("1/boards/" + boardId + "/lists");
+        System.out.println("Api Url: " + apiUrl);
+        RequestParams params = new RequestParams();
+        client.get(apiUrl, params, handler);
+    }
+
+    public void getCardsByBoard(String boardId, AsyncHttpResponseHandler handler){
+        String apiUrl = getApiUrl("1/boards/" + boardId + "/cards");
         RequestParams params = new RequestParams();
         client.get(apiUrl,params,handler);
+    }
 
+    public void getCards(String listId, AsyncHttpResponseHandler handler){
+        String apiUrl = getApiUrl("1/lists/" + listId + "/cards");
+        RequestParams params = new RequestParams();
+        client.get(apiUrl,params,handler);
     }
 
 }
