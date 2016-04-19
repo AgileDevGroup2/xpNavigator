@@ -195,10 +195,12 @@ public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> {
         boardButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
-                /*Launch new Activity for that board*/
+                /*DEBUG PURPOSE*/
                 Toast.makeText(getApplicationContext(), boardButton.getText() + " was clicked!", Toast.LENGTH_SHORT).show();
+
+                /*Launch new Activity for the clicked board*/
                 Intent clickedBoard = new Intent(getApplicationContext(), BoardActivity.class);
-                //Get the name to pass, or better save ID of board somewhere
+                //Pass the BoardID to new activity
                 clickedBoard.putExtra(BOARD_EXTRA_ID,id);
                 startActivity(clickedBoard);
 
