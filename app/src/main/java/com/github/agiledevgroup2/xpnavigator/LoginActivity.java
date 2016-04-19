@@ -109,7 +109,6 @@ public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> {
 
                 try {
                     addBoardButton(response.getString("name"), response.getString("id"));
-
                 } catch (JSONException e) {
                     System.err.println(e.toString());
                 }
@@ -182,7 +181,7 @@ public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> {
      *                   TODO Implement Button Event Handler, passing params to new Intent for displaying the cards of a board?
      */
     public void addBoardButton(String buttonText, String boardId) {
-         /*Generate a button for each Board*/
+         /*Generate a button for each TrelloBoard*/
         final Button boardButton = new Button(getApplicationContext());
         final String id = boardId;
         LinearLayout btnLayout = (LinearLayout) findViewById(R.id.buttonLayout);
