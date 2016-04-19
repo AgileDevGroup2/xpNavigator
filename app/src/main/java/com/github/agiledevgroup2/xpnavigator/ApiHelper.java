@@ -1,21 +1,25 @@
 package com.github.agiledevgroup2.xpnavigator;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 public class ApiHelper {
-    private TrelloClient client = TrelloApplication.getTrelloClient();
 
     public ApiHelper(){
 
     }
 
-    public void getBoards(){
+    public JSONArray getBoards(){
+        /*Filter out Name and ID and return*/
+
 
     }
 
-    public void getCards(){
+    public JSONArray getCards(){
 
     }
 
-    public void getLists(){
+    public JSONArray getLists(){
 
     }
 
