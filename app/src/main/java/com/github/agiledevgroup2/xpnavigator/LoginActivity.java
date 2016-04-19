@@ -29,6 +29,7 @@ import java.io.Console;
 public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> {
 
     public final static String BOARD_EXTRA_ID = "BOARD_ID";
+    private ApiHelper api = new ApiHelper();
 
     /**
      * creates the view and initiates the login dialog TODO: Statemachine for views?
@@ -61,6 +62,7 @@ public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> {
     @Override
     public void onLoginSuccess() {
         initMainLayout();
+
     }
 
     /**
@@ -79,8 +81,12 @@ public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> {
      */
     protected void initMainLayout() {
         setContentView(R.layout.activity_main);
+        initiateBoards();
 
-        test();
+    }
+
+    protected void initiateBoards(){
+        JSONArray boards = api.getBoards();
     }
 
     /**
@@ -178,7 +184,6 @@ public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> {
      * Adding buttons for each board dynamically
      *
      * @param buttonText The name of the board received from the JSON "name"
-     *                   TODO Implement Button Event Handler, passing params to new Intent for displaying the cards of a board?
      */
     public void addBoardButton(String buttonText, String boardId) {
          /*Generate a button for each TrelloBoard*/
@@ -193,14 +198,10 @@ public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> {
         /*Event Handler for each boardButton*/
         boardButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
-                /*DEBUG PURPOSE*/
-                Toast.makeText(getApplicationContext(), boardButton.getText() + " was clicked!", Toast.LENGTH_SHORT).show();
-
                 /*Launch new Activity for the clicked board*/
                 Intent clickedBoard = new Intent(getApplicationContext(), BoardActivity.class);
                 //Pass the BoardID to new activity
-                clickedBoard.putExtra(BOARD_EXTRA_ID,id);
+                clickedBoard.putExtra(BOARD_EXTRA_ID, id);
                 startActivity(clickedBoard);
 
             }
