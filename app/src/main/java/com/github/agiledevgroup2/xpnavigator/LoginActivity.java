@@ -1,5 +1,6 @@
 package com.github.agiledevgroup2.xpnavigator;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Menu;
@@ -174,9 +175,16 @@ public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> {
         btnLayout.addView(boardButton,lp);
         boardButton.setText(boardButton.getText() + " " + buttonText);
 
+        /*Event Handler for each boardButton*/
         boardButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Toast.makeText(getApplicationContext(),boardButton.getText()+ " was clicked!", Toast.LENGTH_SHORT).show();
+                Intent clickedBoard = new Intent(BoardView.class);
+                //Get the name to pass, or better save ID of board somewhere
+                clickedBoard.putExtra("BOARD",boardButton.getText());
+                /*In BoardView.onCreate: String boardName = getExtra("BOARD")
+                * Make API calls for that board
+                * */
             }
         });
 
