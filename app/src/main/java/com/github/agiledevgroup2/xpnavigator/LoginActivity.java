@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
+import android.widget.Toast;
 
 //Library stuff
 import org.apache.http.Header;
@@ -163,14 +164,21 @@ public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> {
     /**
      * Adding buttons for each board dynamically
      * @param buttonText The name of the board received from the JSON "name"
+     *  TODO Implement Button Event Handler, passing params to new Intent for displaying the cards of a board?
      */
     public void addBoardButton(String buttonText){
          /*Generate a button for each Board*/
-        Button boardButton = new Button(getApplicationContext());
+        final Button boardButton = new Button(getApplicationContext());
         LinearLayout btnLayout = (LinearLayout) findViewById(R.id.buttonLayout);
         LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         btnLayout.addView(boardButton,lp);
-        boardButton.setText(boardButton.getText()+ " " + buttonText);
+        boardButton.setText(boardButton.getText() + " " + buttonText);
+
+        boardButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(),boardButton.getText()+ " was clicked!", Toast.LENGTH_SHORT).show();
+            }
+        });
 
     }
 
