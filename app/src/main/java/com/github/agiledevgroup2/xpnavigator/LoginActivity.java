@@ -21,6 +21,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Console;
+import java.util.List;
 
 /**
  * This class represents the apps main activity
@@ -87,97 +88,41 @@ public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> {
     }
 
     protected void initiateBoards(){
-        //JSONArray boards = api.getBoards(); // see above
+        //JSONArray boards = api.getBoards(); // see test
+        test();
     }
     /**
      * This is only a test, should move such calls into another class
      * The test fetches a users groups and displays them on the display as text items
      */
     protected void test() {
-        // SomeActivity.java
-        TrelloClient client = TrelloApplication.getTrelloClient();
-        client.getBoards(new JsonHttpResponseHandler() {
 
-            /**
-             * Failure handler if only one JSONObject is received
-             * @param statusCode should be exactly what it sounds like...
-             * @param headers http headers (not necessary)
-             * @param response JSON Object containing the received data
-             */
+        //TODO better impement handler in this class instead creating one here!!!!
+        //TODO i mean it, please don't do it that way, it should only show how data can be fetched
+        ApiHandler handler = new ApiHandler(new ApiListener() {
             @Override
+            public void boardsCallback(List<TrelloBoard> boards) {
 
-            @SuppressWarnings("deprecation")
-            public void onSuccess(int statusCode,
-                                  Header[] headers,
-                                  JSONObject response) {
-                System.out.println("Json Object: ");
-                System.out.println(response.toString());
-
-                try {
-                    addBoardButton(response.getString("name"), response.getString("id"));
-                } catch (JSONException e) {
-                    System.err.println(e.toString());
+                //only an example
+                for (TrelloBoard board : boards) {
+                    addBoardButton(board.getName(), board.getId());
                 }
+
             }
 
-            /**
-             * Failure handler if a JSON Array is received
-             * @param statusCode should be exactly what it sounds like...
-             * @param headers http headers (not necessary)
-             * @param response JSON Array containing the received data
-             */
             @Override
+            public void listsCallback(List<TrelloList> lists, String boardId) {
 
-            @SuppressWarnings("deprecation")
-
-            public void onSuccess(int statusCode,
-                                  Header[] headers,
-                                  JSONArray response) {
-
-                //itterate over all objects of the json array
-                for (int i = 0; i < response.length(); i++) {
-                    try {
-                        // forward success call to handle each object separately
-                        onSuccess(statusCode, headers, response.getJSONObject(i));
-                    } catch (JSONException e) {
-                        System.err.println(e.toString());
-                    }
-                }
             }
 
-            /**
-             * Failure handler with string response
-             * @param statusCode should be exactly what it sounds like...
-             * @param headers http headers (not necessary)
-             * @param responseString explanation why it failed
-             */
             @Override
+            public void cardsCallback(List<TrelloCard> cards, String listId) {
 
-            @SuppressWarnings("deprecation")
-
-            public void onFailure(int statusCode,
-                                  Header[] headers,
-                                  java.lang.String responseString,
-                                  java.lang.Throwable throwable) {
-                System.out.println("failed: " + responseString);
-            }
-
-            /**
-             * Failure handler with JSON response
-             * @param statusCode should be exactly what it sounds like...
-             * @param headers http headers (not necessary)
-             * @param response explanation why it failed
-             */
-            @Override
-            @SuppressWarnings("deprecation")
-
-            public void onFailure(int statusCode,
-                                  Header[] headers,
-                                  java.lang.Throwable throwable,
-                                  JSONObject response) {
-                System.out.println("failed: " + throwable.toString());
             }
         });
+
+        //api call
+        handler.fetchBoards();
     }
 
     /**
