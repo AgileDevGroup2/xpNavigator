@@ -7,7 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * Todo: Comment stuff
+ * Util class, static methods which occur more often in different classes
  */
 public class Util {
     private static final String LOG_TAG = "Util";

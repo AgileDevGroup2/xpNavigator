@@ -29,7 +29,8 @@ import java.io.Console;
 public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> {
 
     public final static String BOARD_EXTRA_ID = "BOARD_ID";
-    private ApiHelper api = new ApiHelper();
+    //Sorry, removed your ApiHelper, use ApiHandler instead and implement the ApiListener interface
+    //private ApiHelper api = new ApiHelper();
 
     /**
      * creates the view and initiates the login dialog TODO: Statemachine for views?
@@ -86,9 +87,8 @@ public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> {
     }
 
     protected void initiateBoards(){
-        JSONArray boards = api.getBoards();
+        //JSONArray boards = api.getBoards(); // see above
     }
-
     /**
      * This is only a test, should move such calls into another class
      * The test fetches a users groups and displays them on the display as text items
