@@ -27,7 +27,7 @@ public class ApiHandler extends JsonHttpResponseHandler {
     protected ApiListener mListener;
     protected TrelloApplication mTrelloApp;
 
-    //protected Lock mLock;
+    protected Lock mLock;
 
     /**
      * creates a new ApiHandler
@@ -36,6 +36,7 @@ public class ApiHandler extends JsonHttpResponseHandler {
     public ApiHandler(ApiListener listener) {
         mListener = listener;
         mCurState = State.BOARD;
+        mLock = new ThreadIndependentLock();
     }
 
     /**
@@ -50,7 +51,7 @@ public class ApiHandler extends JsonHttpResponseHandler {
      * Fetch boards, callback will be send to ApiListener.setBoards
      */
     public void fetchBoards() {
-        //mLock.lock();
+        mLock.lock();
         mCurState = State.BOARD;
         TrelloApplication.getTrelloClient().getBoards(this);
     }
@@ -60,7 +61,7 @@ public class ApiHandler extends JsonHttpResponseHandler {
      * @param boardId board's id the lists should be fetched from
      */
     public void fetchLists(String boardId) {
-        //mLock.lock();
+        mLock.lock();
         mCurState = State.LIST;
         TrelloApplication.getTrelloClient().getLists(boardId, this);
     }
@@ -70,7 +71,7 @@ public class ApiHandler extends JsonHttpResponseHandler {
      * @param listId list's id the cards should be fetched from
      */
     public void fetchCards(String listId) {
-        //mLock.lock();
+        mLock.lock();
         mCurState = State.CARD;
         TrelloApplication.getTrelloClient().getCards(listId, this);
     }
@@ -89,7 +90,7 @@ public class ApiHandler extends JsonHttpResponseHandler {
         //cancel if null-response
         if (response == null) {
             handleFailure("JSONObject is null object");
-            //mLock.unlock();
+            mLock.unlock();
             return;
         }
 
@@ -97,7 +98,7 @@ public class ApiHandler extends JsonHttpResponseHandler {
             onSuccess(statusCode, headers, response.getJSONArray(""));
         } catch (JSONException e) {
             handleFailure(e.getMessage());
-            //mLock.unlock();
+            mLock.unlock();
         }
     }
 
@@ -115,7 +116,7 @@ public class ApiHandler extends JsonHttpResponseHandler {
         //cancel if null-response
         if (response == null) {
             handleFailure("JSONArray is null object");
-            //mLock.unlock();
+            mLock.unlock();
             return;
         }
 
@@ -129,7 +130,7 @@ public class ApiHandler extends JsonHttpResponseHandler {
             case CARD:
                 handleCards(response);
         }
-        //mLock.unlock();
+        mLock.unlock();
     }
 
     /**
@@ -145,7 +146,7 @@ public class ApiHandler extends JsonHttpResponseHandler {
                           java.lang.String responseString,
                           java.lang.Throwable throwable) {
         handleFailure(responseString);
-        //mLock.unlock();
+        mLock.unlock();
     }
 
     /**
@@ -161,7 +162,7 @@ public class ApiHandler extends JsonHttpResponseHandler {
                           java.lang.Throwable throwable,
                           JSONObject response) {
         handleFailure(throwable.getMessage());
-        //mLock.unlock();
+        mLock.unlock();
     }
 
     /**
