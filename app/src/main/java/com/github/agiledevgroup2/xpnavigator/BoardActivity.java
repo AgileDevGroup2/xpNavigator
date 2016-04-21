@@ -18,10 +18,13 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The Activity for displaying an individual board
+ */
 public class BoardActivity extends AppCompatActivity implements ApiListener{
     private String boardId = "";
     private ApiHandler handler;
-    private List<TrelloList> lists;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,17 +33,11 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
         setSupportActionBar(toolbar);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 
-        lists = new ArrayList<>();
         Intent previousIntent = getIntent();
         boardId = previousIntent.getStringExtra(LoginActivity.BOARD_EXTRA_ID);
         handler = new ApiHandler(this);
 
         handler.fetchLists(boardId);
-
-
-
-
-
     }
 
     @Override
@@ -53,9 +50,12 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
         /*lists should contain a list of TrelloLists, which has info about list and a list of its
         * cards
         * */
-        this.lists = lists;
-        for (TrelloList l:this.lists){
+
+        for (TrelloList l:lists){
             System.out.println("List: " + l.getmName());
+            for(TrelloCard c:l.getCards()){
+                System.out.println(" Card:   " + c.getmName());
+            }
 
         }
 
