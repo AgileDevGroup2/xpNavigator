@@ -27,9 +27,10 @@ import java.util.List;
  * This class represents the apps main activity
  * TODO: might rename this class to something like "MainActivity"...
  */
-public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> {
+public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> implements ApiListener {
 
     public final static String BOARD_EXTRA_ID = "BOARD_ID";
+    private ApiHandler handler;
     //Sorry, removed your ApiHelper, use ApiHandler instead and implement the ApiListener interface
     //private ApiHelper api = new ApiHelper();
 
@@ -48,6 +49,7 @@ public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> {
                 getClient().connect();
             }
         });
+        handler = new ApiHandler(this);
     }
 
 
@@ -89,41 +91,9 @@ public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> {
 
     protected void initiateBoards(){
         //JSONArray boards = api.getBoards(); // see test
-        test();
-    }
-    /**
-     * This is only a test, should move such calls into another class
-     * The test fetches a users groups and displays them on the display as text items
-     */
-    protected void test() {
-
-        //TODO better impement handler in this class instead creating one here!!!!
-        //TODO i mean it, please don't do it that way, it should only show how data can be fetched
-        ApiHandler handler = new ApiHandler(new ApiListener() {
-            @Override
-            public void boardsCallback(List<TrelloBoard> boards) {
-
-                //only an example
-                for (TrelloBoard board : boards) {
-                    addBoardButton(board.getName(), board.getId());
-                }
-
-            }
-
-            @Override
-            public void listsCallback(List<TrelloList> lists, String boardId) {
-
-            }
-
-            @Override
-            public void cardsCallback(List<TrelloCard> cards, String listId) {
-
-            }
-        });
-
-        //api call
         handler.fetchBoards();
     }
+
 
     /**
      * Adding buttons for each board dynamically
@@ -154,4 +124,21 @@ public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> {
 
     }
 
+    @Override
+    public void boardsCallback(List<TrelloBoard> boards) {
+        for(TrelloBoard b:boards){
+            addBoardButton(b.getName(),b.getId());
+        }
+
+    }
+
+    @Override
+    public void listsCallback(List<TrelloList> lists, String boardId) {
+
+    }
+
+    @Override
+    public void cardsCallback(List<TrelloCard> cards, String listId) {
+
+    }
 }
