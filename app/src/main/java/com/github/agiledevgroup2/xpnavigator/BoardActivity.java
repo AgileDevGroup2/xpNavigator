@@ -33,7 +33,6 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
         lists = new ArrayList<>();
         Intent previousIntent = getIntent();
         boardId = previousIntent.getStringExtra(LoginActivity.BOARD_EXTRA_ID);
-
         handler = new ApiHandler(this);
 
         handler.fetchLists(boardId);
@@ -59,6 +58,8 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
             System.out.println("List: " + l.getmName());
 
         }
+
+        /*TODO POPULATE UI WITH CONTENTS*/
 
     }
 
