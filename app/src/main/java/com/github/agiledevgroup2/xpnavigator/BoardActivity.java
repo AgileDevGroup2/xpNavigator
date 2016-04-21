@@ -33,12 +33,11 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
         lists = new ArrayList<>();
         Intent previousIntent = getIntent();
         boardId = previousIntent.getStringExtra(LoginActivity.BOARD_EXTRA_ID);
-         /* Don't think ApiHandler is finished since it has interface as parameter?
-        handler = new ApiHandler();
 
+        handler = new ApiHandler(this);
 
         handler.fetchLists(boardId);
-        */
+
 
 
 
@@ -56,7 +55,11 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
         * cards
         * */
         this.lists = lists;
-        System.out.println("LISTOR:" + this.lists);
+        for (TrelloList l:this.lists){
+            System.out.println("List: " + l.getmName());
+
+        }
+
     }
 
     @Override
