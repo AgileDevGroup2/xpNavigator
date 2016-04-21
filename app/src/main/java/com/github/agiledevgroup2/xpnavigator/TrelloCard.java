@@ -86,6 +86,6 @@ public class TrelloCard implements Comparable<TrelloCard> {
 
     @Override
     public String toString() {
-        return "";
+        return "Id:" + mId + "-Name:" + mName + "-Desc:" + mDesc + "-IdBoard:" + mBoardId + "-IdList:" + mListId;
     }
 }

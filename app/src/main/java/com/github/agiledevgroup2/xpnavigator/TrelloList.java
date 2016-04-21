@@ -60,8 +60,8 @@ public class TrelloList implements Comparable<TrelloList> {
         if (!mCards.contains(card)) mCards.add(card);
     }
 
-    public void delteCard(TrelloCard card) {
-        //Todo implement comparison
+    public void removeCard(TrelloCard card) {
+        mCards.remove(card); //todo test if this remove method uses the compareTo method
     }
 
     public void setCards(List<TrelloCard> cards) {
