@@ -6,7 +6,7 @@ import org.json.JSONObject;
 import java.util.Date;
 
 /**
- * Todo: Comment stuff
+ * This class represents a trello card
  */
 public class TrelloCard implements Comparable<TrelloCard> {
 
@@ -32,58 +32,116 @@ public class TrelloCard implements Comparable<TrelloCard> {
         mLastChanged = Util.getDateFromJson(json.getString("dateLastActivity"));
     }
 
-    public String getmId() {
+    /**
+     * get the card's id
+     * @return card's id
+     */
+    public String getId() {
         return mId;
     }
 
-    public void setmId(String mId) {
+    /**
+     * set the car's id
+     * @param mId new id
+     */
+    public void setId(String mId) {
         this.mId = mId;
     }
 
-    public String getmName() {
+    /**
+     * get the card's name
+     * @return card's name
+     */
+    public String getName() {
         return mName;
     }
 
-    public void setmName(String mName) {
+    /**
+     * set the card's name
+     * @param mName new name
+     */
+    public void setName(String mName) {
         this.mName = mName;
     }
 
-    public String getmDesc() {
+    /**
+     * get the card's description
+     * @return card's description
+     */
+    public String getDesc() {
         return mDesc;
     }
 
-    public void setmDesc(String mDesc) {
+    /**
+     * set the card's description
+     * @param mDesc new description
+     */
+    public void setDesc(String mDesc) {
         this.mDesc = mDesc;
     }
 
-    public String getmBoardId() {
+    /**
+     * get the board's id associated to this card
+     * @return board id
+     */
+    public String getBoardId() {
         return mBoardId;
     }
 
-    public void setmBoardId(String mBoardId) {
+    /**
+     * set the board's id associated with this card
+     * @param mBoardId new board id
+     */
+    public void setBoardId(String mBoardId) {
         this.mBoardId = mBoardId;
     }
 
-    public String getmListId() {
+    /**
+     * get the list's id associated with this card
+     * @return list id
+     */
+    public String getListId() {
         return mListId;
     }
 
-    public void setmListId(String mListId) {
+    /**
+     * set a new list id to this card
+     * @param mListId new list id
+     */
+    public void setListId(String mListId) {
         this.mListId = mListId;
     }
 
-    public Date getmLastChanged() {
+    /**
+     * get the date this card was last edited at
+     * @return date of last edit
+     */
+    public Date getLastChanged() {
         return mLastChanged;
     }
 
-    public void setmLastChanged(Date mLastChanged) {
+    /**
+     * set the date this card was last edited at
+     * @param mLastChanged new date of edit
+     */
+    public void setLastChanged(Date mLastChanged) {
         this.mLastChanged = mLastChanged;
     }
 
+    /**
+     * compare to other card
+     * @param other other card
+     * @return negative integer if this < other, 0 if equal or positive integer if this > other
+     */
+    @Override
     public int compareTo(TrelloCard other) {
         return this.toString().compareTo(other.toString());
     }
 
+    /**
+     * returns a string representation of this class
+     * @return string representation
+     */
     @Override
     public String toString() {
         return "Id:" + mId + "-Name:" + mName + "-Desc:" + mDesc + "-IdBoard:" + mBoardId + "-IdList:" + mListId;

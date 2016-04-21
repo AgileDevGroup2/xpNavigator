@@ -7,7 +7,7 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 
 /**
- * Todo comment
+ * Thread independent lock implementation, hope this works...
  */
 public class ThreadIndependentLock implements Lock {
 
@@ -27,7 +27,7 @@ public class ThreadIndependentLock implements Lock {
 
     @Override
     public void lockInterruptibly() throws InterruptedException {
-
+        throw new InterruptedException("lockInterruptibly() is not Supported");
     }
 
     @Override

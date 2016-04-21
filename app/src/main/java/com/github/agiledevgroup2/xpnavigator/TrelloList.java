@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Todo: Comment stuff
+ * Representation of a trello-list
  */
 public class TrelloList implements Comparable<TrelloList> {
     private String mId;
@@ -28,50 +28,100 @@ public class TrelloList implements Comparable<TrelloList> {
         mCards = new ArrayList<>();
     }
 
-    public String getmId() {
+    /**
+     * get the list's id
+     * @return list's id
+     */
+    public String getId() {
         return mId;
     }
 
-    public void setmId(String mId) {
+    /**
+     * set the list's id
+     * @param mId new id
+     */
+    public void setId(String mId) {
         this.mId = mId;
     }
 
-    public String getmName() {
+    /**
+     * get the list's name
+     * @return list's name
+     */
+    public String getName() {
         return mName;
     }
 
-    public void setmName(String mName) {
+    /**
+     * set the list's name
+     * @param mName new name
+     */
+    public void setName(String mName) {
         this.mName = mName;
     }
 
-    public String getmBoardId() {
+    /**
+     * get the board's id associated with this list
+     * @return board id
+     */
+    public String getBoardId() {
         return mBoardId;
     }
 
+    /**
+     * set the board's id associated with this list
+     * @param mBoardId new board id
+     */
+    public void setBoardId(String mBoardId) {
+        this.mBoardId = mBoardId;
+    }
+
+    /**
+     * get all cards of this list
+     * @return list of trello-cards
+     */
     public List<TrelloCard> getCards() {
         return mCards;
     }
 
-    public void setmBoardId(String mBoardId) {
-        this.mBoardId = mBoardId;
-    }
-
+    /**
+     * add a card to this list, if not already present
+     * @param card card to add
+     */
     public void addCard(TrelloCard card) {
         if (!mCards.contains(card)) mCards.add(card);
     }
 
+    /**
+     * remove a card from this list
+     * @param card card to remove
+     */
     public void removeCard(TrelloCard card) {
         mCards.remove(card); //todo test if this remove method uses the compareTo method
     }
 
+    /**
+     * set cards of this list
+     * @param cards list of cards to set
+     */
     public void setCards(List<TrelloCard> cards) {
         mCards = cards;
     }
 
+    /**
+     * compare to other list
+     * @param other other list
+     * @return negative integer if this < other, 0 if equal or positive integer if this > other
+     */
+    @Override
     public int compareTo(TrelloList other) {
         return other.toString().compareTo(this.toString());
     }
-
+    
+    /**
+     * returns a string representation of this class
+     * @return string representation
+     */
     @Override
     public String toString() {
          return "Id:" + mId + "-Name:" + mName + "-IdBoard:" + mBoardId;
