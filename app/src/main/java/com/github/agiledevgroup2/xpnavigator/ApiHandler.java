@@ -71,6 +71,7 @@ public class ApiHandler extends JsonHttpResponseHandler {
      * @param listId list's id the cards should be fetched from
      */
     public void fetchCards(String listId) {
+        System.out.println("FETCHING_CARDS_IN_HANDLER");
         mLock.lock();
         mCurState = State.CARD;
         TrelloApplication.getTrelloClient().getCards(listId, this);
@@ -218,6 +219,7 @@ public class ApiHandler extends JsonHttpResponseHandler {
      */
     protected void handleCards(JSONArray jsonArray) {
         //itterate over all objects of the json array
+        System.out.println("HANDLING_CARDS_IN_API_HANDLER");
         List<TrelloCard> cards = new ArrayList<>();
         for (int i = 0; i < jsonArray.length(); i++) {
             try {
