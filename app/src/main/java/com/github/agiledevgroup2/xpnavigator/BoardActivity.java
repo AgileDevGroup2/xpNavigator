@@ -24,6 +24,8 @@ import java.util.List;
 public class BoardActivity extends AppCompatActivity implements ApiListener{
     private String boardId = "";
     private ApiHandler handler;
+    private List<TrelloList> listList = new ArrayList<>();
+    private List <TrelloCard> cardList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,8 +38,19 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
         Intent previousIntent = getIntent();
         boardId = previousIntent.getStringExtra(LoginActivity.BOARD_EXTRA_ID);
         handler = new ApiHandler(this);
-
         handler.fetchLists(boardId);
+
+        /*Not working atm, probably stuck in callback*/
+        getCardsInLists(listList);
+
+    }
+
+    public void getCardsInLists(List<TrelloList> list){
+        for(TrelloList tl:list){
+            System.out.println("FETCHING CARDS FROM LISTID: " + tl.getmId());
+            //handler.fetchCards(tl.getmId());
+        }
+
     }
 
     @Override
@@ -51,11 +64,10 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
         * cards
         * */
 
+        this.listList = lists;
+
         for (TrelloList l:lists){
-            System.out.println("List: " + l.getmName());
-            for(TrelloCard c:l.getCards()){
-                System.out.println(" Card:   " + c.getmName());
-            }
+            System.out.println("List: " + l.getmName() + "   ID" + l.getmId());
 
         }
 
@@ -65,6 +77,12 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
 
     @Override
     public void cardsCallback(List<TrelloCard> cards, String listId) {
+        System.out.println("CardsCallBack");
+       this.cardList = cards;
+        for(TrelloCard tc:cards){
+            System.out.println(tc.getmName());
+        }
+
 
     }
 }

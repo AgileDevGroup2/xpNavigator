@@ -74,6 +74,7 @@ public class TrelloClient extends OAuthBaseClient {
     public void getCards(String listId, AsyncHttpResponseHandler handler){
         String apiUrl = getApiUrl("1/lists/" + listId + "/cards");
         RequestParams params = new RequestParams();
+        System.out.println("GETTING_CARDS_IN_CLIENT");
         client.get(apiUrl,params,handler);
     }
 
