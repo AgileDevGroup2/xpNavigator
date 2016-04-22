@@ -4,6 +4,7 @@ import org.scribe.builder.api.Api;
 import org.scribe.builder.api.TrelloApi;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.codepath.oauth.OAuthBaseClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -19,7 +20,7 @@ public class TrelloClient extends OAuthBaseClient {
     public static final String REST_CONSUMER_SECRET =
             "462a62c3b68ee9675470d94eb0cc903c9876efc3fe985ad24aeeb83470c9f00e";
     public static final String REST_CALLBACK_URL = "oauth://xpNavigator";
-
+    private static final String TAG = "TrelloClient";
     /**
      * creates a new client
      * @param context the TrelloApplication
@@ -39,7 +40,7 @@ public class TrelloClient extends OAuthBaseClient {
      */
     public void getBoards(AsyncHttpResponseHandler handler) {
         String apiUrl = getApiUrl("1/members/me/boards");
-        System.out.println("Api Url: " + apiUrl);
+        Log.d("ClIENT_GETBOARDS", apiUrl);
         RequestParams params = new RequestParams();
         client.get(apiUrl, params, handler);
     }
@@ -51,7 +52,8 @@ public class TrelloClient extends OAuthBaseClient {
      */
     public void getLists(String boardId, AsyncHttpResponseHandler handler) {
         String apiUrl = getApiUrl("1/boards/" + boardId + "/lists");
-        System.out.println("Api Url: " + apiUrl);
+        Log.d("ClIENT_GETLIST", apiUrl);
+
         RequestParams params = new RequestParams();
         client.get(apiUrl, params, handler);
     }
@@ -73,8 +75,9 @@ public class TrelloClient extends OAuthBaseClient {
      */
     public void getCards(String listId, AsyncHttpResponseHandler handler){
         String apiUrl = getApiUrl("1/lists/" + listId + "/cards");
+        Log.d("ClIENT_GETCARDS", apiUrl);
         RequestParams params = new RequestParams();
-        System.out.println("GETTING_CARDS_IN_CLIENT");
+        Log.d(TAG,("GETTING_CARDS_IN_CLIENT"));
         client.get(apiUrl,params,handler);
     }
 
