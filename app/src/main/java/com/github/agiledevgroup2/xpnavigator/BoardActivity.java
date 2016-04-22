@@ -42,37 +42,22 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
         Intent previousIntent = getIntent();
         boardId = previousIntent.getStringExtra(LoginActivity.BOARD_EXTRA_ID);
         handler = new ApiHandler(this);
-        //handler.fetchLists(boardId);
-
         GenerateListsTask glt = new GenerateListsTask();
         glt.execute(boardId);
-
-        //handler.fetchLists(boardId);
-
-
-
-
-
     }
 
 
     private class GenerateListsTask extends AsyncTask<String,Void,Boolean> {
         private String[] info = new String[2];
-
         @Override
         protected Boolean doInBackground(String... params) {
-
             String boardId = params[0];
-
-
-            /* Try opening a http connection to the url above*/
             try {
                 handler.fetchLists(boardId);
             } catch (Exception e) {
                 Log.d("TaskError", "GenerateListTaskException");
                 e.printStackTrace();
             }
-
             if (listList.size() != 0) return true;
             else return false;
         }
@@ -81,7 +66,6 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
 
     private class GenerateCardsTask extends AsyncTask<String,Void,Boolean> {
         private String[] info = new String[2];
-
         @Override
         protected Boolean doInBackground(String... params) {
             String listId = params[0];
