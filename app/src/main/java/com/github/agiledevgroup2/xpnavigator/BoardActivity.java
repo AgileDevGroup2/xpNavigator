@@ -76,16 +76,6 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
             if (listList.size() != 0) return true;
             else return false;
         }
-
-        @Override
-        protected void onPostExecute(Boolean result){
-            Log.d("LIST IS: " , result.toString());
-            if(result){
-                handler.fetchCards(listList.get(0).getId());
-                handler.fetchCards(listList.get(1).getId());
-                handler.fetchCards(listList.get(2).getId());
-            }
-        }
     }
 
 
