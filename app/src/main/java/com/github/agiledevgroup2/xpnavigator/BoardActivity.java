@@ -7,7 +7,10 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
 import android.widget.BaseAdapter;
+import android.widget.ExpandableListAdapter;
+import android.widget.ExpandableListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,6 +22,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -29,6 +33,12 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
     private ApiHandler handler;
     private List<TrelloList> listList = new ArrayList<>();
     private List <TrelloCard> cardList = new ArrayList<>();
+    private ExpandableListView expandableListView;
+    private ExpandableListAdapter expandableListAdapter;
+    private CustomExpandableListAdapter adapter;
+    List<String> expandableListTitle;
+    HashMap<String, List<String>> expandableListOverview;
+
     private static final String TAG = "BoardActivity";
 
     @Override
@@ -39,12 +49,67 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
         setSupportActionBar(toolbar);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 
+
+
+
+
+
         Intent previousIntent = getIntent();
         boardId = previousIntent.getStringExtra(LoginActivity.BOARD_EXTRA_ID);
         handler = new ApiHandler(this);
         GenerateListsTask glt = new GenerateListsTask();
         glt.execute(boardId);
+
+        expandableListView = (ExpandableListView) findViewById(R.id.expandableListView);
+        expandableListOverview = new HashMap<String,List<String>>();
+        expandableListTitle = new ArrayList<String>(expandableListOverview.keySet());
+        adapter = new CustomExpandableListAdapter(this,expandableListTitle,expandableListOverview);
+
+
+
+
+
+
+
+        expandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+
+            @Override
+            public void onGroupExpand(int groupPosition) {
+                Toast.makeText(getApplicationContext(),
+                        expandableListTitle.get(groupPosition) + " List Expanded.",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        expandableListView.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
+
+            @Override
+            public void onGroupCollapse(int groupPosition) {
+                Toast.makeText(getApplicationContext(),
+                        expandableListTitle.get(groupPosition) + " List Collapsed.",
+                        Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
+        expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View v,
+                                        int groupPosition, int childPosition, long id) {
+                Toast.makeText(
+                        getApplicationContext(),
+                        expandableListTitle.get(groupPosition)
+                                + " -> "
+                                + expandableListOverview.get(
+                                expandableListTitle.get(groupPosition)).get(
+                                childPosition), Toast.LENGTH_SHORT
+                ).show();
+                return false;
+            }
+        });
     }
+
+
 
 
     private class GenerateListsTask extends AsyncTask<String,Void,Boolean> {
@@ -80,6 +145,7 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
     }
 
 
+
     @Override
     public void boardsCallback(List<TrelloBoard> boards) {
 
@@ -97,10 +163,22 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
 
     @Override
     public void cardsCallback(List<TrelloCard> cards, String listId) {
-       this.cardList = cards;
-        for(TrelloCard tc: cardList) {
+       cardList = cards;
+        List<String> crdNm = new ArrayList<>();
+        for(TrelloCard tc: cards) {
             Log.d("CARDS:" , tc.getName());
+            crdNm.add(tc.getName());
         }
+
+
+        if(expandableListView.getAdapter() == null){
+            Log.d("BOARD", "ADAPTER IS NULL");
+            expandableListView.setAdapter(adapter);
+        }
+
+        expandableListOverview.put("TST",crdNm);
+        Log.d("OVERVIEW", expandableListOverview.toString());
+        adapter.notifyDataSetChanged();
 
 
     }
