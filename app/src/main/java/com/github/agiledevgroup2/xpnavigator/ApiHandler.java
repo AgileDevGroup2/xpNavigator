@@ -24,7 +24,7 @@ public class ApiHandler extends JsonHttpResponseHandler {
 
     protected State mCurState;
 
-    private String lName = "base";
+    private String lName;
 
     protected ApiListener mListener;
     protected TrelloApplication mTrelloApp;
