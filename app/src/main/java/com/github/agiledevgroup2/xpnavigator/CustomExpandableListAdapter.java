@@ -26,6 +26,8 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
 
     }
 
+
+
     @Override
     public int getGroupCount() {
         return this.expandableListItems.size();
@@ -35,6 +37,7 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
     public int getChildrenCount(int groupPosition) {
         return this.expandableListOverview.get(this.expandableListItems.get(groupPosition)).size();
     }
+
 
 
     @Override

@@ -24,6 +24,8 @@ public class ApiHandler extends JsonHttpResponseHandler {
 
     protected State mCurState;
 
+    private String lName = "base";
+
     protected ApiListener mListener;
     protected TrelloApplication mTrelloApp;
 
@@ -70,8 +72,9 @@ public class ApiHandler extends JsonHttpResponseHandler {
      * Fetch Cards from a specific list, callback will be send to ApiListener.SetCards
      * @param listId list's id the cards should be fetched from
      */
-    public void fetchCards(String listId) {
+    public void fetchCards(String listId,String listName) {
         mLock.lock();
+        lName = listName;
         mCurState = State.CARD;
         TrelloApplication.getTrelloClient().getCards(listId, this);
 
@@ -211,7 +214,7 @@ public class ApiHandler extends JsonHttpResponseHandler {
         }
 
         //use listener callback
-        if (mListener != null) mListener.listsCallback(lists, "");
+        if (mListener != null) mListener.listsCallback(lists,"");
 
     }
 
@@ -231,7 +234,7 @@ public class ApiHandler extends JsonHttpResponseHandler {
         }
 
         //use listener callback
-        if (mListener != null) mListener.cardsCallback(cards, "");
+        if (mListener != null) mListener.cardsCallback(cards, lName);
 
     }
 }

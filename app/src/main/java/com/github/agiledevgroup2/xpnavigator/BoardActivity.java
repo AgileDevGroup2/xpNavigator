@@ -35,7 +35,6 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
     private CustomExpandableListAdapter adapter;
     private List<String> expandableListTitle;
     private HashMap<String, List<String>> expandableListOverview;
-    private String currentListName;
 
     private static final String TAG = "BoardActivity";
 
@@ -94,8 +93,8 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
     }
 
 
-    private void initAdapter(List<String> titles){
-        expandableListTitle = titles;
+    private void initAdapter(List<String> listNames){
+        expandableListTitle = listNames;
         adapter = new CustomExpandableListAdapter(this,expandableListTitle,expandableListOverview);
         expandableListView.setAdapter(adapter);
     }
@@ -123,8 +122,8 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
             String listId = params[0];
             String listName = params[1];
             try {
-                currentListName = listName;
-                handler.fetchCards(listId);
+
+                handler.fetchCards(listId,listName);
             } catch (Exception e) {
                 Log.d("TaskError", "GenerateListTaskException");
                 e.printStackTrace();
@@ -151,16 +150,19 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
     }
 
     @Override
-    public void cardsCallback(List<TrelloCard> cards, String listId) {
+    public void cardsCallback(List<TrelloCard> cards, String listName) {
         List<String> cardNames = new ArrayList<>();
         for(TrelloCard tc: cards) {
             cardNames.add(tc.getName());
+
+            Log.d("LISTNAME " + listName + " ",tc.getName());
         }
 
         /*Add cards to the HashMap, tell adapter to update
         * UI Wise, adds cards as children to the specified list
         * */
-        expandableListOverview.put(currentListName,cardNames);
+
+        expandableListOverview.put(listName,cardNames);
         adapter.notifyDataSetChanged();
     }
 }
