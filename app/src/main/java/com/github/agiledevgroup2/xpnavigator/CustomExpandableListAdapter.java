@@ -36,9 +36,6 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
         return this.expandableListOverview.get(this.expandableListItems.get(groupPosition)).size();
     }
 
-    public void notifyDataSetChange(){
-        notifyDataSetChanged();
-    }
 
     @Override
     public Object getGroup(int groupPosition) {
