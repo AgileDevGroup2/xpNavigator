@@ -271,4 +271,11 @@ public class ApiHandler extends JsonHttpResponseHandler {
         //use listener callback
         if (mListener != null) mListener.cardsCallback(cards, mLName);
     }
+
+    /**
+     * logout from Trello
+     */
+    public void logout() {
+        TrelloApplication.getTrelloClient().clearAccessToken();
+    }
 }

@@ -9,6 +9,8 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
@@ -225,7 +227,28 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
 
 
 
+    // Inflate the menu; this adds items to the action bar if it is present.
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_logout) {
+            handler.logout();
+            Intent login = new Intent(getApplicationContext(), LoginActivity.class);
+            //Pass the BoardID to new activity
+            startActivity(login);
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 
 
 
