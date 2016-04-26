@@ -42,6 +42,8 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
     private List<String> expandableListTitle;
     private HashMap<String, List<String>> expandableListOverview;
     private HashMap<String,String> trelloListMap;
+    private HashMap<String,String> trelloCardMap;
+
 
     private static final String TAG = "BoardActivity";
 
@@ -52,13 +54,17 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+
+
         cardTitle = (EditText) findViewById(R.id.cardTitle);
         cardDescription = (EditText) findViewById(R.id.cardDescription);
+
         /*Handle Passed information from previous activity*/
         Intent previousIntent = getIntent();
         boardId = previousIntent.getStringExtra(LoginActivity.BOARD_EXTRA_ID);
         handler = new ApiHandler(this);
         trelloListMap = new HashMap<>();
+        trelloCardMap = new HashMap<>();
 
         /*Fetch the lists in background*/
         GenerateListsTask glt = new GenerateListsTask();
@@ -115,26 +121,55 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
 
                 else if(itemType == ExpandableListView.PACKED_POSITION_TYPE_CHILD){
                    /*TODO Add Method & Handler. Perhaps move on longclick*/
-                    //onChildLongClick(groupPosition,childPosition);
+                    onChildLongClick(groupPosition,childPosition);
                 }
                 return false;
             }
         });
     }
 
+
+    private void onChildLongClick(final int groupPosition, final int childPosition){
+        new AlertDialog.Builder(this,R.style.AlertDialogStyle)
+            .setItems(R.array.board_activity_child_popup, new DialogInterface.OnClickListener(){
+                @Override
+                public void onClick(DialogInterface dialog, int which){
+                    switch(which){
+                        /*0 Edit, 1 Delete, 2 Move*/
+
+
+                        case 0:
+                            /*Popup edit or new activity?*/
+                            break;
+                        case 1:
+                            /*Tell handler to delete card [id]*/
+                            /*handler.deleteCard(
+                            trelloCardMap.get(expandableListOverview.get(expandableListTitle.get(groupPosition)).get(childPosition))
+                            )*/
+                            break;
+                        case 2:
+                            /*Popup Move to ListID*/
+                    }
+                }
+            })
+        .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
+
+
     private void onGroupLongClick(final int groupPosition){
         new AlertDialog.Builder(this, R.style.AlertDialogStyle)
                 .setItems(R.array.board_activity_popup, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        switch (which){
+                        switch (which) {
                             /*R.array.board_activity_popup: 0Add Card, 1Change Name, 2Save World*/
                             case 0:
-                            new AlertDialog.Builder(BoardActivity.this, R.style.AlertDialogStyle)
-                                    .setView(getLayoutInflater().inflate(R.layout.add_card,null))
-                                    .setPositiveButton("Add", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int id) {
+                                new AlertDialog.Builder(BoardActivity.this, R.style.AlertDialogStyle)
+                                        .setView(getLayoutInflater().inflate(R.layout.add_card, null))
+                                        .setPositiveButton("Add", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int id) {
                                             /*Call handler with parameters
                                             * (String) Card Title,
                                             * (String) Card Description
@@ -147,21 +182,42 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
                                                     cardDescription.getText().toString(),
                                                     trelloListMap.get(
                                                             expandableListTitle.get(groupPosition)));*/
-                                        }
-                                    })
-                                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int id) {
+                                            }
+                                        })
+                                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int id) {
                                             /*Do nothing for now, perhaps take one step back to prev
                                             * dialog*/
-                                        }
-                                    })
-                                    .show();
+                                            }
+                                        })
+                                        .show();
                         }
                     }
                 })
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     private void initAdapter(List<String> listNames){
@@ -227,6 +283,7 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
     public void cardsCallback(List<TrelloCard> cards, String listName) {
         List<String> cardNames = new ArrayList<>();
         for(TrelloCard tc: cards) {
+            this.trelloCardMap.put(tc.getName(),tc.getId());
             cardNames.add(tc.getName());
 
             Log.d("LISTNAME " + listName + " ",tc.getName());
