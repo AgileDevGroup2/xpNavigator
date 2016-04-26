@@ -33,6 +33,17 @@ public class TrelloCard implements Comparable<TrelloCard> {
     }
 
     /**
+     * construct a new card from name and description
+     * @param name name of the card
+     * @param desc description of the card
+     */
+    public TrelloCard(String name, String desc, String listId) {
+        mName = name;
+        mDesc = desc;
+        mListId = listId;
+    }
+
+    /**
      * get the card's id
      * @return card's id
      */

@@ -67,6 +67,10 @@ public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> im
     public void onLoginSuccess() {
         initMainLayout();
 
+
+
+        // Test todo remove this afterwards
+        //handler.addCard(new TrelloCard("test", "test", "57162ca9f6f119aaef16936b"));
     }
 
     /**

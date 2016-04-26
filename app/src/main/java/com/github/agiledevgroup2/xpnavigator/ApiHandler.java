@@ -19,7 +19,7 @@ import java.util.concurrent.locks.Lock;
 public class ApiHandler extends JsonHttpResponseHandler {
 
     private static final String TAG = "ApiHandler";
-    protected enum State {BOARD, LIST, CARD}
+    protected enum State {BOARD, LIST, CARD, PUSH}
 
     protected State mCurState;
 
@@ -75,6 +75,12 @@ public class ApiHandler extends JsonHttpResponseHandler {
         mLName = listName;
         mCurState = State.CARD;
         TrelloApplication.getTrelloClient().getCards(listId, this);
+    }
+
+    public void addCard(TrelloCard card) {
+        //mLock.lock();
+        mCurState = State.PUSH;
+        TrelloApplication.getTrelloClient().addCard(card, this);
     }
 
     /**
@@ -232,6 +238,5 @@ public class ApiHandler extends JsonHttpResponseHandler {
 
         //use listener callback
         if (mListener != null) mListener.cardsCallback(cards, mLName);
-
     }
 }

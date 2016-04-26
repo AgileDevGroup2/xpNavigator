@@ -36,7 +36,7 @@ public class TrelloClient extends OAuthBaseClient {
 
     /**
      * Endpoint to get all boards of a user.
-     * @param handler http handler handler to process the endpoints response
+     * @param handler http handler to process the endpoints response
      */
     public void getBoards(AsyncHttpResponseHandler handler) {
         String apiUrl = getApiUrl("1/members/me/boards");
@@ -48,7 +48,7 @@ public class TrelloClient extends OAuthBaseClient {
     /**
      * Endpoint to get all Lists of a board
      * @param boardId boards id to fetch the lists from
-     * @param handler http handler handler to process the endpoints response
+     * @param handler http handler to process the endpoints response
      */
     public void getLists(String boardId, AsyncHttpResponseHandler handler) {
         String apiUrl = getApiUrl("1/boards/" + boardId + "/lists");
@@ -62,7 +62,7 @@ public class TrelloClient extends OAuthBaseClient {
     /**
      * Endpoint to get all cards of a board
      * @param boardId boards id to fetch the cards from
-     * @param handler http handler handler to process the endpoints response
+     * @param handler http handler to process the endpoints response
      */
     public void getCardsByBoard(String boardId, AsyncHttpResponseHandler handler) {
         String apiUrl = getApiUrl("1/boards/" + boardId + "/cards");
@@ -71,7 +71,7 @@ public class TrelloClient extends OAuthBaseClient {
     /**
      * Endpoint to get all cards of a list
      * @param listId lists id to fetch the cards from
-     * @param handler http handler handler to process the endpoints response
+     * @param handler http handler to process the endpoints response
      */
     public void getCards(String listId, AsyncHttpResponseHandler handler){
         String apiUrl = getApiUrl("1/lists/" + listId + "/cards");
@@ -79,6 +79,26 @@ public class TrelloClient extends OAuthBaseClient {
         RequestParams params = new RequestParams();
         Log.d(TAG,("GETTING_CARDS_IN_CLIENT"));
         client.get(apiUrl,params,handler);
+    }
+
+    /**
+     * Add a new card to a list
+     * @param card card
+     * @param handler http handler to process the endpoints response
+     */
+    public void addCard(TrelloCard card, AsyncHttpResponseHandler handler) {
+        String apiUrl = getApiUrl("1/lists/" + card.getListId() + "/cards");
+
+        //create parameter list
+        RequestParams params = new RequestParams();
+        params.put("name", card.getName());
+        params.put("desc", card.getDesc());
+
+        client.post(apiUrl, params, handler);
+    }
+
+    public void deleteCard(TrelloCard card) {
+
     }
 
 }
