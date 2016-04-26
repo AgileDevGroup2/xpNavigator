@@ -14,4 +14,10 @@
         <item>Save the world</item>
 
     </string-array>
+    <string-array name="board_activity_child_popup">
+        <item>Edit Card</item>
+        <item>Delete Card</item>
+        <item>Move Card</item>
+
+    </string-array>
 </resources>
