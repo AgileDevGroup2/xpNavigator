@@ -41,8 +41,7 @@ public class TrelloClient extends OAuthBaseClient {
     public void getBoards(AsyncHttpResponseHandler handler) {
         String apiUrl = getApiUrl("1/members/me/boards");
         Log.d("ClIENT_GETBOARDS", apiUrl);
-        RequestParams params = new RequestParams();
-        client.get(apiUrl, params, handler);
+        client.get(apiUrl, handler);
     }
 
     /**
@@ -54,8 +53,7 @@ public class TrelloClient extends OAuthBaseClient {
         String apiUrl = getApiUrl("1/boards/" + boardId + "/lists");
         Log.d("ClIENT_GETLIST", apiUrl);
 
-        RequestParams params = new RequestParams();
-        client.get(apiUrl, params, handler);
+        client.get(apiUrl, handler);
     }
 
 
@@ -76,9 +74,8 @@ public class TrelloClient extends OAuthBaseClient {
     public void getCards(String listId, AsyncHttpResponseHandler handler){
         String apiUrl = getApiUrl("1/lists/" + listId + "/cards");
         Log.d("ClIENT_GETCARDS", apiUrl);
-        RequestParams params = new RequestParams();
         Log.d(TAG,("GETTING_CARDS_IN_CLIENT"));
-        client.get(apiUrl,params,handler);
+        client.get(apiUrl, handler);
     }
 
     /**
@@ -100,7 +97,14 @@ public class TrelloClient extends OAuthBaseClient {
         client.post(apiUrl, params, handler);
     }
 
-    public void deleteCard(TrelloCard card) {
+    /**
+     * Delete a card from trello (only cards id is important)
+     * @param handler http handler to process the endpoints response
+     * @param card card to delete (only cards id is important)
+     */
+    public void removeCard(TrelloCard card, AsyncHttpResponseHandler handler) {
+        String apiUrl = getApiUrl("1/cards/" + card.getId());
 
+        client.delete(apiUrl, handler);
     }
 }

@@ -31,11 +31,9 @@ public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> im
 
     public final static String BOARD_EXTRA_ID = "BOARD_ID";
     private ApiHandler handler;
-    //Sorry, removed your ApiHelper, use ApiHandler instead and implement the ApiListener interface
-    //private ApiHelper api = new ApiHelper();
 
     /**
-     * creates the view and initiates the login dialog TODO: Statemachine for views?
+     * creates the view and initiates the login dialog
      *
      * @param savedInstanceState saved data to restore view (e.g. after rotating the phone)
      */
@@ -80,7 +78,7 @@ public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> im
     }
 
     /**
-     * Method to initiate the main layout TODO: maybe using a state machine for different layouts?
+     * Method to initiate the main layout
      */
     protected void initMainLayout() {
         setContentView(R.layout.activity_main);

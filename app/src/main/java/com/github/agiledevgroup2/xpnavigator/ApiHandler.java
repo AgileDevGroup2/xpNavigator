@@ -77,14 +77,42 @@ public class ApiHandler extends JsonHttpResponseHandler {
         TrelloApplication.getTrelloClient().getCards(listId, this);
     }
 
+    /**
+     * Add a Card to Trello, callback is currently ignored TODO: change that
+     * @param name name of the new card
+     * @param desc description of the new card
+     * @param listId the list associated with the new card
+     */
     public void addCard(String name, String desc, String listId) {
         addCard(new TrelloCard(name, desc, listId));
     }
 
+    /**
+     * Add a Card to Trello, callback is currently ignored TODO: change that
+     * @param card new Card (name and listId have to be set!)
+     */
     public void addCard(TrelloCard card) {
         //mLock.lock();
         //mCurState = State.PUSH;
         TrelloApplication.getTrelloClient().addCard(card, this);
+    }
+
+    /**
+     * Remove a Card from Trello, callback is currently ignored TODO: change that
+     * @param cardId id of card to remove from Trello
+     */
+    public void removeCard(String cardId) {
+        TrelloCard card = new TrelloCard("", "", "");
+        card.setId(cardId);
+        removeCard(card);
+    }
+
+    /**
+     * Remove a Card from Trello, callback is currently ignored TODO: change that
+     * @param card card to remove from Trello
+     */
+    public void removeCard(TrelloCard card) {
+        TrelloApplication.getTrelloClient().removeCard(card, this);
     }
 
     /**
