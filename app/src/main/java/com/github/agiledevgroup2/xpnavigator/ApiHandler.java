@@ -1,6 +1,5 @@
 package com.github.agiledevgroup2.xpnavigator;
 
-import android.content.res.Resources;
 import android.util.Log;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -24,10 +23,9 @@ public class ApiHandler extends JsonHttpResponseHandler {
 
     protected State mCurState;
 
-    private String lName;
+    private String mLName;
 
     protected ApiListener mListener;
-    protected TrelloApplication mTrelloApp;
 
     protected Lock mLock;
 
@@ -72,12 +70,11 @@ public class ApiHandler extends JsonHttpResponseHandler {
      * Fetch Cards from a specific list, callback will be send to ApiListener.SetCards
      * @param listId list's id the cards should be fetched from
      */
-    public void fetchCards(String listId,String listName) {
+    public void fetchCards(String listId, String listName) {
         mLock.lock();
-        lName = listName;
+        mLName = listName;
         mCurState = State.CARD;
         TrelloApplication.getTrelloClient().getCards(listId, this);
-
     }
 
     /**
@@ -234,7 +231,7 @@ public class ApiHandler extends JsonHttpResponseHandler {
         }
 
         //use listener callback
-        if (mListener != null) mListener.cardsCallback(cards, lName);
+        if (mListener != null) mListener.cardsCallback(cards, mLName);
 
     }
 }
