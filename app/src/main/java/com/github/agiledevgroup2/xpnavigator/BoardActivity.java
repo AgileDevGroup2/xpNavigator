@@ -130,6 +130,9 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
 
 
     private void onChildLongClick(final int groupPosition, final int childPosition){
+
+        String cardId = trelloCardMap.get(expandableListOverview.get(expandableListTitle.get(groupPosition)).get(childPosition));
+
         new AlertDialog.Builder(this,R.style.AlertDialogStyle)
             .setItems(R.array.board_activity_child_popup, new DialogInterface.OnClickListener(){
                 @Override
@@ -143,12 +146,33 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
                             break;
                         case 1:
                             /*Tell handler to delete card [id]*/
-                            /*handler.deleteCard(
-                            trelloCardMap.get(expandableListOverview.get(expandableListTitle.get(groupPosition)).get(childPosition))
-                            )*/
+                            /*handler.deleteCard(cardId);*/
+
                             break;
                         case 2:
-                            /*Popup Move to ListID*/
+
+                            CharSequence [] cs = expandableListTitle.toArray
+                                    (new CharSequence[expandableListTitle.size()]);
+                            new AlertDialog.Builder(BoardActivity.this,R.style.AlertDialogStyle)
+                                    .setItems(cs, new DialogInterface.OnClickListener(){
+                                     @Override
+                                     public void onClick(DialogInterface dialog, int which){
+                                         // List NAME expandableListTitle.get(groupPosition);
+                                         Log.d("MOVE TO LIST", "name: " + expandableListTitle.get(which)
+
+                                                 + "  id: " + trelloListMap.get(expandableListTitle.get(which)));
+
+                                         String listId = trelloListMap.get(expandableListTitle.get(which));
+
+                                         /*handler.moveCard(cardId,listId)*/
+                                     }
+
+
+
+                                    })
+                                    .show();
+
+                            /*Popup Move cardID to ListID*/
                     }
                 }
             })
