@@ -80,31 +80,46 @@ public class TrelloClient extends OAuthBaseClient {
 
     /**
      * Add a new card to a list
-     * @param card card
+     * @param name name of the new card
+     * @param desc description of the new card
+     * @param listId list id the card should be added to
      * @param handler http handler to process the endpoints response
      */
-    public void addCard(TrelloCard card, AsyncHttpResponseHandler handler) {
+    public void addCard(String name, String desc, String listId, AsyncHttpResponseHandler handler) {
         String apiUrl = getApiUrl("1/cards");
-        Log.d(TAG, card.getListId());
 
         //create parameter list
         RequestParams params = new RequestParams();
-        params.put("name", card.getName());
-        params.put("desc", card.getDesc());
+        params.put("name", name);
+        params.put("desc", desc);
         params.put("due", "null");
-        params.put("idList", card.getListId());
+        params.put("idList", listId);
 
         client.post(apiUrl, params, handler);
     }
 
     /**
      * Delete a card from trello (only cards id is important)
+     * @param cardId id of card to delete (only cards id is important)
      * @param handler http handler to process the endpoints response
-     * @param card card to delete (only cards id is important)
      */
-    public void removeCard(TrelloCard card, AsyncHttpResponseHandler handler) {
-        String apiUrl = getApiUrl("1/cards/" + card.getId());
+    public void removeCard(String cardId, AsyncHttpResponseHandler handler) {
+        String apiUrl = getApiUrl("1/cards/" + cardId);
 
         client.delete(apiUrl, handler);
+    }
+
+    /**
+     * Move card to another list
+     * @param cardId id of card to move
+     * @param listId id of list to move card to
+     * @param handler http handler to process the endpoints response
+     */
+    public void moveCard(String cardId, String listId, AsyncHttpResponseHandler handler) {
+        String apiUrl = getApiUrl("1/cards/" + cardId);
+        RequestParams params = new RequestParams();
+        params.put("idList", listId);
+
+        client.put(apiUrl, params, handler);
     }
 }

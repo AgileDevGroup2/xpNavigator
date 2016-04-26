@@ -18,6 +18,12 @@ public class TrelloCard implements Comparable<TrelloCard> {
     private Date mLastChanged;
 
     /**
+     * empty constructor
+     */
+    public TrelloCard() {
+    }
+
+    /**
      * construct a new card from a trello json object
      * @param json json object from trello
      * @throws JSONException thrown if object could not be parsed

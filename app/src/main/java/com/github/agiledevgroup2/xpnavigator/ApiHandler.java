@@ -84,7 +84,7 @@ public class ApiHandler extends JsonHttpResponseHandler {
      * @param listId the list associated with the new card
      */
     public void addCard(String name, String desc, String listId) {
-        addCard(new TrelloCard(name, desc, listId));
+        TrelloApplication.getTrelloClient().addCard(name, desc, listId, this);
     }
 
     /**
@@ -92,9 +92,7 @@ public class ApiHandler extends JsonHttpResponseHandler {
      * @param card new Card (name and listId have to be set!)
      */
     public void addCard(TrelloCard card) {
-        //mLock.lock();
-        //mCurState = State.PUSH;
-        TrelloApplication.getTrelloClient().addCard(card, this);
+        addCard(card.getName(), card.getDesc(), card.getListId());
     }
 
     /**
@@ -102,9 +100,7 @@ public class ApiHandler extends JsonHttpResponseHandler {
      * @param cardId id of card to remove from Trello
      */
     public void removeCard(String cardId) {
-        TrelloCard card = new TrelloCard("", "", "");
-        card.setId(cardId);
-        removeCard(card);
+        TrelloApplication.getTrelloClient().removeCard(cardId, this);
     }
 
     /**
@@ -112,9 +108,26 @@ public class ApiHandler extends JsonHttpResponseHandler {
      * @param card card to remove from Trello
      */
     public void removeCard(TrelloCard card) {
-        TrelloApplication.getTrelloClient().removeCard(card, this);
+        removeCard(card.getId());
     }
 
+    /**
+     * Move a card to another list, callback is currently ignored TODO: change that
+     * @param cardId id of card to move
+     * @param listId id of list to move card to
+     */
+    public void moveCard(String cardId, String listId) {
+        TrelloApplication.getTrelloClient().moveCard(cardId, listId, this);
+    }
+
+    /**
+     * Move a card to another list, callback is currently ignored TODO: change that
+     * @param card card to move
+     * @param list list to move card to
+     */
+    public void moveCard(TrelloCard card, TrelloList list) {
+        moveCard(card.getId(), list.getId());
+    }
     /**
      * Failure handler if only one JSONObject is received
      * @param statusCode should be exactly what it sounds like...
