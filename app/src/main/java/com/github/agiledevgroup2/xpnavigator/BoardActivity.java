@@ -1,5 +1,7 @@
 package com.github.agiledevgroup2.xpnavigator;
 
+import android.support.v7.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -8,7 +10,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
@@ -27,14 +31,17 @@ import java.util.List;
 
 /**
  * The Activity for displaying an individual board
- */
+ ** TODO Refactor Class
+ * */
 public class BoardActivity extends AppCompatActivity implements ApiListener{
     private String boardId = "";
     private ApiHandler handler;
     private ExpandableListView expandableListView;
     private CustomExpandableListAdapter adapter;
+    private EditText cardTitle, cardDescription;
     private List<String> expandableListTitle;
     private HashMap<String, List<String>> expandableListOverview;
+    private HashMap<String,String> trelloListMap;
 
     private static final String TAG = "BoardActivity";
 
@@ -45,11 +52,13 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-
+        cardTitle = (EditText) findViewById(R.id.cardTitle);
+        cardDescription = (EditText) findViewById(R.id.cardDescription);
         /*Handle Passed information from previous activity*/
         Intent previousIntent = getIntent();
         boardId = previousIntent.getStringExtra(LoginActivity.BOARD_EXTRA_ID);
         handler = new ApiHandler(this);
+        trelloListMap = new HashMap<>();
 
         /*Fetch the lists in background*/
         GenerateListsTask glt = new GenerateListsTask();
@@ -90,6 +99,68 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
                 return false;
             }
         });
+
+
+        expandableListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                long packedPosition = expandableListView.getExpandableListPosition(position);
+                int itemType = ExpandableListView.getPackedPositionType(packedPosition);
+                int groupPosition = ExpandableListView.getPackedPositionGroup(packedPosition);
+                int childPosition = ExpandableListView.getPackedPositionChild(packedPosition);
+
+                if(itemType == ExpandableListView.PACKED_POSITION_TYPE_GROUP){
+                    onGroupLongClick(groupPosition);
+                }
+
+                else if(itemType == ExpandableListView.PACKED_POSITION_TYPE_CHILD){
+                   /*TODO Add Method & Handler. Perhaps move on longclick*/
+                    //onChildLongClick(groupPosition,childPosition);
+                }
+                return false;
+            }
+        });
+    }
+
+    private void onGroupLongClick(final int groupPosition){
+        new AlertDialog.Builder(this, R.style.AlertDialogStyle)
+                .setItems(R.array.board_activity_popup, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which){
+                            /*R.array.board_activity_popup: 0Add Card, 1Change Name, 2Save World*/
+                            case 0:
+                            new AlertDialog.Builder(BoardActivity.this, R.style.AlertDialogStyle)
+                                    .setView(getLayoutInflater().inflate(R.layout.add_card,null))
+                                    .setPositiveButton("Add", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            /*Call handler with parameters
+                                            * (String) Card Title,
+                                            * (String) Card Description
+                                            * (String) List ID
+                                            *
+                                            * Note: Leaving out due, which is required. Pass null
+                                            * from handler to API
+                                            * *
+                                            handler.addCard(cardTitle.getText().toString(),
+                                                    cardDescription.getText().toString(),
+                                                    trelloListMap.get(
+                                                            expandableListTitle.get(groupPosition)));*/
+                                        }
+                                    })
+                                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            /*Do nothing for now, perhaps take one step back to prev
+                                            * dialog*/
+                                        }
+                                    })
+                                    .show();
+                        }
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
     }
 
 
@@ -139,8 +210,11 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
 
     @Override
     public void listsCallback(List<TrelloList> lists, String boardId) {
+
+        /*Refactor*/
         List<String> nameList = new ArrayList<>();
         for(TrelloList tl:lists){
+            this.trelloListMap.put(tl.getName(),tl.getId());
             Log.d(TAG, tl.getName());
             nameList.add(tl.getName());
             new GenerateCardsTask().execute(tl.getId(),tl.getName());

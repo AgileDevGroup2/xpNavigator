@@ -8,4 +8,10 @@
     <string name="title_activity_controller">ControllerActivity</string>
     <string name="title_activity_list">ListActivity</string>
     <string name="title_activity_edit_card">EditCardActivity</string>
+    <string-array name="board_activity_popup">
+        <item>Add Card</item>
+        <item>Change Name</item>
+        <item>Save the world</item>
+
+    </string-array>
 </resources>
