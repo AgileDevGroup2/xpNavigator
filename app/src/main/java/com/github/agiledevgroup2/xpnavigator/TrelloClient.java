@@ -87,12 +87,15 @@ public class TrelloClient extends OAuthBaseClient {
      * @param handler http handler to process the endpoints response
      */
     public void addCard(TrelloCard card, AsyncHttpResponseHandler handler) {
-        String apiUrl = getApiUrl("1/lists/" + card.getListId() + "/cards");
+        String apiUrl = getApiUrl("1/cards");
+        Log.d(TAG, card.getListId());
 
         //create parameter list
         RequestParams params = new RequestParams();
         params.put("name", card.getName());
         params.put("desc", card.getDesc());
+        params.put("due", "null");
+        params.put("idList", card.getListId());
 
         client.post(apiUrl, params, handler);
     }
@@ -100,5 +103,4 @@ public class TrelloClient extends OAuthBaseClient {
     public void deleteCard(TrelloCard card) {
 
     }
-
 }

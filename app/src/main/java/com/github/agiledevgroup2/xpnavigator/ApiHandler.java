@@ -77,9 +77,13 @@ public class ApiHandler extends JsonHttpResponseHandler {
         TrelloApplication.getTrelloClient().getCards(listId, this);
     }
 
+    public void addCard(String name, String desc, String listId) {
+        addCard(new TrelloCard(name, desc, listId));
+    }
+
     public void addCard(TrelloCard card) {
         //mLock.lock();
-        mCurState = State.PUSH;
+        //mCurState = State.PUSH;
         TrelloApplication.getTrelloClient().addCard(card, this);
     }
 
