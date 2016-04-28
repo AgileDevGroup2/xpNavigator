@@ -29,22 +29,11 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public int getGroupCount() {
-        return this.expandableListItems.size();
+        /*Might need Fixing some time*/return this.expandableListItems.size();
     }
 
     @Override
     public int getChildrenCount(int groupPosition) {
-        Log.d("ADAPTER", "getChildCount pos: "+ groupPosition);
-
-        /*Null Reference
-        * HashMap.get(String key)
-        * */
-
-        Log.d("ADAPTER", "getChildCount name: "+ this.expandableListItems.get(groupPosition).getName());
-        Log.d("ADAPTER", "getChildCount size: "+ this.expandableListOverview.get(
-                this.expandableListItems.get(groupPosition).getName()).size());
-
-
         return this.expandableListOverview.get(this.expandableListItems.get(groupPosition).getName()).size();
     }
 

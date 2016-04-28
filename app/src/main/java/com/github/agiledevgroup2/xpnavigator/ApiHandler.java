@@ -286,11 +286,12 @@ public class ApiHandler extends JsonHttpResponseHandler {
 
         for(int i = 0 ; i < jsonArray.length(); i++)
         {
+            /*
             try {
                 lists.add(new TrelloMember(jsonArray.getJSONObject(i)));
             } catch (JSONException e) {
                 Log.v(TAG, e.getMessage());
-            }
+            }*/
         }
 
         //use listener callback

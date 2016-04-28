@@ -84,7 +84,7 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
         expandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
             @Override
             public void onGroupExpand(int groupPosition) {
-                Toast.makeText(getApplicationContext(),
+               Toast.makeText(getApplicationContext(),
                         expandableListTitle.get(groupPosition).getName() + " List Expanded.",
                         Toast.LENGTH_SHORT).show();
             }
@@ -241,14 +241,14 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
     // Inflate the menu; this adds items to the action bar if it is present.
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_board, menu);
+        getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-
+/*
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_logout) {
             handler.logout();
@@ -269,6 +269,10 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
         }
 
         return super.onOptionsItemSelected(item);
+        */
+
+        //FIX
+        return true;
     }
 
 
