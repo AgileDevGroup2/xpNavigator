@@ -41,7 +41,6 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
     private ApiHandler handler;
     private ExpandableListView expandableListView;
     private CustomExpandableListAdapter adapter;
-    private EditText cardTitle, cardDescription;
     private List<TrelloList> expandableListTitle;
     private HashMap<String, List<TrelloCard>> expandableListOverview;
     private List<TrelloList> trelloLists;
@@ -52,6 +51,7 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
 
     private static final String TAG = "BoardActivity";
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,8 +61,7 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 
         trelloLists = new ArrayList<>();
-        cardTitle = (EditText) findViewById(R.id.cardTitle);
-        cardDescription = (EditText) findViewById(R.id.cardDescription);
+
 
         /*Handle Passed information from previous activity*/
         Intent previousIntent = getIntent();
@@ -155,8 +154,7 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
                             /*Popup edit or new activity?*/
                             break;
                         case 1:
-                            /*Tell handler to delete card [id]*/
-                            /*handler.deleteCard(longClickedCard.getId());*/
+                            handler.removeCard(longClickedCard.getId());
 
                             break;
                         case 2:
@@ -175,7 +173,7 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
                                          Log.d("CHILDLONGCLICK","Moved Card" + longClickedCard.getName()
                                                  + " to List " + expandableListTitle.get(which).getName()
                                                  );
-                                         /*handler.moveCard(longClickedCard.getId(),listId)*/
+                                         handler.moveCard(longClickedCard.getId(),listId);
                                      }
                                     })
                                     .show();
@@ -195,22 +193,18 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
                         switch (which) {
                             /*R.array.board_activity_popup: 0Add Card, 1Change Name, 2Save World*/
                             case 0:
+                                final View view = getLayoutInflater().inflate(R.layout.add_card, null);
+                                final EditText cardTitle = (EditText) view.findViewById(R.id.cardTitle);
+                                final EditText cardDescription = (EditText) view.findViewById(R.id.cardDescription);
+
                                 new AlertDialog.Builder(BoardActivity.this, R.style.AlertDialogStyle)
-                                        .setView(getLayoutInflater().inflate(R.layout.add_card, null))
+                                        .setView(view)
                                         .setPositiveButton("Add", new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialog, int id) {
-                                            /*Call handler with parameters
-                                            * (String) Card Title,
-                                            * (String) Card Description
-                                            * (String) List ID
-                                            *
-                                            * Note: Leaving out due, which is required. Pass null
-                                            * from handler to API
-                                            * *
-                                            handler.addCard(cardTitle.getText().toString(),
-                                                    cardDescription.getText().toString(),
-                                                    expandableListTitle.get(groupPosition).getId());*/
+                                                handler.addCard(cardTitle.getText().toString(),
+                                                        cardDescription.getText().toString(),
+                                                    expandableListTitle.get(groupPosition).getId());
                                             }
                                         })
 
