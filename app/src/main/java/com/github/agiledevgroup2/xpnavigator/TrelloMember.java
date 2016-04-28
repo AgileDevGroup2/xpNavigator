@@ -1,6 +1,5 @@
 package com.github.agiledevgroup2.xpnavigator;
 
-<<<<<<< HEAD
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -15,8 +14,7 @@ public class TrelloMember {
     private String mEmail;
 
 
-    public TrelloMember(JSONObject json) throws JSONException
-    {
+    public TrelloMember(JSONObject json) throws JSONException {
         mId = json.getString("id");
         mEmail = "";
         mUsername = json.getString("username");
@@ -55,8 +53,4 @@ public class TrelloMember {
     public void setmUsername(String mUsername) {
         this.mUsername = mUsername;
     }
-=======
-
-public class TrelloMember {
->>>>>>> 360f5c71889d202da08fc0f99135439814532f81
 }
