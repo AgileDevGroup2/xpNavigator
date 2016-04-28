@@ -33,7 +33,7 @@ import java.util.List;
 
 /**
  * The Activity for displaying an individual board
- ** TODO Refactor Class
+ ** TODO WebHooks
  * */
 public class BoardActivity extends AppCompatActivity implements ApiListener{
     private String boardId = "";
@@ -271,7 +271,6 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
 
 
     private class GenerateListsTask extends AsyncTask<String,Void,Boolean> {
-        private String[] info = new String[2];
         @Override
         protected Boolean doInBackground(String... params) {
             String boardId = params[0];
@@ -286,8 +285,8 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
     }
 
 
+
     private class GenerateCardsTask extends AsyncTask<String,Void,Boolean> {
-        private String[] info = new String[2];
         @Override
         protected Boolean doInBackground(String... params) {
             String listId = params[0];
@@ -296,7 +295,7 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
 
                 handler.fetchCards(listId,listName);
             } catch (Exception e) {
-                Log.d("TaskError", "GenerateListTaskException");
+                Log.d("TaskError", "GenerateCardTaskException");
                 e.printStackTrace();
             }
             return true;
