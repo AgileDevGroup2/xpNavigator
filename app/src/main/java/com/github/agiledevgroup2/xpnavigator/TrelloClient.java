@@ -107,7 +107,7 @@ public class TrelloClient extends OAuthBaseClient {
         //create parameter list
         RequestParams params = new RequestParams();
         params.put("name", name);
-        params.put("desc", desc);
+        if (!desc.isEmpty()) params.put("desc", desc);
         params.put("due", "null");
         params.put("idList", listId);
 
