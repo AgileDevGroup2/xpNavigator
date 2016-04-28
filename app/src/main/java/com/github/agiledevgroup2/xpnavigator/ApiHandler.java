@@ -19,7 +19,7 @@ import java.util.concurrent.locks.Lock;
 public class ApiHandler extends JsonHttpResponseHandler {
 
     private static final String TAG = "ApiHandler";
-    protected enum State {BOARD, LIST, CARD, PUSH}
+    protected enum State {BOARD, LIST, CARD, MEMBER, PUSH}
 
     protected State mCurState;
 
@@ -75,6 +75,18 @@ public class ApiHandler extends JsonHttpResponseHandler {
         mLName = listName;
         mCurState = State.CARD;
         TrelloApplication.getTrelloClient().getCards(listId, this);
+    }
+
+    /**
+     *
+     * @param boardId
+     */
+    public void fetchMembers (String boardId)
+    {
+        mLock.lock();
+        mCurState = State.MEMBER;
+        TrelloApplication.getTrelloClient().getMembers(boardId, this);
+
     }
 
     /**
@@ -181,6 +193,8 @@ public class ApiHandler extends JsonHttpResponseHandler {
                 break;
             case CARD:
                 handleCards(response);
+            case MEMBER:
+                handleMembers(response);
         }
         mLock.unlock();
 
@@ -264,6 +278,23 @@ public class ApiHandler extends JsonHttpResponseHandler {
         //use listener callback
         if (mListener != null) mListener.listsCallback(lists,"");
 
+    }
+
+    protected void handleMembers (JSONArray jsonArray) {
+
+        List<TrelloMember> lists = new ArrayList<TrelloMember>();
+
+        for(int i = 0 ; i < jsonArray.length(); i++)
+        {
+            try {
+                lists.add(new TrelloMember(jsonArray.getJSONObject(i)));
+            } catch (JSONException e) {
+                Log.v(TAG, e.getMessage());
+            }
+        }
+
+        //use listener callback
+        if (mListener != null) mListener.membersBoardCallback(lists);
     }
 
     /**

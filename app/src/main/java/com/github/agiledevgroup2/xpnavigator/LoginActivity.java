@@ -32,6 +32,8 @@ import java.util.List;
 public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> implements ApiListener {
 
     public final static String BOARD_EXTRA_ID = "BOARD_ID";
+    public final static String BOARD_EXTRA_NAME = "BOARD_NAME";
+
     private ApiHandler handler;
 
     /**
@@ -119,6 +121,8 @@ public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> im
          /*Generate a button for each TrelloBoard*/
         final Button boardButton = new Button(getApplicationContext());
         final String id = boardId;
+        final String nameBoard = buttonText;
+
         LinearLayout btnLayout = (LinearLayout) findViewById(R.id.buttonLayout);
         LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         btnLayout.addView(boardButton, lp);
@@ -132,6 +136,7 @@ public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> im
                 Intent clickedBoard = new Intent(getApplicationContext(), BoardActivity.class);
                 //Pass the BoardID to new activity
                 clickedBoard.putExtra(BOARD_EXTRA_ID, id);
+                clickedBoard.putExtra(BOARD_EXTRA_NAME, nameBoard);
                 startActivity(clickedBoard);
 
             }
@@ -154,6 +159,11 @@ public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> im
 
     @Override
     public void cardsCallback(List<TrelloCard> cards, String listId) {
+
+    }
+
+    @Override
+    public void membersBoardCallback(List<TrelloMember> members) {
 
     }
 

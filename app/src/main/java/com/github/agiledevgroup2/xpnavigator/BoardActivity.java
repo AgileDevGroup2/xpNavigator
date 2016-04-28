@@ -37,6 +37,7 @@ import java.util.List;
  * */
 public class BoardActivity extends AppCompatActivity implements ApiListener{
     private String boardId = "";
+    private String boardName = "";
     private ApiHandler handler;
     private ExpandableListView expandableListView;
     private CustomExpandableListAdapter adapter;
@@ -46,6 +47,8 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
     private HashMap<String,String> trelloListMap;
     private HashMap<String,String> trelloCardMap;
 
+    public final static String BOARD_MEMBERS_EXTRA_ID = "BOARD_MEMBERS_ID";
+    public final static String BOARD_MEMBERS_EXTRA_NAME = "BOARD_MEMBERS_NAME";
 
     private static final String TAG = "BoardActivity";
 
@@ -64,6 +67,10 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
         /*Handle Passed information from previous activity*/
         Intent previousIntent = getIntent();
         boardId = previousIntent.getStringExtra(LoginActivity.BOARD_EXTRA_ID);
+        this.boardName = previousIntent.getStringExtra(LoginActivity.BOARD_EXTRA_NAME);
+
+        this.setTitle(boardName);
+
         handler = new ApiHandler(this);
         trelloListMap = new HashMap<>();
         trelloCardMap = new HashMap<>();
@@ -230,7 +237,7 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
     // Inflate the menu; this adds items to the action bar if it is present.
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_board, menu);
         return true;
     }
 
@@ -247,15 +254,18 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
             return true;
         }
 
+        if (id == R.id.button_view_members)
+        {
+            Intent intent = new Intent(BoardActivity.this, MembersBoardActivity.class);
+
+            intent.putExtra(BoardActivity.BOARD_MEMBERS_EXTRA_ID, this.boardId);
+            intent.putExtra(BoardActivity.BOARD_MEMBERS_EXTRA_NAME, this.boardName);
+
+            startActivity(intent);
+        }
+
         return super.onOptionsItemSelected(item);
     }
-
-
-
-
-
-
-
 
 
 
@@ -342,5 +352,10 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
 
         expandableListOverview.put(listName,cardNames);
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void membersBoardCallback(List<TrelloMember> members) {
+
     }
 }

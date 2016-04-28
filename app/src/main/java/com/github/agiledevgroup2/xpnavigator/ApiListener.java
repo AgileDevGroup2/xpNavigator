@@ -27,6 +27,10 @@ public interface ApiListener {
      */
     void cardsCallback(List<TrelloCard> cards, String listId);
 
-
+    /**
+     * method invoked after asynchronous api call for cards from trello
+     * @param members fetched from trello
+     */
+    void membersBoardCallback (List<TrelloMember> members);
 
 }
