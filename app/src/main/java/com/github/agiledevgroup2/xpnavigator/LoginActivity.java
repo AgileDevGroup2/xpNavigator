@@ -2,6 +2,8 @@ package com.github.agiledevgroup2.xpnavigator;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
 import android.widget.Button;
@@ -30,12 +32,12 @@ import java.util.List;
 public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> implements ApiListener {
 
     public final static String BOARD_EXTRA_ID = "BOARD_ID";
+    public final static String BOARD_EXTRA_NAME = "BOARD_NAME";
+
     private ApiHandler handler;
-    //Sorry, removed your ApiHelper, use ApiHandler instead and implement the ApiListener interface
-    //private ApiHelper api = new ApiHelper();
 
     /**
-     * creates the view and initiates the login dialog TODO: Statemachine for views?
+     * creates the view and initiates the login dialog
      *
      * @param savedInstanceState saved data to restore view (e.g. after rotating the phone)
      */
@@ -56,8 +58,22 @@ public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> im
     // Inflate the menu; this adds items to the action bar if it is present.
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.login, menu);
+        getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_logout) {
+            handler.logout();
+            recreate();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     /**
@@ -66,11 +82,6 @@ public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> im
     @Override
     public void onLoginSuccess() {
         initMainLayout();
-
-
-
-        // Test todo remove this afterwards
-        //handler.addCard(new TrelloCard("test", "test", "57162ca9f6f119aaef16936b"));
     }
 
     /**
@@ -85,10 +96,12 @@ public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> im
     }
 
     /**
-     * Method to initiate the main layout TODO: maybe using a state machine for different layouts?
+     * Method to initiate the main layout
      */
     protected void initMainLayout() {
         setContentView(R.layout.activity_main);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         initiateBoards();
 
     }
@@ -108,6 +121,8 @@ public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> im
          /*Generate a button for each TrelloBoard*/
         final Button boardButton = new Button(getApplicationContext());
         final String id = boardId;
+        final String nameBoard = buttonText;
+
         LinearLayout btnLayout = (LinearLayout) findViewById(R.id.buttonLayout);
         LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         btnLayout.addView(boardButton, lp);
@@ -121,6 +136,7 @@ public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> im
                 Intent clickedBoard = new Intent(getApplicationContext(), BoardActivity.class);
                 //Pass the BoardID to new activity
                 clickedBoard.putExtra(BOARD_EXTRA_ID, id);
+                clickedBoard.putExtra(BOARD_EXTRA_NAME, nameBoard);
                 startActivity(clickedBoard);
 
             }
@@ -143,6 +159,11 @@ public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> im
 
     @Override
     public void cardsCallback(List<TrelloCard> cards, String listId) {
+
+    }
+
+    @Override
+    public void membersBoardCallback(List<TrelloMember> members) {
 
     }
 

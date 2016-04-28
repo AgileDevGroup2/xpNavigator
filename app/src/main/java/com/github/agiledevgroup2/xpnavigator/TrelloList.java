@@ -16,6 +16,12 @@ public class TrelloList implements Comparable<TrelloList> {
     private List<TrelloCard> mCards;
 
     /**
+     * empty constructor
+     */
+    public TrelloList() {
+        mCards = new ArrayList<>();
+    }
+    /**
      * constructs a new trello list
      * @param json json object provided by trello api
      * @throws JSONException exception thrown if json could not be parsed

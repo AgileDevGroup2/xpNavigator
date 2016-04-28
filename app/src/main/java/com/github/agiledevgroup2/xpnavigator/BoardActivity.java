@@ -9,6 +9,8 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
@@ -35,6 +37,7 @@ import java.util.List;
  * */
 public class BoardActivity extends AppCompatActivity implements ApiListener{
     private String boardId = "";
+    private String boardName = "";
     private ApiHandler handler;
     private ExpandableListView expandableListView;
     private CustomExpandableListAdapter adapter;
@@ -44,6 +47,8 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
     private List<TrelloList> trelloLists;
 
 
+    public final static String BOARD_MEMBERS_EXTRA_ID = "BOARD_MEMBERS_ID";
+    public final static String BOARD_MEMBERS_EXTRA_NAME = "BOARD_MEMBERS_NAME";
 
     private static final String TAG = "BoardActivity";
 
@@ -62,6 +67,10 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
         /*Handle Passed information from previous activity*/
         Intent previousIntent = getIntent();
         boardId = previousIntent.getStringExtra(LoginActivity.BOARD_EXTRA_ID);
+        this.boardName = previousIntent.getStringExtra(LoginActivity.BOARD_EXTRA_NAME);
+
+        this.setTitle(boardName);
+
         handler = new ApiHandler(this);
 
 
@@ -219,12 +228,49 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
                 .show();
     }
 
-    private void initAdapter(List<TrelloList> listNames){
+
+    private void initAdapter(List<TrelloList> listNames) {
         /*trelloLists and expandableListtitle will point to same, fix later*/
         expandableListTitle = listNames;
         adapter = new CustomExpandableListAdapter(this,expandableListTitle,expandableListOverview);
         expandableListView.setAdapter(adapter);
     }
+
+
+
+    // Inflate the menu; this adds items to the action bar if it is present.
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_board, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_logout) {
+            handler.logout();
+            Intent login = new Intent(getApplicationContext(), LoginActivity.class);
+            //Pass the BoardID to new activity
+            startActivity(login);
+            return true;
+        }
+
+        if (id == R.id.button_view_members)
+        {
+            Intent intent = new Intent(BoardActivity.this, MembersBoardActivity.class);
+
+            intent.putExtra(BoardActivity.BOARD_MEMBERS_EXTRA_ID, this.boardId);
+            intent.putExtra(BoardActivity.BOARD_MEMBERS_EXTRA_NAME, this.boardName);
+
+            startActivity(intent);
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
 
     private class GenerateListsTask extends AsyncTask<String,Void,Boolean> {
         private String[] info = new String[2];
@@ -282,5 +328,11 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
             }
         }
         adapter.notifyDataSetChanged();
+    }
+
+
+    @Override
+    public void membersBoardCallback(List<TrelloMember> members) {
+
     }
 }

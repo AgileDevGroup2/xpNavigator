@@ -1,13 +1,15 @@
 <resources>
     <string name="app_name">XpNavigator</string>
-    <string name="action_settings">Settings</string>
+    <string name="logout_label">Logout</string>
     <string name="api_key">81e692a4c7305deef90c59e2a79393bc</string>
     <string name="oauth_secret">462a62c3b68ee9675470d94eb0cc903c9876efc3fe985ad24aeeb83470c9f00e</string>
     <string name="login_label">Login</string>
     <string name="title_activity_board">BoardActivity</string>
+    <string name="title_activity_board_members">MembersBoardActivity</string>
     <string name="title_activity_controller">ControllerActivity</string>
     <string name="title_activity_list">ListActivity</string>
     <string name="title_activity_edit_card">EditCardActivity</string>
+    <string name="name_icon_view_members">Members</string>
     <string-array name="board_activity_popup">
         <item>Add Card</item>
         <item>Change Name</item>

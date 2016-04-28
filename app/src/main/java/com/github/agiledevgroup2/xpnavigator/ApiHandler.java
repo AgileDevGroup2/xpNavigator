@@ -19,7 +19,7 @@ import java.util.concurrent.locks.Lock;
 public class ApiHandler extends JsonHttpResponseHandler {
 
     private static final String TAG = "ApiHandler";
-    protected enum State {BOARD, LIST, CARD, PUSH}
+    protected enum State {BOARD, LIST, CARD, MEMBER, PUSH}
 
     protected State mCurState;
 
@@ -77,12 +77,69 @@ public class ApiHandler extends JsonHttpResponseHandler {
         TrelloApplication.getTrelloClient().getCards(listId, this);
     }
 
-    public void addCard(TrelloCard card) {
-        //mLock.lock();
-        mCurState = State.PUSH;
-        TrelloApplication.getTrelloClient().addCard(card, this);
+    /**
+     *
+     * @param boardId
+     */
+    public void fetchMembers (String boardId)
+    {
+        mLock.lock();
+        mCurState = State.MEMBER;
+        TrelloApplication.getTrelloClient().getMembers(boardId, this);
+
     }
 
+    /**
+     * Add a Card to Trello, callback is currently ignored TODO: change that
+     * @param name name of the new card
+     * @param desc description of the new card
+     * @param listId the list associated with the new card
+     */
+    public void addCard(String name, String desc, String listId) {
+        TrelloApplication.getTrelloClient().addCard(name, desc, listId, this);
+    }
+
+    /**
+     * Add a Card to Trello, callback is currently ignored TODO: change that
+     * @param card new Card (name and listId have to be set!)
+     */
+    public void addCard(TrelloCard card) {
+        addCard(card.getName(), card.getDesc(), card.getListId());
+    }
+
+    /**
+     * Remove a Card from Trello, callback is currently ignored TODO: change that
+     * @param cardId id of card to remove from Trello
+     */
+    public void removeCard(String cardId) {
+        TrelloApplication.getTrelloClient().removeCard(cardId, this);
+    }
+
+    /**
+     * Remove a Card from Trello, callback is currently ignored TODO: change that
+     * @param card card to remove from Trello
+     */
+    public void removeCard(TrelloCard card) {
+        removeCard(card.getId());
+    }
+
+    /**
+     * Move a card to another list, callback is currently ignored TODO: change that
+     * @param cardId id of card to move
+     * @param listId id of list to move card to
+     */
+    public void moveCard(String cardId, String listId) {
+        TrelloApplication.getTrelloClient().moveCard(cardId, listId, this);
+    }
+
+    /**
+     * Move a card to another list, callback is currently ignored TODO: change that
+     * @param card card to move
+     * @param list list to move card to
+     */
+    public void moveCard(TrelloCard card, TrelloList list) {
+        moveCard(card.getId(), list.getId());
+    }
     /**
      * Failure handler if only one JSONObject is received
      * @param statusCode should be exactly what it sounds like...
@@ -136,6 +193,8 @@ public class ApiHandler extends JsonHttpResponseHandler {
                 break;
             case CARD:
                 handleCards(response);
+            case MEMBER:
+                handleMembers(response);
         }
         mLock.unlock();
 
@@ -221,6 +280,23 @@ public class ApiHandler extends JsonHttpResponseHandler {
 
     }
 
+    protected void handleMembers (JSONArray jsonArray) {
+
+        List<TrelloMember> lists = new ArrayList<TrelloMember>();
+
+        for(int i = 0 ; i < jsonArray.length(); i++)
+        {
+            try {
+                lists.add(new TrelloMember(jsonArray.getJSONObject(i)));
+            } catch (JSONException e) {
+                Log.v(TAG, e.getMessage());
+            }
+        }
+
+        //use listener callback
+        if (mListener != null) mListener.membersBoardCallback(lists);
+    }
+
     /**
      * creates a list of cards and sends it to the listeners callback method for cards
      * @param jsonArray json array given by the api call
@@ -238,5 +314,12 @@ public class ApiHandler extends JsonHttpResponseHandler {
 
         //use listener callback
         if (mListener != null) mListener.cardsCallback(cards, mLName);
+    }
+
+    /**
+     * logout from Trello
+     */
+    public void logout() {
+        TrelloApplication.getTrelloClient().clearAccessToken();
     }
 }
