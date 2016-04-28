@@ -13,19 +13,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.EditText;
-import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import com.loopj.android.http.JsonHttpResponseHandler;
-
-import org.apache.http.Header;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -113,7 +103,6 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
             }
         });
 
-
         expandableListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
@@ -129,7 +118,7 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
                 else if(itemType == ExpandableListView.PACKED_POSITION_TYPE_CHILD){
                     onChildLongClick(groupPosition,childPosition);
                 }
-                return false;
+                return true;
             }
         });
     }
@@ -155,6 +144,7 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
                             break;
                         case 1:
                             handler.removeCard(longClickedCard.getId());
+                            updateListView(expandableListTitle.get(groupPosition));
 
                             break;
                         case 2:
@@ -174,6 +164,8 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
                                                  + " to List " + expandableListTitle.get(which).getName()
                                                  );
                                          handler.moveCard(longClickedCard.getId(),listId);
+                                         updateListView(expandableListTitle.get(which));
+                                         updateListView(expandableListTitle.get(groupPosition));
                                      }
                                     })
                                     .show();
@@ -205,6 +197,10 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
                                                 handler.addCard(cardTitle.getText().toString(),
                                                         cardDescription.getText().toString(),
                                                     expandableListTitle.get(groupPosition).getId());
+
+                                                //update view (Todo: outsource this)
+                                                updateListView(expandableListTitle.get(groupPosition));
+                                                //expandableListView.invalidate();
                                             }
                                         })
 
@@ -220,6 +216,14 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
                 })
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
+    }
+
+    /**
+     * update a lists view
+     * @param list list to update the view of
+     */
+    private void updateListView(TrelloList list) {
+        handler.fetchCards(list.getId(), list.getName());
     }
 
 
@@ -330,4 +334,6 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
     public void membersBoardCallback(List<TrelloMember> members) {
 
     }
+
+
 }
