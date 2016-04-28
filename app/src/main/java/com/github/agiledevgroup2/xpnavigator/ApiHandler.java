@@ -313,11 +313,12 @@ public class ApiHandler extends JsonHttpResponseHandler {
 
         for(int i = 0 ; i < jsonArray.length(); i++)
         {
+            /*
             try {
                 listsmemberOrganization.add(new TrelloMember(jsonArray.getJSONObject(i)));
             } catch (JSONException e) {
                 Log.v(TAG, e.getMessage());
-            }
+            }*/
         }
         Log.d("test5 or", String.valueOf(listsmembership.size()));
         if (isFinishMember)
