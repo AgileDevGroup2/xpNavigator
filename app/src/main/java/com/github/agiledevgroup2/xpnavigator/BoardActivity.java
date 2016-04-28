@@ -39,10 +39,10 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
     private ExpandableListView expandableListView;
     private CustomExpandableListAdapter adapter;
     private EditText cardTitle, cardDescription;
-    private List<String> expandableListTitle;
-    private HashMap<String, List<String>> expandableListOverview;
-    private HashMap<String,String> trelloListMap;
-    private HashMap<String,String> trelloCardMap;
+    private List<TrelloList> expandableListTitle;
+    private HashMap<String, List<TrelloCard>> expandableListOverview;
+    private List<TrelloList> trelloLists;
+
 
 
     private static final String TAG = "BoardActivity";
@@ -55,7 +55,7 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
         setSupportActionBar(toolbar);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 
-
+        trelloLists = new ArrayList<>();
         cardTitle = (EditText) findViewById(R.id.cardTitle);
         cardDescription = (EditText) findViewById(R.id.cardDescription);
 
@@ -63,21 +63,20 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
         Intent previousIntent = getIntent();
         boardId = previousIntent.getStringExtra(LoginActivity.BOARD_EXTRA_ID);
         handler = new ApiHandler(this);
-        trelloListMap = new HashMap<>();
-        trelloCardMap = new HashMap<>();
+
 
         /*Fetch the lists in background*/
         GenerateListsTask glt = new GenerateListsTask();
         glt.execute(boardId);
 
         expandableListView = (ExpandableListView) findViewById(R.id.expandableListView);
-        expandableListOverview = new HashMap<String,List<String>>();
+        expandableListOverview = new HashMap<String,List<TrelloCard>>();
 
         expandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
             @Override
             public void onGroupExpand(int groupPosition) {
                 Toast.makeText(getApplicationContext(),
-                        expandableListTitle.get(groupPosition) + " List Expanded.",
+                        expandableListTitle.get(groupPosition).getName() + " List Expanded.",
                         Toast.LENGTH_SHORT).show();
             }
         });
@@ -86,7 +85,7 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
             @Override
             public void onGroupCollapse(int groupPosition) {
                 Toast.makeText(getApplicationContext(),
-                        expandableListTitle.get(groupPosition) + " List Collapsed.",
+                        expandableListTitle.get(groupPosition).getName() + " List Collapsed.",
                         Toast.LENGTH_SHORT).show();
             }
         });
@@ -96,11 +95,11 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition,
                                         int childPosition, long id) {
                 Toast.makeText(getApplicationContext(),
-                        expandableListTitle.get(groupPosition)
+                        expandableListTitle.get(groupPosition).getName()
                                 + " -> "
                                 + expandableListOverview.get(
-                                expandableListTitle.get(groupPosition)).get(
-                                childPosition), Toast.LENGTH_SHORT
+                                expandableListTitle.get(groupPosition).getName()).get(
+                                childPosition).getName(), Toast.LENGTH_SHORT
                 ).show();
                 return false;
             }
@@ -120,7 +119,6 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
                 }
 
                 else if(itemType == ExpandableListView.PACKED_POSITION_TYPE_CHILD){
-                   /*TODO Add Method & Handler. Perhaps move on longclick*/
                     onChildLongClick(groupPosition,childPosition);
                 }
                 return false;
@@ -131,7 +129,10 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
 
     private void onChildLongClick(final int groupPosition, final int childPosition){
 
-        String cardId = trelloCardMap.get(expandableListOverview.get(expandableListTitle.get(groupPosition)).get(childPosition));
+         final TrelloCard longClickedCard = expandableListOverview.get(
+                expandableListTitle.get(groupPosition).getName()).get(
+                childPosition);
+
 
         new AlertDialog.Builder(this,R.style.AlertDialogStyle)
             .setItems(R.array.board_activity_child_popup, new DialogInterface.OnClickListener(){
@@ -146,33 +147,29 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
                             break;
                         case 1:
                             /*Tell handler to delete card [id]*/
-                            /*handler.deleteCard(cardId);*/
+                            /*handler.deleteCard(longClickedCard.getId());*/
 
                             break;
                         case 2:
-
-                            CharSequence [] cs = expandableListTitle.toArray
-                                    (new CharSequence[expandableListTitle.size()]);
+                            /*Quickfix to dynamically display names*/
+                            List<String> titles = new ArrayList<String>();
+                            for(TrelloList tl:expandableListTitle){
+                                titles.add(tl.getName());
+                            }
+                            CharSequence [] cs = titles.toArray
+                                    (new CharSequence[titles.size()]);
                             new AlertDialog.Builder(BoardActivity.this,R.style.AlertDialogStyle)
                                     .setItems(cs, new DialogInterface.OnClickListener(){
                                      @Override
-                                     public void onClick(DialogInterface dialog, int which){
-                                         // List NAME expandableListTitle.get(groupPosition);
-                                         Log.d("MOVE TO LIST", "name: " + expandableListTitle.get(which)
-
-                                                 + "  id: " + trelloListMap.get(expandableListTitle.get(which)));
-
-                                         String listId = trelloListMap.get(expandableListTitle.get(which));
-
-                                         /*handler.moveCard(cardId,listId)*/
+                                     public void onClick(DialogInterface dialog, int which) {
+                                         String listId = expandableListTitle.get(which).getId();
+                                         Log.d("CHILDLONGCLICK","Moved Card" + longClickedCard.getName()
+                                                 + " to List " + expandableListTitle.get(which).getName()
+                                                 );
+                                         /*handler.moveCard(longClickedCard.getId(),listId)*/
                                      }
-
-
-
                                     })
                                     .show();
-
-                            /*Popup Move cardID to ListID*/
                     }
                 }
             })
@@ -204,10 +201,10 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
                                             * *
                                             handler.addCard(cardTitle.getText().toString(),
                                                     cardDescription.getText().toString(),
-                                                    trelloListMap.get(
-                                                            expandableListTitle.get(groupPosition)));*/
+                                                    expandableListTitle.get(groupPosition).getId());*/
                                             }
                                         })
+
                                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog, int id) {
                                             /*Do nothing for now, perhaps take one step back to prev
@@ -222,29 +219,8 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
                 .show();
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    private void initAdapter(List<String> listNames){
+    private void initAdapter(List<TrelloList> listNames){
+        /*trelloLists and expandableListtitle will point to same, fix later*/
         expandableListTitle = listNames;
         adapter = new CustomExpandableListAdapter(this,expandableListTitle,expandableListOverview);
         expandableListView.setAdapter(adapter);
@@ -290,34 +266,21 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
 
     @Override
     public void listsCallback(List<TrelloList> lists, String boardId) {
-
-        /*Refactor*/
-        List<String> nameList = new ArrayList<>();
+        trelloLists = lists;
         for(TrelloList tl:lists){
-            this.trelloListMap.put(tl.getName(),tl.getId());
-            Log.d(TAG, tl.getName());
-            nameList.add(tl.getName());
             new GenerateCardsTask().execute(tl.getId(),tl.getName());
         }
-        /*Initiates the adapter with the titles aka Trello Lists*/
-        initAdapter(nameList);
+        initAdapter(trelloLists);
     }
 
     @Override
     public void cardsCallback(List<TrelloCard> cards, String listName) {
-        List<String> cardNames = new ArrayList<>();
-        for(TrelloCard tc: cards) {
-            this.trelloCardMap.put(tc.getName(),tc.getId());
-            cardNames.add(tc.getName());
-
-            Log.d("LISTNAME " + listName + " ",tc.getName());
+        for(TrelloList tl:trelloLists){
+            if(tl.getName().equals(listName)){
+                tl.setCards(cards);
+                expandableListOverview.put(tl.getName(), tl.getCards());
+            }
         }
-
-        /*Add cards to the HashMap, tell adapter to update
-        * UI Wise, adds cards as children to the specified list
-        * */
-
-        expandableListOverview.put(listName,cardNames);
         adapter.notifyDataSetChanged();
     }
 }
