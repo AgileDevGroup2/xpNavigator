@@ -19,15 +19,21 @@ import java.util.concurrent.locks.Lock;
 public class ApiHandler extends JsonHttpResponseHandler {
 
     private static final String TAG = "ApiHandler";
-    protected enum State {BOARD, LIST, CARD, MEMBER, PUSH}
+    protected enum State {BOARD, LIST, CARD, MEMBER, ORGANIZATION, PUSH}
 
     protected State mCurState;
 
     private String mLName;
 
+    private boolean isFinishMember = false;
+
     protected ApiListener mListener;
 
     protected Lock mLock;
+
+    private List<TrelloMember> listsmembership;
+
+    private List<TrelloMember> listsmemberOrganization;
 
     /**
      * creates a new ApiHandler
@@ -195,10 +201,14 @@ public class ApiHandler extends JsonHttpResponseHandler {
                 handleCards(response);
             case MEMBER:
                 handleMembers(response);
+            case ORGANIZATION:
+                handleOrganization(response);
         }
         mLock.unlock();
 
     }
+
+
 
     /**
      * Failure handler with string response
@@ -282,19 +292,48 @@ public class ApiHandler extends JsonHttpResponseHandler {
 
     protected void handleMembers (JSONArray jsonArray) {
 
-        List<TrelloMember> lists = new ArrayList<TrelloMember>();
+        listsmembership = new ArrayList<TrelloMember>();
 
         for(int i = 0 ; i < jsonArray.length(); i++)
         {
             try {
-                lists.add(new TrelloMember(jsonArray.getJSONObject(i)));
+                listsmembership.add(new TrelloMember(jsonArray.getJSONObject(i)));
             } catch (JSONException e) {
                 Log.v(TAG, e.getMessage());
             }
         }
 
+        if (mListener != null) mListener.membersBoardCallback(listsmembership);
+    }
+
+    protected void handleOrganization(JSONArray jsonArray) {
+
+
+        listsmemberOrganization = new ArrayList<TrelloMember>();
+
+        for(int i = 0 ; i < jsonArray.length(); i++)
+        {
+            try {
+                listsmemberOrganization.add(new TrelloMember(jsonArray.getJSONObject(i)));
+            } catch (JSONException e) {
+                Log.v(TAG, e.getMessage());
+            }
+        }
+        Log.d("test5 or", String.valueOf(listsmembership.size()));
+        if (isFinishMember)
+            manageMembers();
+        else
+            isFinishMember  = true;
+    }
+
+    protected void manageMembers ()
+    {
+        TrelloBoardMembers boardMembers = new TrelloBoardMembers();
+
+
+        isFinishMember = false;
         //use listener callback
-        if (mListener != null) mListener.membersBoardCallback(lists);
+        if (mListener != null) mListener.membersBoardCallback(new ArrayList<TrelloMember>());
     }
 
     /**

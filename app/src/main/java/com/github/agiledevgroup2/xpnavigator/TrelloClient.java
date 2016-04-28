@@ -64,6 +64,14 @@ public class TrelloClient extends OAuthBaseClient {
         client.get(apiUrl, handler);
     }
 
+    public void getOrganization (String boardId, AsyncHttpResponseHandler handler)
+    {
+        String apiUrl = getApiUrl("1/boards/" + boardId + "/organization/memberships");
+        Log.d("ClIENT_GETORGANIZATION", apiUrl);
+
+        client.get(apiUrl, handler);
+    }
+
 
     /**
      * Endpoint to get all cards of a board
