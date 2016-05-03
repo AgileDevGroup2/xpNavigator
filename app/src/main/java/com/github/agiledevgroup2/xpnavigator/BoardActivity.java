@@ -27,7 +27,8 @@ import java.util.List;
 
 /**
  * The Activity for displaying an individual board
- ** TODO WebHooks, Refactor according to coding standards
+ ** TODO WebHooks, Refactor according to coding standards, perhaps add button on each listitem to
+ * display the additional options when pressing a card
  * */
 public class BoardActivity extends AppCompatActivity implements ApiListener{
     private String boardId = "";
@@ -75,6 +76,8 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
         expandableListView = (ExpandableListView) findViewById(R.id.expandableListView);
         expandableListOverview = new HashMap();
 
+
+        /*Eventlisteners for the expandableListView*/
         expandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
             @Override
             public void onGroupExpand(int groupPosition) {
@@ -177,6 +180,7 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
 
                         break;
 
+                    /*Updates frequently while the dragged object is moving*/
                     case DragEvent.ACTION_DRAG_LOCATION:
                         x_cord = (int) event.getX();
                         y_cord = (int) event.getY();
@@ -220,6 +224,7 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
 
                         break;
 
+                    /*Called when the user lets go of the dragged items*/
                     case DragEvent.ACTION_DROP:
                         /*Get Coords of drop location and find on which element the drop occurred*/
                         /*TODO, Drop within list*/
@@ -243,6 +248,7 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
                             if(itemType == ExpandableListView.PACKED_POSITION_TYPE_GROUP){
                                 Log.d("DROP", "DROPPED " + cardId + " IN " + groupId);
                                 handler.moveCard(cardId,groupId);
+
                             }
 
                             else if(itemType == ExpandableListView.PACKED_POSITION_TYPE_CHILD){
@@ -258,6 +264,9 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
 
                             expandableListView.getChildAt(oldPos).setBackgroundColor(Color.TRANSPARENT);
                             expandableListView.getChildAt(oldPos).invalidate();
+
+
+
 
                         }
 
