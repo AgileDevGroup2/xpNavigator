@@ -27,7 +27,7 @@ import java.util.List;
 
 /**
  * The Activity for displaying an individual board
- ** TODO WebHooks
+ ** TODO WebHooks, Refactor according to coding standards
  * */
 public class BoardActivity extends AppCompatActivity implements ApiListener{
     private String boardId = "";
