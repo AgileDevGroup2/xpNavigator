@@ -227,6 +227,7 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
                         y_cord = (int) event.getY();
                         int point = expandableListView.pointToPosition(x_cord, y_cord);
 
+                        /*Can probably refactor*/
                         if (expandableListView.getItemAtPosition(point) != null) {
                             long packedPosition = expandableListView.getExpandableListPosition(point);
                             int itemType = ExpandableListView.getPackedPositionType(packedPosition);
@@ -248,7 +249,8 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
                                 String child = expandableListOverview.get(expandableListTitle.get(groupPosition).getName()).get(childPosition).getName();
 
                                 Log.d("DROP", "DROPPED " + cardId + " ON " + child + "IN " + groupId);
-                                /*TODO */
+                                /*TODO
+                                * PUT /1/cards/[card id or shortlink]/pos?*/
                                 //handler.moveCard(cardId,groupId);
                             }
 
