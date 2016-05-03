@@ -273,6 +273,7 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
     }
 
     /**
+     * TODO EVALUATE IF THIS METHOD IS STILL NEEDED SOMEHOW
      *  Long Click Listener for a Child of a Group, i.e a Card in a List
      *  Generates an AlertDialog where the user can choose to
      *  (0)Edit
