@@ -31,14 +31,14 @@ import java.util.List;
  * display the additional options when pressing a card
  * */
 public class BoardActivity extends AppCompatActivity implements ApiListener{
-    private String boardId = "";
-    private String boardName = "";
-    private ApiHandler handler;
-    private ExpandableListView expandableListView;
-    private CustomExpandableListAdapter adapter;
-    private List<TrelloList> expandableListTitle;
-    private HashMap<String, List<TrelloCard>> expandableListOverview;
-    private List<TrelloList> trelloLists;
+    private String mBoardId = "";
+    private String mBoardName = "";
+    private ApiHandler mHandler;
+    private ExpandableListView mExpandableListView;
+    private CustomExpandableListAdapter mAdapter;
+    private List<TrelloList> mExpandableListTitle;
+    private HashMap<String, List<TrelloCard>> mExpandableListOverview;
+    private List<TrelloList> mTrelloLists;
 
 
     public final static String BOARD_MEMBERS_EXTRA_ID = "BOARD_MEMBERS_ID";
@@ -55,58 +55,58 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
         setSupportActionBar(toolbar);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 
-        trelloLists = new ArrayList<>();
+        mTrelloLists = new ArrayList<>();
 
 
         /*Handle Passed information from previous activity*/
         Intent previousIntent = getIntent();
-        boardId = previousIntent.getStringExtra(LoginActivity.BOARD_EXTRA_ID);
-        this.boardName = previousIntent.getStringExtra(LoginActivity.BOARD_EXTRA_NAME);
+        mBoardId = previousIntent.getStringExtra(LoginActivity.BOARD_EXTRA_ID);
+        this.mBoardName = previousIntent.getStringExtra(LoginActivity.BOARD_EXTRA_NAME);
 
-        this.setTitle(boardName);
+        this.setTitle(mBoardName);
 
-        handler = new ApiHandler(this);
+        mHandler = new ApiHandler(this);
 
 
         /*Fetch the lists in background*/
         GenerateListsTask glt = new GenerateListsTask();
-        glt.execute(boardId);
+        glt.execute(mBoardId);
 
 
-        expandableListView = (ExpandableListView) findViewById(R.id.expandableListView);
-        expandableListOverview = new HashMap();
+        mExpandableListView = (ExpandableListView) findViewById(R.id.expandableListView);
+        mExpandableListOverview = new HashMap();
 
 
-        /*Eventlisteners for the expandableListView*/
-        expandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+        /*Eventlisteners for the mExpandableListView*/
+        mExpandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
             @Override
             public void onGroupExpand(int groupPosition) {
                 Toast.makeText(getApplicationContext(),
-                        expandableListTitle.get(groupPosition).getName() + " List Expanded.",
+                        mExpandableListTitle.get(groupPosition).getName() + " List Expanded.",
                         Toast.LENGTH_SHORT).show();
 
 
             }
         });
 
-        expandableListView.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
+        mExpandableListView.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
             @Override
             public void onGroupCollapse(int groupPosition) {
                 Toast.makeText(getApplicationContext(),
-                        expandableListTitle.get(groupPosition).getName() + " List Collapsed.",
+                        mExpandableListTitle.get(groupPosition).getName() + " List Collapsed.",
                         Toast.LENGTH_SHORT).show();
             }
         });
 
-        expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+        mExpandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition,
                                         int childPosition, long id) {
                 Toast.makeText(getApplicationContext(),
-                        expandableListTitle.get(groupPosition).getName()
+                        mExpandableListTitle.get(groupPosition).getName()
                                 + " -> "
-                                + expandableListOverview.get(
-                                expandableListTitle.get(groupPosition).getName()).get(
+                                + mExpandableListOverview.get(
+                                mExpandableListTitle.get(groupPosition).getName()).get(
                                 childPosition).getName(), Toast.LENGTH_SHORT
                 ).show();
                 return false;
@@ -117,14 +117,14 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
 
 
         /**
-         * Long Click Listener for the entire expandableListView.
+         * Long Click Listener for the entire mExpandableListView.
          * Determines whether a group or child was clicked and calls
          * the appropiate method
          */
-        expandableListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        mExpandableListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                long packedPosition = expandableListView.getExpandableListPosition(position);
+                long packedPosition = mExpandableListView.getExpandableListPosition(position);
                 int itemType = ExpandableListView.getPackedPositionType(packedPosition);
                 int groupPosition = ExpandableListView.getPackedPositionGroup(packedPosition);
                 int childPosition = ExpandableListView.getPackedPositionChild(packedPosition);
@@ -137,16 +137,16 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
                     /*On Child Longclick, start drag & drop*/
                     /*Pass the Card ID to be attatched to the drag-image, read android docs or ask Kim
                     * for more info*/
-                    ClipData data  = ClipData.newPlainText("id", expandableListOverview.get(
-                                    expandableListTitle.get(groupPosition).getName()).get(
+                    ClipData data  = ClipData.newPlainText("id", mExpandableListOverview.get(
+                                    mExpandableListTitle.get(groupPosition).getName()).get(
                                     childPosition).getId());
 
                     View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(view);
                     view.setBackgroundColor(Color.argb(100,51, 204, 51));
                     /*Start the drag, passing the data and specifying which listelement is getting
                     *dragged*/
-                    view.startDrag(data, shadowBuilder, expandableListOverview.get(
-                            expandableListTitle.get(groupPosition).getName()).get(
+                    view.startDrag(data, shadowBuilder, mExpandableListOverview.get(
+                            mExpandableListTitle.get(groupPosition).getName()).get(
                             childPosition), 0);
                     view.setBackgroundColor(Color.TRANSPARENT);
                 }
@@ -155,7 +155,7 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
         });
 
 
-        expandableListView.setOnDragListener(new AdapterView.OnDragListener() {
+        mExpandableListView.setOnDragListener(new AdapterView.OnDragListener() {
             int oldPos;
             @Override
             public boolean onDrag(View v, DragEvent event) {
@@ -184,36 +184,36 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
                     case DragEvent.ACTION_DRAG_LOCATION:
                         x_cord = (int) event.getX();
                         y_cord = (int) event.getY();
-                        int position = expandableListView.pointToPosition(x_cord, y_cord);
+                        int position = mExpandableListView.pointToPosition(x_cord, y_cord);
 
-                        if (expandableListView.getItemAtPosition(position) != null) {
-                            long packedPosition = expandableListView.getExpandableListPosition(position);
+                        if (mExpandableListView.getItemAtPosition(position) != null) {
+                            long packedPosition = mExpandableListView.getExpandableListPosition(position);
                             int itemType = ExpandableListView.getPackedPositionType(packedPosition);
-                            int groupPosition = expandableListView.getPackedPositionGroup(expandableListView.getExpandableListPosition(position));
+                            int groupPosition = mExpandableListView.getPackedPositionGroup(mExpandableListView.getExpandableListPosition(position));
 
-                            int childPosition = expandableListView.getPackedPositionChild(expandableListView.getExpandableListPosition(position));
+                            int childPosition = mExpandableListView.getPackedPositionChild(mExpandableListView.getExpandableListPosition(position));
                             if(oldPos != position){
-                                expandableListView.getChildAt(oldPos).setBackgroundColor(Color.TRANSPARENT);
-                                expandableListView.getChildAt(oldPos).invalidate();
+                                mExpandableListView.getChildAt(oldPos).setBackgroundColor(Color.TRANSPARENT);
+                                mExpandableListView.getChildAt(oldPos).invalidate();
                                 oldPos = position;
 
                             }
-                            int reAdjustedScreenPos = position-expandableListView.getFirstVisiblePosition();
+                            int reAdjustedScreenPos = position-mExpandableListView.getFirstVisiblePosition();
                             oldPos = reAdjustedScreenPos;
 
                             /*Different background color depending on if drag is over Card or a List element*/
                             if (itemType == ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
 
-                                Log.d("OVER", "List: " + expandableListTitle.get(groupPosition).getName());
+                                Log.d("OVER", "List: " + mExpandableListTitle.get(groupPosition).getName());
 
-                                expandableListView.getChildAt(reAdjustedScreenPos).setBackgroundColor(Color.argb(100, 255, 204, 0));
+                                mExpandableListView.getChildAt(reAdjustedScreenPos).setBackgroundColor(Color.argb(100, 255, 204, 0));
                             }
                             else if (itemType == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
 
-                                Log.d("OVER", "List: " + expandableListTitle.get(groupPosition).getName() + " Card " +
-                                        expandableListOverview.get(expandableListTitle.get(groupPosition).getName()).get(childPosition).getName());
+                                Log.d("OVER", "List: " + mExpandableListTitle.get(groupPosition).getName() + " Card " +
+                                        mExpandableListOverview.get(mExpandableListTitle.get(groupPosition).getName()).get(childPosition).getName());
 
-                                expandableListView.getChildAt(reAdjustedScreenPos).setBackgroundColor(Color.argb(100, 179, 236, 255));
+                                mExpandableListView.getChildAt(reAdjustedScreenPos).setBackgroundColor(Color.argb(100, 179, 236, 255));
 
                             }
 
@@ -230,52 +230,42 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
                         /*TODO, Drop within list*/
                         x_cord = (int) event.getX();
                         y_cord = (int) event.getY();
-                        int point = expandableListView.pointToPosition(x_cord, y_cord);
+                        int point = mExpandableListView.pointToPosition(x_cord, y_cord);
 
                         /*Can probably refactor*/
-                        if (expandableListView.getItemAtPosition(point) != null) {
-                            long packedPosition = expandableListView.getExpandableListPosition(point);
+                        if (mExpandableListView.getItemAtPosition(point) != null) {
+                            long packedPosition = mExpandableListView.getExpandableListPosition(point);
                             int itemType = ExpandableListView.getPackedPositionType(packedPosition);
-                            int groupPosition = expandableListView.getPackedPositionGroup(expandableListView.getExpandableListPosition(point));
-                            int childPosition = expandableListView.getPackedPositionChild(expandableListView.getExpandableListPosition(point));
+                            int groupPosition = mExpandableListView.getPackedPositionGroup(mExpandableListView.getExpandableListPosition(point));
+                            int childPosition = mExpandableListView.getPackedPositionChild(mExpandableListView.getExpandableListPosition(point));
 
 
 
-                            String groupId = expandableListTitle.get(groupPosition).getId();
+                            String groupId = mExpandableListTitle.get(groupPosition).getId();
                             ClipData.Item item = event.getClipData().getItemAt(0);
                             String cardId = item.getText().toString();
 
                             if(itemType == ExpandableListView.PACKED_POSITION_TYPE_GROUP){
                                 Log.d("DROP", "DROPPED " + cardId + " IN " + groupId);
-                                handler.moveCard(cardId,groupId);
+                                mHandler.moveCard(cardId,groupId);
 
                             }
 
                             else if(itemType == ExpandableListView.PACKED_POSITION_TYPE_CHILD){
-                                String child = expandableListOverview.get(expandableListTitle.get(groupPosition).getName()).get(childPosition).getName();
+                                String child = mExpandableListOverview.get(mExpandableListTitle.get(groupPosition).getName()).get(childPosition).getName();
 
                                 Log.d("DROP", "DROPPED " + cardId + " ON " + child + "IN " + groupId);
                                 /*TODO
                                 * PUT /1/cards/[card id or shortlink]/pos?*/
-                                //handler.moveCard(cardId,groupId);
+                                //mHandler.moveCard(cardId,groupId);
                             }
-
-
-
-                            expandableListView.getChildAt(oldPos).setBackgroundColor(Color.TRANSPARENT);
-                            expandableListView.getChildAt(oldPos).invalidate();
-
-
-
-
+                            mExpandableListView.getChildAt(oldPos).setBackgroundColor(Color.TRANSPARENT);
+                            mExpandableListView.getChildAt(oldPos).invalidate();
                         }
-
                         return true;
-
                     default:
                         break;
                 }
-
                 return true;
             }
         });
@@ -293,12 +283,9 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
      * @param childPosition
      */
     private void onChildLongClick(final int groupPosition, final int childPosition){
-
-         final TrelloCard longClickedCard = expandableListOverview.get(
-                expandableListTitle.get(groupPosition).getName()).get(
+        final TrelloCard longClickedCard = mExpandableListOverview.get(
+                mExpandableListTitle.get(groupPosition).getName()).get(
                 childPosition);
-
-
         new AlertDialog.Builder(this,R.style.AlertDialogStyle)
             .setItems(R.array.board_activity_child_popup, new DialogInterface.OnClickListener(){
                 @Override
@@ -311,29 +298,30 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
                             /*Popup edit or new activity?*/
                             break;
                         case 1:
-                            handler.removeCard(longClickedCard.getId());
-                            updateListView(expandableListTitle.get(groupPosition));
+                            mHandler.removeCard(longClickedCard.getId());
+                            updateListView(mExpandableListTitle.get(groupPosition));
 
                             break;
                         case 2:
                             /*Quickfix to dynamically display names*/
                             List<String> titles = new ArrayList<String>();
-                            for(TrelloList tl:expandableListTitle){
+                            for(TrelloList tl:mExpandableListTitle){
                                 titles.add(tl.getName());
                             }
-                            CharSequence [] cs = titles.toArray
-                                    (new CharSequence[titles.size()]);
+                            CharSequence [] cs = titles.toArray(new CharSequence[titles.size()]);
                             new AlertDialog.Builder(BoardActivity.this,R.style.AlertDialogStyle)
                                     .setItems(cs, new DialogInterface.OnClickListener(){
                                      @Override
                                      public void onClick(DialogInterface dialog, int which) {
-                                         String listId = expandableListTitle.get(which).getId();
-                                         Log.d("CHILDLONGCLICK","Moved Card" + longClickedCard.getName()
-                                                 + " to List " + expandableListTitle.get(which).getName()
-                                                 );
-                                         handler.moveCard(longClickedCard.getId(),listId);
-                                         updateListView(expandableListTitle.get(which));
-                                         updateListView(expandableListTitle.get(groupPosition));
+                                         String listId = mExpandableListTitle.get(which).getId();
+                                         Log.d("CHILDLONGCLICK",
+                                                 "Moved Card" + longClickedCard.getName()
+                                                 + " to List "
+                                                         + mExpandableListTitle.get(which).getName()
+                                         );
+                                         mHandler.moveCard(longClickedCard.getId(),listId);
+                                         updateListView(mExpandableListTitle.get(which));
+                                         updateListView(mExpandableListTitle.get(groupPosition));
                                      }
                                     })
                                     .show();
@@ -346,7 +334,7 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
 
     /**
      *  Long Click Handler a longclick on a group, i.e TrelloList in the
-     *  expandableListView
+     *  mExpandableListView
      *
      *  Generates an AlertDialog to show popup with alternatives for actions
      *  (0)Add Card
@@ -374,13 +362,13 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
                                         .setPositiveButton("Add", new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialog, int id) {
-                                                handler.addCard(cardTitle.getText().toString(),
+                                                mHandler.addCard(cardTitle.getText().toString(),
                                                         cardDescription.getText().toString(),
-                                                    expandableListTitle.get(groupPosition).getId());
+                                                    mExpandableListTitle.get(groupPosition).getId());
 
                                                 //update view (Todo: outsource this)
-                                                updateListView(expandableListTitle.get(groupPosition));
-                                                //expandableListView.invalidate();
+                                                updateListView(mExpandableListTitle.get(groupPosition));
+                                                //mExpandableListView.invalidate();
                                             }
                                         })
 
@@ -403,18 +391,18 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
      * @param list list to update the view of
      */
     private void updateListView(TrelloList list) {
-        handler.fetchCards(list.getId(), list.getName());
+        mHandler.fetchCards(list.getId(), list.getName());
     }
 
     /**
-     * Initiates the adapter with data fields
+     * Initiates the mAdapter with data fields
      * @param listNames
      */
     private void initAdapter(List<TrelloList> listNames) {
-        /*trelloLists and expandableListtitle will point to same, fix later*/
-        expandableListTitle = listNames;
-        adapter = new CustomExpandableListAdapter(this,expandableListTitle,expandableListOverview);
-        expandableListView.setAdapter(adapter);
+        /*mTrelloLists and expandableListtitle will point to same, fix later*/
+        mExpandableListTitle = listNames;
+        mAdapter = new CustomExpandableListAdapter(this,mExpandableListTitle,mExpandableListOverview);
+        mExpandableListView.setAdapter(mAdapter);
     }
 
 
@@ -432,9 +420,9 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_logout) {
-            handler.logout();
+            mHandler.logout();
             Intent login = new Intent(getApplicationContext(), LoginActivity.class);
-            //Pass the BoardID to new activity
+            //Pass the mBoardId to new activity
             startActivity(login);
             return true;
         }
@@ -443,8 +431,8 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
         {
             Intent intent = new Intent(BoardActivity.this, MembersBoardActivity.class);
 
-            intent.putExtra(BoardActivity.BOARD_MEMBERS_EXTRA_ID, this.boardId);
-            intent.putExtra(BoardActivity.BOARD_MEMBERS_EXTRA_NAME, this.boardName);
+            intent.putExtra(BoardActivity.BOARD_MEMBERS_EXTRA_ID, this.mBoardId);
+            intent.putExtra(BoardActivity.BOARD_MEMBERS_EXTRA_NAME, this.mBoardName);
 
             startActivity(intent);
         }
@@ -460,9 +448,9 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
     private class GenerateListsTask extends AsyncTask<String,Void,Boolean> {
         @Override
         protected Boolean doInBackground(String... params) {
-            String boardId = params[0];
+            String mBoardId = params[0];
             try {
-                handler.fetchLists(boardId);
+                mHandler.fetchLists(mBoardId);
             } catch (Exception e) {
                 Log.d("TaskError", "GenerateListTaskException");
                 e.printStackTrace();
@@ -482,7 +470,7 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
             String listName = params[1];
             try {
 
-                handler.fetchCards(listId,listName);
+                mHandler.fetchCards(listId,listName);
             } catch (Exception e) {
                 Log.d("TaskError", "GenerateCardTaskException");
                 e.printStackTrace();
@@ -500,35 +488,35 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
      *  Callback from the ApiHandler, initiates the TrelloList's
      *  List of TrelloCards through GenerateCardsTask
      * @param lists fetched boards from trello
-     * @param boardId board the lists belong to
+     * @param mBoardId board the lists belong to
      */
     @Override
-    public void listsCallback(List<TrelloList> lists, String boardId) {
-        trelloLists = lists;
+    public void listsCallback(List<TrelloList> lists, String mBoardId) {
+        mTrelloLists = lists;
         for(TrelloList tl:lists){
             new GenerateCardsTask().execute(tl.getId(),tl.getName());
         }
-        initAdapter(trelloLists);
+        initAdapter(mTrelloLists);
     }
 
     /**
      * Callback from ApiHandler, sets the listName's List<TrelloCard>
      *
-     * with cards. Tells the adapter that the dataset has been updated so that the
-     * expandableListView can update
+     * with cards. Tells the mAdapter that the dataset has been updated so that the
+     * mExpandableListView can update
      *
      * @param cards fetched cards from trello
      * @param listName name of the lists where the cards belong
      */
     @Override
     public void cardsCallback(List<TrelloCard> cards, String listName) {
-        for(TrelloList tl:trelloLists){
+        for(TrelloList tl:mTrelloLists){
             if(tl.getName().equals(listName)){
                 tl.setCards(cards);
-                expandableListOverview.put(tl.getName(), tl.getCards());
+                mExpandableListOverview.put(tl.getName(), tl.getCards());
             }
         }
-        adapter.notifyDataSetChanged();
+        mAdapter.notifyDataSetChanged();
     }
 
 
