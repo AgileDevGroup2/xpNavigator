@@ -130,11 +130,18 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
                     onGroupLongClick(groupPosition);
                 } else if (itemType == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
                     //onChildLongClick(groupPosition, childPosition);
+
+                    /*On Child Longclick, start drag & drop*/
+                    /*Pass the Card ID to be attatched to the drag-image, read android docs or ask Kim
+                    * for more info*/
                     ClipData data  = ClipData.newPlainText("id", expandableListOverview.get(
                                     expandableListTitle.get(groupPosition).getName()).get(
                                     childPosition).getId());
+
                     View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(view);
-                    view.setBackgroundColor(Color.GREEN);
+                    view.setBackgroundColor(Color.argb(100,51, 204, 51));
+                    /*Start the drag, passing the data and specifying which listelement is getting
+                    *dragged*/
                     view.startDrag(data, shadowBuilder, expandableListOverview.get(
                             expandableListTitle.get(groupPosition).getName()).get(
                             childPosition), 0);
@@ -154,10 +161,6 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
                     case DragEvent.ACTION_DRAG_STARTED:
                         int x_cord = (int) event.getX();
                         int y_cord = (int) event.getY();
-
-
-
-
                         break;
 
                     case DragEvent.ACTION_DRAG_ENTERED:
@@ -177,60 +180,38 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
                     case DragEvent.ACTION_DRAG_LOCATION:
                         x_cord = (int) event.getX();
                         y_cord = (int) event.getY();
-                        int pointss = expandableListView.pointToPosition(x_cord, y_cord);
+                        int position = expandableListView.pointToPosition(x_cord, y_cord);
 
-                        if (expandableListView.getItemAtPosition(pointss) != null) {
-                            long packedPosition = expandableListView.getExpandableListPosition(pointss);
+                        if (expandableListView.getItemAtPosition(position) != null) {
+                            long packedPosition = expandableListView.getExpandableListPosition(position);
                             int itemType = ExpandableListView.getPackedPositionType(packedPosition);
-                            int ngroupPosition = expandableListView.getPackedPositionGroup(expandableListView.getExpandableListPosition(pointss));
+                            int groupPosition = expandableListView.getPackedPositionGroup(expandableListView.getExpandableListPosition(position));
 
-                            int nchildPosition = expandableListView.getPackedPositionChild(expandableListView.getExpandableListPosition(pointss));
-                            if(oldPos != pointss){
+                            int childPosition = expandableListView.getPackedPositionChild(expandableListView.getExpandableListPosition(position));
+                            if(oldPos != position){
                                 expandableListView.getChildAt(oldPos).setBackgroundColor(Color.TRANSPARENT);
                                 expandableListView.getChildAt(oldPos).invalidate();
-                                oldPos = pointss;
+                                oldPos = position;
 
                             }
+                            int reAdjustedScreenPos = position-expandableListView.getFirstVisiblePosition();
+                            oldPos = reAdjustedScreenPos;
 
+                            /*Different background color depending on if drag is over Card or a List element*/
                             if (itemType == ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
 
-                                Log.d("OVER", "List: " + expandableListTitle.get(ngroupPosition).getName());
-                                if(expandableListView.getFirstVisiblePosition() != 0){
-                                    int fin = pointss-expandableListView.getFirstVisiblePosition();
-                                    expandableListView.getChildAt(fin).setBackgroundColor(Color.argb(100, 255, 204, 0));
-                                    oldPos = fin;
-                                }
-                                else{
-                                    expandableListView.getChildAt(pointss).setBackgroundColor(Color.argb(100, 255, 204, 0));
-                                    oldPos = pointss;
+                                Log.d("OVER", "List: " + expandableListTitle.get(groupPosition).getName());
 
-                                }
-
-
+                                expandableListView.getChildAt(reAdjustedScreenPos).setBackgroundColor(Color.argb(100, 255, 204, 0));
                             }
                             else if (itemType == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
 
-                                Log.d("OVER", "List: " + expandableListTitle.get(ngroupPosition).getName() + " Card " +
-                                        expandableListOverview.get(expandableListTitle.get(ngroupPosition).getName()).get(nchildPosition).getName());
-                                int count = expandableListView.getFirstVisiblePosition();
-                                if(expandableListView.getFirstVisiblePosition() != 0){
-                                    int fin = pointss-count;
-                                    expandableListView.getChildAt(fin).setBackgroundColor(Color.argb(100, 179, 236, 255));
-                                    oldPos = fin;
-                                }
-                                else{
-                                    expandableListView.getChildAt(pointss).setBackgroundColor(Color.argb(100, 179, 236, 255));
-                                    oldPos = pointss;
+                                Log.d("OVER", "List: " + expandableListTitle.get(groupPosition).getName() + " Card " +
+                                        expandableListOverview.get(expandableListTitle.get(groupPosition).getName()).get(childPosition).getName());
 
-                                }
-
-                                Log.d("INTS", "GPOS " + ngroupPosition + " CPOS " + nchildPosition + "POINTSS " + pointss + "COUNT " + count);
-
-
+                                expandableListView.getChildAt(reAdjustedScreenPos).setBackgroundColor(Color.argb(100, 179, 236, 255));
 
                             }
-
-
 
                         }
                         break;
@@ -240,7 +221,7 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
                         break;
 
                     case DragEvent.ACTION_DROP:
-                        /*Get Coords of drop location and turn it into which list it was dropped in*/
+                        /*Get Coords of drop location and find on which element the drop occurred*/
                         /*TODO, Drop within list*/
                         x_cord = (int) event.getX();
                         y_cord = (int) event.getY();
@@ -249,27 +230,28 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
                         if (expandableListView.getItemAtPosition(point) != null) {
                             long packedPosition = expandableListView.getExpandableListPosition(point);
                             int itemType = ExpandableListView.getPackedPositionType(packedPosition);
-                            int groupDroppedPos = ExpandableListView.getPackedPositionGroup(packedPosition);
-                            int childDroppedPosition = ExpandableListView.getPackedPositionChild(packedPosition);
+                            int groupPosition = expandableListView.getPackedPositionGroup(expandableListView.getExpandableListPosition(point));
+                            int childPosition = expandableListView.getPackedPositionChild(expandableListView.getExpandableListPosition(point));
 
 
 
-                            String group = expandableListTitle.get(groupDroppedPos).getId();
+                            String groupId = expandableListTitle.get(groupPosition).getId();
                             ClipData.Item item = event.getClipData().getItemAt(0);
-                            String card = item.getText().toString();
+                            String cardId = item.getText().toString();
 
                             if(itemType == ExpandableListView.PACKED_POSITION_TYPE_GROUP){
-                                Log.d("DROP", "DROPPED " + card + " IN " + group);
-
+                                Log.d("DROP", "DROPPED " + cardId + " IN " + groupId);
+                                handler.moveCard(cardId,groupId);
                             }
 
                             else if(itemType == ExpandableListView.PACKED_POSITION_TYPE_CHILD){
-                                String child = expandableListOverview.get(group).get(childDroppedPosition).getName();
+                                String child = expandableListOverview.get(expandableListTitle.get(groupPosition).getName()).get(childPosition).getName();
 
-                                Log.d("DROP", "DROPPED " + card + " ON " + child + "IN " + group);
-
+                                Log.d("DROP", "DROPPED " + cardId + " ON " + child + "IN " + groupId);
+                                /*TODO */
+                                //handler.moveCard(cardId,groupId);
                             }
-                            handler.moveCard(card,group);
+
 
 
                             expandableListView.getChildAt(oldPos).setBackgroundColor(Color.TRANSPARENT);
@@ -282,10 +264,10 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
                     default:
                         break;
                 }
-                //return value
+
                 return true;
             }
-        });//end DragListener
+        });
     }
 
     /**
