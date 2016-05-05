@@ -79,6 +79,8 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
         mExpandableListView = (ExpandableListView) findViewById(R.id.expandableListView);
         mExpandableListOverview = new HashMap();
 
+        
+
 
         /*Eventlisteners for the mExpandableListView*/
         mExpandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener
