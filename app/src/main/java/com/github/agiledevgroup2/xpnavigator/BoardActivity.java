@@ -27,7 +27,10 @@ import java.util.List;
 
 /**
  * The Activity for displaying an individual board
- ** TODO WebHooks, Refactor according to coding standards, perhaps add button on each listitem to
+ ** TODO WebHooks?, Refactor according to coding standards
+ * TODO Add Button to Children, in CustomExpandableListAdapter, manage the button click and
+ * TODO make sure [buttonName].setFocusable(false);
+ *
  * display the additional options when pressing a card
  * */
 public class BoardActivity extends AppCompatActivity implements ApiListener{
@@ -78,7 +81,8 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
 
 
         /*Eventlisteners for the mExpandableListView*/
-        mExpandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+        mExpandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener
+                () {
             @Override
             public void onGroupExpand(int groupPosition) {
                 Toast.makeText(getApplicationContext(),
@@ -89,7 +93,8 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
             }
         });
 
-        mExpandableListView.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
+        mExpandableListView.setOnGroupCollapseListener(new ExpandableListView
+                .OnGroupCollapseListener() {
             @Override
             public void onGroupCollapse(int groupPosition) {
                 Toast.makeText(getApplicationContext(),
@@ -102,19 +107,15 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition,
                                         int childPosition, long id) {
-                Toast.makeText(getApplicationContext(),
-                        mExpandableListTitle.get(groupPosition).getName()
-                                + " -> "
-                                + mExpandableListOverview.get(
-                                mExpandableListTitle.get(groupPosition).getName()).get(
-                                childPosition).getName(), Toast.LENGTH_SHORT
-                ).show();
+
+                /*Triggers even if longclick occurs*/
+                //onChildLongClick(groupPosition,childPosition);
                 return false;
             }
         });
 
 
-
+        ;
 
         /**
          * Long Click Listener for the entire mExpandableListView.
@@ -132,20 +133,20 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
                 if (itemType == ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
                     onGroupLongClick(groupPosition);
                 } else if (itemType == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
-                    //onChildLongClick(groupPosition, childPosition);
+                    onChildLongClick(groupPosition, childPosition);
 
                     /*On Child Longclick, start drag & drop*/
                     /*Pass the Card ID to be attatched to the drag-image, read android docs
                     or ask Kim
                     * for more info*/
+
                     ClipData data  = ClipData.newPlainText("id", mExpandableListOverview.get(
                                     mExpandableListTitle.get(groupPosition).getName()).get(
                                     childPosition).getId());
 
                     View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(view);
                     view.setBackgroundColor(Color.argb(100,51, 204, 51));
-                    /*Start the drag, passing the data and specifying which listelement is getting
-                    *dragged*/
+
                     view.startDrag(data, shadowBuilder, mExpandableListOverview.get(
                             mExpandableListTitle.get(groupPosition).getName()).get(
                             childPosition), 0);
