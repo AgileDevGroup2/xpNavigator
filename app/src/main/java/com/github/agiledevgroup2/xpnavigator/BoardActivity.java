@@ -276,7 +276,10 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
                             else if(itemType == ExpandableListView.PACKED_POSITION_TYPE_CHILD){
                                 String child = mExpandableListOverview.get(mExpandableListTitle.
                                         get(groupPosition).getName()).get(childPosition).getName();
-                                String childPos = ""+childPosition;
+                                /*might be unnecessary*/
+                                String childPos = "";
+                                if(childPosition == 0)childPos = "top";
+                                else childPos += childPosition;
                                 Log.d("DROP", "DROPPED " + cardId + " ON " + child + " POS " +
                                         childPos +
                                         "IN " + groupId);
