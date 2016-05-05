@@ -111,7 +111,7 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
                                         int childPosition, long id) {
 
                 /*Triggers even if longclick occurs*/
-                //onChildLongClick(groupPosition,childPosition);
+                onChildLongClick(groupPosition,childPosition);
                 return false;
             }
         });

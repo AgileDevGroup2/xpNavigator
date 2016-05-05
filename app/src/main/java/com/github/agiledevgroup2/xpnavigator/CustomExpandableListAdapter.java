@@ -98,6 +98,7 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
 
         /*
         Button button = (Button) convertView.findViewById(R.id.listViewChildButton);
+        button.setFocusable(false);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
