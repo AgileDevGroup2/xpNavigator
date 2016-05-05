@@ -3,7 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".LoginActivity">
 
+    <item
+        android:id="@+id/action_timer"
+        android:icon="@android:drawable/ic_menu_recent_history"
+        android:title="@string/timer_label"
+        app:showAsAction="always"
+        />
 
+    <!--android:icon="@drawable/ic_view_members"-->
     <item android:id="@+id/button_view_members"
         android:icon="@drawable/ic_view_members"
         android:title="@string/name_icon_view_members"
