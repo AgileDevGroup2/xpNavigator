@@ -271,10 +271,16 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
                                 String child = mExpandableListOverview.get(mExpandableListTitle.
                                         get(groupPosition).getName()).get(childPosition).getName();
                                 String childPos = ""+childPosition;
-                                Log.d("DROP", "DROPPED " + cardId + " ON " + child +
+                                Log.d("DROP", "DROPPED " + cardId + " ON " + child + " POS " +
+                                        childPos +
                                         "IN " + groupId);
-                                /*TODO
-                                * PUT /1/cards/[card id or shortlink]/pos?*/
+
+
+                                /*Places the dragged card ABOVE the card on which it is dropped
+                                * i.e if you drag the TOP most card, to the second TOP most card,
+                                * there will be no difference since the target card is pushed down
+                                * in the list.
+                                * */
                                 mHandler.moveCardWithinList(cardId,childPos);
                             }
                             mExpandableListView.getChildAt(oldPos).
