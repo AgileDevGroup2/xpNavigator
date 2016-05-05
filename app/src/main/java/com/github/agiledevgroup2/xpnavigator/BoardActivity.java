@@ -197,6 +197,9 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
 
                             int childPosition = mExpandableListView.getPackedPositionChild
                                     (mExpandableListView.getExpandableListPosition(position));
+
+                            /*If the item was dragged and now is above another object in the list,
+                            * remove the backgroundcolor of the previous item*/
                             if(oldPos != position){
                                 mExpandableListView.getChildAt(oldPos).
                                         setBackgroundColor(Color.TRANSPARENT);
@@ -204,6 +207,9 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
                                 oldPos = position;
 
                             }
+
+                            /*reAdjustedScreenPos is the calculated position to accurately
+                            * navigate the list when it is scrolled down*/
                             int reAdjustedScreenPos = position-mExpandableListView.
                                     getFirstVisiblePosition();
                             oldPos = reAdjustedScreenPos;
