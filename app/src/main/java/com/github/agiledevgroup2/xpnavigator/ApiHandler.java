@@ -139,6 +139,17 @@ public class ApiHandler extends JsonHttpResponseHandler {
     }
 
     /**
+     * Move a card within a list, placing it above another element in order to
+     * give cards a prioritized order
+     * callback is currently ignored TODO: change that
+     * @param cardId id of card to move
+     * @param position position in the list to move to
+     */
+    public void moveCardWithinList(String cardId,String position){
+        TrelloApplication.getTrelloClient().moveCardWithinList(cardId,position,this);
+    }
+
+    /**
      * Move a card to another list, callback is currently ignored TODO: change that
      * @param card card to move
      * @param list list to move card to

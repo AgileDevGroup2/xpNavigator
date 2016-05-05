@@ -138,4 +138,12 @@ public class TrelloClient extends OAuthBaseClient {
 
         client.put(apiUrl, params, handler);
     }
+
+    public void moveCardWithinList(String cardId, String position, AsyncHttpResponseHandler handler){
+        String apiUrl = getApiUrl("1/cards/"+cardId+"/pos");
+        RequestParams params = new RequestParams();
+        params.put("value",position);
+
+        client.put(apiUrl,params,handler);
+    }
 }
