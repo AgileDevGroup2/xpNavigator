@@ -10,6 +10,7 @@
     <string name="title_activity_list">ListActivity</string>
     <string name="title_activity_edit_card">EditCardActivity</string>
     <string name="name_icon_view_members">Members</string>
+    <string name="timer_label">Timer</string>
     <string-array name="board_activity_popup">
         <item>Add Card</item>
         <item>Change Name</item>
