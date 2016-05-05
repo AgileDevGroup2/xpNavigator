@@ -12,12 +12,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.DragEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
+import android.widget.ImageButton;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -54,6 +57,7 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        Timer.setContext(getApplicationContext());
 
         mTrelloLists = new ArrayList<>();
 
@@ -449,30 +453,29 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
+        switch(item.getItemId()) {
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_logout) {
-            mHandler.logout();
-            Intent login = new Intent(getApplicationContext(), LoginActivity.class);
-            //Pass the mBoardId to new activity
-            startActivity(login);
-            return true;
+            case R.id.action_logout:
+                mHandler.logout();
+                Intent login = new Intent(getApplicationContext(), LoginActivity.class);
+                //Pass the mBoardId to new activity
+                startActivity(login);
+                return true;
+            case R.id.button_view_members:
+
+                Intent intent = new Intent(BoardActivity.this, MembersBoardActivity.class);
+
+                intent.putExtra(BoardActivity.BOARD_MEMBERS_EXTRA_ID, this.mBoardId);
+                intent.putExtra(BoardActivity.BOARD_MEMBERS_EXTRA_NAME, this.mBoardName);
+
+                startActivity(intent);
+                return true;
+            case R.id.action_timer:
+                createTimerDialog();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        if (id == R.id.button_view_members)
-        {
-            Intent intent = new Intent(BoardActivity.this, MembersBoardActivity.class);
-
-            intent.putExtra(BoardActivity.BOARD_MEMBERS_EXTRA_ID, this.mBoardId);
-            intent.putExtra(BoardActivity.BOARD_MEMBERS_EXTRA_NAME, this.mBoardName);
-
-            startActivity(intent);
-        }
-
-        return super.onOptionsItemSelected(item);
-
-
     }
 
     /** Asynchronous Task to fetch lists in background
@@ -556,6 +559,100 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
     @Override
     public void membersBoardCallback(List<TrelloMember> members) {
 
+    }
+
+    public void createTimerDialog() {
+        final android.app.AlertDialog.Builder timeDialogBuilder = new android.app.AlertDialog.Builder(BoardActivity.this);
+        LayoutInflater inflater = LayoutInflater.from(this);
+        final View dialogView = inflater.inflate(R.layout.dialog_timer, null);
+
+        NumberPicker pickers[] = {
+                (NumberPicker) dialogView.findViewById(R.id.hours),
+                (NumberPicker) dialogView.findViewById(R.id.minutes),
+                (NumberPicker) dialogView.findViewById(R.id.seconds)};
+        for (NumberPicker picker : pickers) {
+            picker.setMinValue(0);
+            picker.setMaxValue(59);
+
+            picker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+                @Override
+                public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                    if (!Timer.isRunning()) {
+                        NumberPicker pickers[] = {
+                                (NumberPicker) dialogView.findViewById(R.id.hours),
+                                (NumberPicker) dialogView.findViewById(R.id.minutes),
+                                (NumberPicker) dialogView.findViewById(R.id.seconds)};
+                        Timer.setTime(pickers[0].getValue(), pickers[1].getValue(), pickers[2].getValue());
+                    }
+                }
+            });
+        }
+        //setup buttons
+        ImageButton startB = (ImageButton) dialogView.findViewById(R.id.startButton);
+        updateDialog(dialogView);
+        startB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            @SuppressWarnings("deprecation")
+            public void onClick(View v) {
+                if (Timer.isRunning()) {
+                    Timer.pause();
+                } else {
+                    Timer.start();
+                }
+                updateDialog(dialogView);
+            }
+        });
+        ImageButton resetB = (ImageButton) dialogView.findViewById(R.id.resetButton);
+        resetB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Timer.reset();
+                updateDialog(dialogView);
+            }
+        });
+
+        //init values
+        pickers[0].setValue(Timer.getHoursLeft());
+        pickers[1].setValue(Timer.getMinutesLeft());
+        pickers[2].setValue(Timer.getSecondsLeft());
+
+        //init dialog
+        timeDialogBuilder.setTitle(getString(R.string.headline_timer));
+        timeDialogBuilder.setView(dialogView);
+        timeDialogBuilder.setPositiveButton(getString(R.string.lbl_done), null);
+
+        //register view
+        Timer.registerView(dialogView);
+
+        //create dialog
+        android.app.AlertDialog timerDialog = timeDialogBuilder.create();
+        timerDialog.show();
+        timerDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                Timer.removeView();
+            }
+        });
+    }
+
+    @SuppressWarnings("deprecation")
+    public void updateDialog(View dialogView) {
+        ImageButton startB = (ImageButton) dialogView.findViewById(R.id.startButton);
+        String resource = "android:drawable/ic_media_play";
+        if (Timer.isRunning()) {
+            resource = "android:drawable/ic_media_pause";
+        }
+        int identifier = getResources().getIdentifier(resource, null, null);
+        startB.setImageDrawable(getResources().getDrawable(identifier));
+
+        NumberPicker pickers[] = {
+                (NumberPicker) dialogView.findViewById(R.id.hours),
+                (NumberPicker) dialogView.findViewById(R.id.minutes),
+                (NumberPicker) dialogView.findViewById(R.id.seconds)};
+        for (NumberPicker picker : pickers) {
+            if (Timer.isRunning()) picker.setEnabled(false);
+            else picker.setEnabled(true);
+        }
     }
 
 
