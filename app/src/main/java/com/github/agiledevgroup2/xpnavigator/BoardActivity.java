@@ -573,6 +573,10 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
 
     }
 
+
+    /**
+     * creates a new countdown timer dialog
+     */
     public void createTimerDialog() {
         final android.app.AlertDialog.Builder timeDialogBuilder = new android.app.AlertDialog.Builder(BoardActivity.this);
         LayoutInflater inflater = LayoutInflater.from(this);
@@ -647,6 +651,12 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
         });
     }
 
+
+    /**
+     * update the countdown timer dialogs elements <br>
+     * <font style:color="red">Warning:</font> Use only the timer dialog!
+     * @param dialogView dialog to update
+     */
     @SuppressWarnings("deprecation")
     public void updateDialog(View dialogView) {
         ImageButton startB = (ImageButton) dialogView.findViewById(R.id.startButton);

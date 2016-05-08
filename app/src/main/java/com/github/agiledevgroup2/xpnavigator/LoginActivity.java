@@ -77,6 +77,9 @@ public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> im
         }
     }
 
+    /**
+     * creates a new countdown timer dialog
+     */
     public void createTimerDialog() {
         final AlertDialog.Builder timeDialogBuilder = new AlertDialog.Builder(LoginActivity.this);
         LayoutInflater inflater = LayoutInflater.from(this);
@@ -151,6 +154,11 @@ public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> im
         });
     }
 
+    /**
+     * update the countdown timer dialogs elements <br>
+     * <font style:color="red">Warning:</font> Use only the timer dialog!
+     * @param dialogView dialog to update
+     */
     @SuppressWarnings("deprecation")
     public void updateDialog(View dialogView) {
         ImageButton startB = (ImageButton) dialogView.findViewById(R.id.startButton);
