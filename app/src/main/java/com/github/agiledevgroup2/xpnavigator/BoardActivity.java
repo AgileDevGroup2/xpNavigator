@@ -139,7 +139,7 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
                 if (itemType == ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
                     onGroupLongClick(groupPosition);
                 } else if (itemType == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
-                    onChildLongClick(groupPosition, childPosition);
+                    //onChildLongClick(groupPosition, childPosition);
 
                     /*On Child Longclick, start drag & drop*/
                     /*Pass the Card ID to be attatched to the drag-image, read android docs
