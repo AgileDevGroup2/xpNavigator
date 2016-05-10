@@ -63,6 +63,9 @@
         <activity
             android:name=".LogoutActivity"
             android:label="@string/title_activity_logout"></activity>
+        <activity
+            android:name=".MembersBoardActivity"
+            android:label="@string/title_activity_board_members"></activity>
     </application>
 
 </manifest>
