@@ -266,7 +266,7 @@ public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> im
     }
 
     @Override
-    public void membersBoardCallback(List<TrelloMember> members) {
+    public void membersBoardCallback(TrelloBoardMembers boardMembers) {
 
     }
 

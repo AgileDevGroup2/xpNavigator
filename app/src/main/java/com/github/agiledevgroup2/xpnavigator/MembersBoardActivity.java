@@ -60,14 +60,11 @@ public class MembersBoardActivity extends AppCompatActivity implements ApiListen
     }
 
     @Override
-    public void membersBoardCallback(List<TrelloMember> membersList) {
+    public void membersBoardCallback(TrelloBoardMembers boardMembers) {
 
-        Log.d("test2", String.valueOf(membersList.size()));
+        this.boardMembers = boardMembers;
 
-        boardMembers = new TrelloBoardMembers();
-
-        for (int i = 0 ; i < membersList.size() ; i++)
-            boardMembers.addMember(membersList.get(i));
+        Log.d("test", "OK");
 
         initView();
     }
@@ -86,7 +83,8 @@ public class MembersBoardActivity extends AppCompatActivity implements ApiListen
         protected Boolean doInBackground(String... params) {
             String boardId = params[0];
             try {
-                handler.fetchMembers(boardId);
+                Log.d("test23", boardId);
+                handler.fetchOrganization(boardId);
             } catch (Exception e) {
                 Log.d("TaskError", "GenerateMemberTaskException");
                 e.printStackTrace();
