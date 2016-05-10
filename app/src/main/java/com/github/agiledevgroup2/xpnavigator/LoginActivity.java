@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -40,7 +41,7 @@ public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> im
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_main);
         ((Button) findViewById(R.id.login_button)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -202,9 +203,9 @@ public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> im
      * Method to initiate the main layout
      */
     protected void initMainLayout() {
-        setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        setContentView(R.layout.activity_backlog);
+        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        //setSupportActionBar(toolbar);
         initiateBoards();
 
     }
@@ -225,6 +226,8 @@ public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> im
         final Button boardButton = new Button(getApplicationContext());
         final String id = boardId;
         final String nameBoard = buttonText;
+
+        Log.d(TAG, "add Button: " + buttonText);
 
         LinearLayout btnLayout = (LinearLayout) findViewById(R.id.buttonLayout);
         LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);

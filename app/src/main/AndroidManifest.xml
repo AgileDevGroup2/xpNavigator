@@ -10,19 +10,24 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:textColor="@color/titletextcolor"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme.WithActionBar">
         <meta-data
             android:name="AA_DB_NAME"
             android:value="RestClient.db" />
         <meta-data
             android:name="AA_DB_VERSION"
             android:value="1" />
+        <meta-data
+            android:name="android.app.searchable"
+            android:resource="@xml/searchable" />
 
+        <!-- android:name=".LoginActivity" -->
         <activity
             android:name=".LoginActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.WithActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -42,20 +47,22 @@
         <activity
             android:name=".BoardActivity"
             android:label="@string/title_activity_board"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ListActivity"
             android:label="@string/title_activity_list"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".EditCardActivity"
             android:label="@string/title_activity_edit_card"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".MembersBoardActivity"
-            android:label="@string/title_activity_board_members"
-            >
-        </activity>
+            android:name=".BacklogActivity"
+            android:label="@string/title_activity_backlog"
+            android:theme="@style/AppTheme.WithActionBar" />
+        <activity
+            android:name=".LogoutActivity"
+            android:label="@string/title_activity_logout"></activity>
     </application>
 
 </manifest>
