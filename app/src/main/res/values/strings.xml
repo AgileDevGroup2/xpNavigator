@@ -11,6 +11,9 @@
     <string name="title_activity_edit_card">EditCardActivity</string>
     <string name="name_icon_view_members">Members</string>
     <string name="timer_label">Timer</string>
+    <string name="imageviewdescription">imageViewDescription</string>
+    <string name="imageView">imageView</string>
+    <string name="tacofirstpage">TacoFirstPage</string>
     <string-array name="board_activity_popup">
         <item>Add Card</item>
         <item>Change Name</item>
@@ -23,4 +26,8 @@
         <item>Move Card</item>
 
     </string-array>
+    <string name="title_activity_backlog">Boards</string>
+    <string name="search_title">Search</string>
+    <string name="search_hint">search_hint</string>
+    <string name="title_activity_logout">LogoutActivity</string>
 </resources>

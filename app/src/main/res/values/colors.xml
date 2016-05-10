@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimary">#3f51b5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="greetingTrello">#1A5C81</color>
+    <color name="buttonBackground">#5d9dd7</color>
+    <color name="ButtonBorder">#4a91d2</color>
+
+    <color name="titletextcolor">#ebc935</color>
+    <color name="titlebackgroundcolor">#3f51b5</color>
+
+
+
+
+
+
 </resources>
