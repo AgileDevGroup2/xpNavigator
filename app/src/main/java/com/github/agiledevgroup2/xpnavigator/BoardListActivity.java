@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -46,6 +47,8 @@ public class BoardListActivity extends AppCompatActivity implements ApiListener{
         this.getSupportActionBar().setDisplayShowHomeEnabled(true);
         this.getSupportActionBar().setLogo(R.mipmap.ic_launcher);
         this.getSupportActionBar().setDisplayUseLogoEnabled(true);
+
+        ((TextView) findViewById(R.id.headline)).setText(getText(R.string.my_boards));
     }
 
     @Override

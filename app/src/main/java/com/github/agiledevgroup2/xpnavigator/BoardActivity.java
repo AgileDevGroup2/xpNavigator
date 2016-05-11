@@ -24,6 +24,8 @@ import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -57,33 +59,23 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_board);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         Timer.setContext(getApplicationContext());
 
         mTrelloLists = new ArrayList<>();
-
 
         /*Handle Passed information from previous activity*/
         Intent previousIntent = getIntent();
         mBoardId = previousIntent.getStringExtra(BoardListActivity.BOARD_EXTRA_ID);
         this.mBoardName = previousIntent.getStringExtra(BoardListActivity.BOARD_EXTRA_NAME);
 
-        this.setTitle(mBoardName);
-
         mHandler = new ApiHandler(this);
-
 
         /*Fetch the lists in background*/
         GenerateListsTask glt = new GenerateListsTask();
         glt.execute(mBoardId);
 
-
         mExpandableListView = (ExpandableListView) findViewById(R.id.expandableListView);
         mExpandableListOverview = new HashMap();
-
-
 
         /**
          *  set the logo
@@ -92,6 +84,8 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
         this.getSupportActionBar().setDisplayShowHomeEnabled(true);
         this.getSupportActionBar().setLogo(R.mipmap.ic_launcher);
         this.getSupportActionBar().setDisplayUseLogoEnabled(true);
+
+        ((TextView) findViewById(R.id.headline)).setText(mBoardName);
 
 
         /*Eventlisteners for the mExpandableListView*/

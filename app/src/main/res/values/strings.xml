@@ -4,13 +4,15 @@
     <string name="api_key">81e692a4c7305deef90c59e2a79393bc</string>
     <string name="oauth_secret">462a62c3b68ee9675470d94eb0cc903c9876efc3fe985ad24aeeb83470c9f00e</string>
     <string name="login_label">Login</string>
-    <string name="title_activity_board">BoardActivity</string>
+    <string name="title_activity_board">Board</string>
     <string name="title_activity_board_members">MembersBoardActivity</string>
     <string name="title_activity_controller">ControllerActivity</string>
     <string name="title_activity_list">ListActivity</string>
     <string name="title_activity_edit_card">EditCardActivity</string>
     <string name="name_icon_view_members">Members</string>
     <string name="timer_label">Timer</string>
+    <string name="my_boards">MY BOARDS</string>
+    <string name="lists">Lists</string>
 
     <string name="imageviewdescription">imageViewDescription</string>
     <string name="imageView">imageView</string>
