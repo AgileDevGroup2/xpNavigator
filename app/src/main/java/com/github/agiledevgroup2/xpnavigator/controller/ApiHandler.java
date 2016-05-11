@@ -1,5 +1,6 @@
 package com.github.agiledevgroup2.xpnavigator.controller;
 
+import android.os.AsyncTask;
 import android.util.Log;
 
 import com.github.agiledevgroup2.xpnavigator.other.ThreadIndependentLock;
@@ -26,7 +27,7 @@ import java.util.concurrent.locks.Lock;
 public class ApiHandler extends JsonHttpResponseHandler {
 
     private static final String TAG = "ApiHandler";
-    protected enum State {BOARD, LIST, CARD, MEMBER, ORGANIZATION ,NAME_TEAM, PUSH}
+    protected enum State {NONE, BOARD, LIST, CARD, MEMBER, ORGANIZATION, NAME_TEAM, PUSH}
 
     protected State mCurState;
 
@@ -40,7 +41,7 @@ public class ApiHandler extends JsonHttpResponseHandler {
 
     private List<TrelloMember> listsmembership;
 
-    private String idBoard;
+    private String mlastBoardId;
 
     TrelloBoardMembers boardMembers;
 
@@ -66,15 +67,12 @@ public class ApiHandler extends JsonHttpResponseHandler {
      * Fetch boards, callback will be send to ApiListener.setBoards
      */
     public void fetchBoards() {
-        mLock.lock();
-        mCurState = State.BOARD;
-        TrelloApplication.getTrelloClient().getBoards(this);
-    }
-
-    public void fetchNameBoardTeam(String boardId) {
-        mLock.lock();
-        mCurState = State.NAME_TEAM;
-        TrelloApplication.getTrelloClient().getNameBoardTeam(boardId, this);
+        new AsyncExec(State.BOARD) {
+            @Override
+            protected void task(String... data) {
+                TrelloApplication.getTrelloClient().getBoards(ApiHandler.this);
+            }
+        }.execute();
     }
 
     /**
@@ -82,9 +80,12 @@ public class ApiHandler extends JsonHttpResponseHandler {
      * @param boardId board's id the lists should be fetched from
      */
     public void fetchLists(String boardId) {
-        mLock.lock();
-        mCurState = State.LIST;
-        TrelloApplication.getTrelloClient().getLists(boardId, this);
+        new AsyncExec(State.LIST) {
+            @Override
+            protected void task(String... data) {
+                TrelloApplication.getTrelloClient().getLists(data[0], ApiHandler.this);
+            }
+        }.execute(boardId);
     }
 
     /**
@@ -92,34 +93,61 @@ public class ApiHandler extends JsonHttpResponseHandler {
      * @param listId list's id the cards should be fetched from
      */
     public void fetchCards(String listId, String listName) {
-        mLock.lock();
-        mLName = listName;
-        mCurState = State.CARD;
-        TrelloApplication.getTrelloClient().getCards(listId, this);
+        new AsyncExec(State.CARD) {
+            @Override
+            protected void task(String... data) {
+                mLName = data[1];
+                TrelloApplication.getTrelloClient().getCards(data[0], ApiHandler.this);
+            }
+        }.execute(listId, listName);
     }
 
     /**
-     *
+     * Todo: comment your stuff if you add something!
      *
      */
     public void fetchMembers ()
     {
-        mLock.lock();
-        mCurState = State.MEMBER;
-        TrelloApplication.getTrelloClient().getMembers(this.idBoard, this);
+
+        new AsyncExec(State.MEMBER) {
+            @Override
+            protected void task(String... data) {
+                TrelloApplication.getTrelloClient().getMembers(data[0], ApiHandler.this);
+            }
+        }.execute(mlastBoardId);
+        //todo fix mlastBoardId! this should be given by a function parameter, not as an attribute!
 
     }
 
     /**
-     *
+     * Todo: comment your stuff if you add something!
      * @param boardId
      */
     public void fetchOrganization (String boardId)
     {
-        this.idBoard = boardId;
-        mLock.lock();
-        mCurState = State.ORGANIZATION;
-        TrelloApplication.getTrelloClient().getOrganization(boardId, this);
+
+        new AsyncExec(State.ORGANIZATION) {
+            @Override
+            protected void task(String... data) {
+        //todo fix mlastBoardId! this should be given by a function parameter, not as an attribute!
+                mlastBoardId = data[0];
+                TrelloApplication.getTrelloClient().getOrganization(data[0], ApiHandler.this);
+            }
+        }.execute(boardId);
+
+    }
+
+    public void fetchNameBoardTeam (String boardId)
+    {
+
+        new AsyncExec(State.NAME_TEAM) {
+            @Override
+            protected void task(String... data) {
+                //todo fix mlastBoardId! this should be given by a function parameter, not as an attribute!
+                mlastBoardId = data[0];
+                TrelloApplication.getTrelloClient().getNameBoardTeam(data[0], ApiHandler.this);
+            }
+        }.execute(boardId);
 
     }
 
@@ -130,7 +158,13 @@ public class ApiHandler extends JsonHttpResponseHandler {
      * @param listId the list associated with the new card
      */
     public void addCard(String name, String desc, String listId) {
-        TrelloApplication.getTrelloClient().addCard(name, desc, listId, this);
+        new AsyncExec() {
+            @Override
+            protected void task(String... data) {
+                TrelloApplication.getTrelloClient()
+                        .addCard(data[0], data[1], data[2], ApiHandler.this);
+            }
+        }.execute(name, desc, listId);
     }
 
     /**
@@ -146,7 +180,12 @@ public class ApiHandler extends JsonHttpResponseHandler {
      * @param cardId id of card to remove from Trello
      */
     public void removeCard(String cardId) {
-        TrelloApplication.getTrelloClient().removeCard(cardId, this);
+        new AsyncExec() {
+            @Override
+            protected void task(String... data) {
+                TrelloApplication.getTrelloClient().removeCard(data[0], ApiHandler.this);
+            }
+        }.execute(cardId);
     }
 
     /**
@@ -163,7 +202,12 @@ public class ApiHandler extends JsonHttpResponseHandler {
      * @param listId id of list to move card to
      */
     public void moveCard(String cardId, String listId) {
-        TrelloApplication.getTrelloClient().moveCard(cardId, listId, this);
+        new AsyncExec() {
+            @Override
+            protected void task(String... data) {
+                TrelloApplication.getTrelloClient().moveCard(data[0], data[1], ApiHandler.this);
+            }
+        }.execute(cardId, listId);
     }
 
     /**
@@ -174,7 +218,13 @@ public class ApiHandler extends JsonHttpResponseHandler {
      * @param position position in the list to move to
      */
     public void moveCardWithinList(String cardId,String position){
-        TrelloApplication.getTrelloClient().moveCardWithinList(cardId,position,this);
+
+        new AsyncExec() {
+            @Override
+            protected void task(String... data) {
+                TrelloApplication.getTrelloClient().moveCardWithinList(data[0], data[1], ApiHandler.this);
+            }
+        }.execute(cardId,position);
     }
 
     /**
@@ -199,7 +249,7 @@ public class ApiHandler extends JsonHttpResponseHandler {
         //cancel if null-response
         if (response == null) {
             handleFailure("JSONObject is null object");
-            mLock.unlock();
+            requestFinished();
             return;
         }
 
@@ -231,30 +281,31 @@ public class ApiHandler extends JsonHttpResponseHandler {
         //cancel if null-response
         if (response == null) {
             handleFailure("JSONArray is null object");
-            mLock.unlock();
-            return;
-        }
+        } else {
 
-        switch (mCurState) {
-            case BOARD:
-                handleBoard(response);
-                break;
-            case LIST:
-                handleLists(response);
-                break;
-            case CARD:
-                handleCards(response);
-                break;
-            case MEMBER:
-                handleMembers(response);
-                break;
-            case ORGANIZATION:
-                handleOrganization(response);
-                break;
+            switch (mCurState) {
+                case BOARD:
+                    handleBoard(response);
+                    break;
+                case LIST:
+                    handleLists(response);
+                    break;
+                case CARD:
+                    handleCards(response);
+                    break;
+                case MEMBER:
+                    handleMembers(response);
+                    break;
+                case ORGANIZATION:
+                    handleOrganization(response);
+                    break;
+                default:
+                    Log.d(TAG, "should refresh");
+            }
         }
-        mLock.unlock();
-
+        requestFinished();
     }
+
 
 
     /**
@@ -270,7 +321,7 @@ public class ApiHandler extends JsonHttpResponseHandler {
                           java.lang.String responseString,
                           java.lang.Throwable throwable) {
         handleFailure(responseString);
-        mLock.unlock();
+        requestFinished();
     }
 
     /**
@@ -286,7 +337,7 @@ public class ApiHandler extends JsonHttpResponseHandler {
                           java.lang.Throwable throwable,
                           JSONObject response) {
         handleFailure(throwable.getMessage());
-        mLock.unlock();
+        requestFinished();
     }
 
     /**
@@ -295,7 +346,7 @@ public class ApiHandler extends JsonHttpResponseHandler {
      */
     protected void handleFailure(String message) {
         Log.e(TAG, message);
-        //todo handle more?
+        requestFinished();
     }
 
     /**
@@ -323,13 +374,18 @@ public class ApiHandler extends JsonHttpResponseHandler {
         String name = "";
 
         try {
-             name = response.getString("_value");
+            name = response.getString("_value");
         } catch (JSONException e) {
             Log.v(TAG, e.getMessage());
         }
 
         //use listener callback
         if (mListener != null) mListener.nameBoardTeamCallback(name);
+    }
+
+    protected void requestFinished() {
+        mCurState = State.NONE;
+        mLock.unlock();
     }
 
     /**
@@ -374,7 +430,7 @@ public class ApiHandler extends JsonHttpResponseHandler {
 
     protected void handleOrganization(JSONArray jsonArray) {
 
-        boardMembers = new TrelloBoardMembers(this.idBoard);
+        boardMembers = new TrelloBoardMembers(mlastBoardId);
 
         try {
             boardMembers.setOrganization(jsonArray);
@@ -411,4 +467,28 @@ public class ApiHandler extends JsonHttpResponseHandler {
     public void logout() {
         TrelloApplication.getTrelloClient().clearAccessToken();
     }
+
+    /**
+     * Abstract class for asynchronous tasks
+     */
+    private abstract class AsyncExec extends AsyncTask<String, Void, Void> {
+       private State lockedState;
+        public AsyncExec() {
+            lockedState = State.NONE;
+        }
+        public AsyncExec(State lockedState) {
+            this.lockedState = lockedState;
+        }
+        protected Void doInBackground(String... data) {
+            mLock.lock();
+            mCurState = lockedState;
+            task(data);
+            return null;
+        }
+        protected void onProgressUpdate(Void... v) { }
+        protected void onPostExecute(Void v) { }
+
+        protected abstract void task(String... data);
+    }
 }
+

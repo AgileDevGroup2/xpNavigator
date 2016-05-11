@@ -283,8 +283,16 @@ public class BoardActivity extends AppCompatActivity implements ApiListener {
                             String cardId = item.getText().toString();
 
                             if(itemType == ExpandableListView.PACKED_POSITION_TYPE_GROUP){
-                                Log.d("DROP", "DROPPED " + cardId + " IN " + groupId);
+                                Log.d(TAG, "DROPPED " + cardId + " IN " + groupId);
+                                TrelloCard card = getCard(cardId);
+                                TrelloList oldList = card != null?getList(card.getListId()):null;
+
                                 mHandler.moveCard(cardId,groupId);
+
+                                TrelloList newList = getList(groupId);
+
+                                if (oldList != null) updateListView(oldList);
+                                if (newList != null) updateListView(newList);
 
                             }
 
@@ -306,6 +314,7 @@ public class BoardActivity extends AppCompatActivity implements ApiListener {
                                 * in the list.
                                 * */
                                 mHandler.moveCardWithinList(cardId,childPos);
+                                updateListView(mExpandableListTitle.get(groupPosition));
                             }
                             mExpandableListView.getChildAt(oldPos).
                                     setBackgroundColor(Color.TRANSPARENT);
@@ -421,7 +430,7 @@ public class BoardActivity extends AppCompatActivity implements ApiListener {
                                                     mExpandableListTitle.get(groupPosition).
                                                             getId());
 
-                                                //update view (Todo: outsource this)
+                                                //update view
                                                 updateListView(mExpandableListTitle.
                                                         get(groupPosition));
                                                 //mExpandableListView.invalidate();
@@ -689,5 +698,22 @@ public class BoardActivity extends AppCompatActivity implements ApiListener {
         }
     }
 
+    protected TrelloList getList (String listId) {
+        for (TrelloList list : mExpandableListTitle) {
+            if (list.getId().equals(listId)) {
+                return list;
+            }
+        }
+        return null;
+    }
 
+    protected TrelloCard getCard (String cardId) {
+        for (TrelloList list : mExpandableListTitle) {
+            for (TrelloCard card : list.getCards())
+                if (card.getId().equals(cardId)) {
+                    return card;
+                }
+        }
+        return null;
+    }
 }
