@@ -1,4 +1,6 @@
-package com.github.agiledevgroup2.xpnavigator;
+package com.github.agiledevgroup2.xpnavigator.model;
+
+import com.github.agiledevgroup2.xpnavigator.other.Util;
 
 import org.json.JSONException;
 import org.json.JSONObject;

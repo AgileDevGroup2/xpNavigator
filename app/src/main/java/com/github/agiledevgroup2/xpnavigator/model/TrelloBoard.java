@@ -1,4 +1,6 @@
-package com.github.agiledevgroup2.xpnavigator;
+package com.github.agiledevgroup2.xpnavigator.model;
+
+import com.github.agiledevgroup2.xpnavigator.other.Util;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,6 +21,7 @@ public class TrelloBoard {
     private String mDesc;
     private Date mLastEdited;
     private List<TrelloList> mLists;
+    private Boolean mIsOrganization;
 
     /**
      * creates a new Board Object, throws JSONException if the json object can't be parsed
@@ -31,6 +34,9 @@ public class TrelloBoard {
         mDesc = json.getString("desc");
 
         mLists = new ArrayList<>();
+
+        if (json.getString("idOrganization") != null) mIsOrganization = true;
+        else mIsOrganization = false;
 
         mLastEdited = Util.getDateFromJson(json.getString("dateLastActivity"));
     }

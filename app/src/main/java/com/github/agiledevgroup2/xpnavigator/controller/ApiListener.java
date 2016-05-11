@@ -1,4 +1,9 @@
-package com.github.agiledevgroup2.xpnavigator;
+package com.github.agiledevgroup2.xpnavigator.controller;
+
+import com.github.agiledevgroup2.xpnavigator.model.TrelloBoard;
+import com.github.agiledevgroup2.xpnavigator.model.TrelloBoardMembers;
+import com.github.agiledevgroup2.xpnavigator.model.TrelloCard;
+import com.github.agiledevgroup2.xpnavigator.model.TrelloList;
 
 import java.util.List;
 

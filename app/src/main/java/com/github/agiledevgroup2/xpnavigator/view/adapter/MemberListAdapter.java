@@ -1,15 +1,15 @@
-package com.github.agiledevgroup2.xpnavigator;
+package com.github.agiledevgroup2.xpnavigator.view.adapter;
 
 import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
+import com.github.agiledevgroup2.xpnavigator.R;
+import com.github.agiledevgroup2.xpnavigator.model.TrelloBoardMembers;
+import com.github.agiledevgroup2.xpnavigator.model.TrelloMember;
 
 /**
  * Created by Thibault on 28/04/2016.
