@@ -1,57 +1,73 @@
 package com.github.agiledevgroup2.xpnavigator;
 
 import android.app.AlertDialog;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Menu;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.LinearLayout.LayoutParams;
 import android.widget.NumberPicker;
-
-//Library stuff
-import com.codepath.oauth.OAuthLoginActionBarActivity;
 
 import java.util.List;
 
-/**
- * This class represents the apps main activity
- * TODO: might rename this class to something like "MainActivity"...
- */
-public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> {
+public class BoardListActivity extends AppCompatActivity implements ApiListener{
 
-    public final static String TAG = "LoginActivity";
+    private static final String TAG = "BoardListActivity";
+    public final static String BOARD_EXTRA_ID = "BOARD_ID";
+    public final static String BOARD_EXTRA_NAME = "BOARD_NAME";
 
-    /**
-     * creates the view and initiates the login dialog
-     *
-     * @param savedInstanceState saved data to restore view (e.g. after rotating the phone)
-     */
+    private ApiHandler handler;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        ((Button) findViewById(R.id.login_button)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getClient().connect();
-            }
-        });
+        setContentView(R.layout.activity_board_list);
+
+        handler = new ApiHandler(this);
         Timer.setContext(getApplicationContext());
+        handler.fetchBoards();
+
+        /**
+         *  set the logo
+         */
+        // enabling action bar app icon and behaving it as toggle button
+        this.getSupportActionBar().setDisplayShowHomeEnabled(true);
+        this.getSupportActionBar().setLogo(R.mipmap.ic_launcher);
+        this.getSupportActionBar().setDisplayUseLogoEnabled(true);
     }
 
-
-    // Inflate the menu; this adds items to the action bar if it is present.
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_login, menu);
-        return true;
+
+        // Inflate the menu; this adds items to the action bar if it is present
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        // Search Bar
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.options_menu, menu);
+
+        // Associate searchable configuration with the SearchView
+        SearchManager searchManager =
+                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView =
+                (SearchView) menu.findItem(R.id.search).getActionView();
+        searchView.setSearchableInfo(
+                searchManager.getSearchableInfo(getComponentName()));
+
+        return super.onCreateOptionsMenu(menu);
+
     }
 
     @Override
@@ -63,16 +79,79 @@ public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> {
                 createTimerDialog();
                 return true;
 
+            case R.id.action_logout:
+                handler.logout();
+                Intent login = new Intent(getApplicationContext(), LoginActivity.class);
+                startActivity(login);
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
     /**
+     * Adding buttons for each board dynamically
+     *
+     * @param buttonText The name of the board received from the JSON "name"
+     */
+    public void addBoardButton(String buttonText, String boardId) {
+         /*Generate a button for each TrelloBoard*/
+        final Button boardButton = new Button(getApplicationContext());
+        final String id = boardId;
+        final String nameBoard = buttonText;
+
+        Log.d(TAG, "add Button: " + buttonText);
+
+        LinearLayout btnLayout = (LinearLayout) findViewById(R.id.buttonLayout);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        btnLayout.addView(boardButton, lp);
+        boardButton.setText(boardButton.getText() + " " + buttonText);
+
+
+        /*Event Handler for each boardButton*/
+        boardButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                /*Launch new Activity for the clicked board*/
+                Intent clickedBoard = new Intent(getApplicationContext(), BoardActivity.class);
+                //Pass the BoardID to new activity
+                clickedBoard.putExtra(BOARD_EXTRA_ID, id);
+                clickedBoard.putExtra(BOARD_EXTRA_NAME, nameBoard);
+                startActivity(clickedBoard);
+
+            }
+        });
+
+    }
+
+    @Override
+    public void boardsCallback(List<TrelloBoard> boards) {
+        for(TrelloBoard b:boards){
+            addBoardButton(b.getName(),b.getId());
+        }
+
+    }
+
+    @Override
+    public void listsCallback(List<TrelloList> lists, String boardId) {
+
+    }
+
+    @Override
+    public void cardsCallback(List<TrelloCard> cards, String listId) {
+
+    }
+
+    @Override
+    public void membersBoardCallback(List<TrelloMember> members) {
+
+    }
+
+    /**
      * creates a new countdown timer dialog
      */
     public void createTimerDialog() {
-        final AlertDialog.Builder timeDialogBuilder = new AlertDialog.Builder(LoginActivity.this);
+        final AlertDialog.Builder timeDialogBuilder = new AlertDialog.Builder(BoardListActivity.this);
         LayoutInflater inflater = LayoutInflater.from(this);
         final View dialogView = inflater.inflate(R.layout.dialog_timer, null);
 
@@ -168,26 +247,5 @@ public class LoginActivity  extends OAuthLoginActionBarActivity<TrelloClient> {
             if (Timer.isRunning()) picker.setEnabled(false);
             else picker.setEnabled(true);
         }
-    }
-
-    /**
-     * Callback method for successful login
-     */
-    @Override
-    public void onLoginSuccess() {
-        Intent boardList = new Intent(getApplicationContext(), BoardListActivity.class);
-
-        startActivity(boardList); //start board list activity
-    }
-
-    /**
-     * Callback method if login failed TODO: remove Generic Exception
-     *
-     * @param e cause of the error
-     */
-    @Override
-    public void onLoginFailure(Exception e) {
-        System.out.println("err");
-        e.printStackTrace();
     }
 }

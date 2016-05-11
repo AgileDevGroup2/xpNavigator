@@ -141,7 +141,7 @@ public class MainActivity  extends OAuthLoginActionBarActivity<TrelloClient> imp
 
 
                 // move to HomeActivity or another page
-                // Intent goToNextActivity = new Intent(context, BacklogActivity.class);
+                // Intent goToNextActivity = new Intent(context, BoardListActivity.class);
                  //startActivity(goToNextActivity);
 
     }
