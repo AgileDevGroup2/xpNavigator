@@ -33,7 +33,9 @@ public class ApiHandler extends JsonHttpResponseHandler {
 
     private List<TrelloMember> listsmembership;
 
-    private List<TrelloMember> listsmemberOrganization;
+    private String idBoard;
+
+    TrelloBoardMembers boardMembers;
 
     /**
      * creates a new ApiHandler
@@ -85,13 +87,26 @@ public class ApiHandler extends JsonHttpResponseHandler {
 
     /**
      *
-     * @param boardId
+     *
      */
-    public void fetchMembers (String boardId)
+    public void fetchMembers ()
     {
         mLock.lock();
         mCurState = State.MEMBER;
-        TrelloApplication.getTrelloClient().getMembers(boardId, this);
+        TrelloApplication.getTrelloClient().getMembers(this.idBoard, this);
+
+    }
+
+    /**
+     *
+     * @param boardId
+     */
+    public void fetchOrganization (String boardId)
+    {
+        this.idBoard = boardId;
+        mLock.lock();
+        mCurState = State.ORGANIZATION;
+        TrelloApplication.getTrelloClient().getOrganization(boardId, this);
 
     }
 
@@ -210,10 +225,13 @@ public class ApiHandler extends JsonHttpResponseHandler {
                 break;
             case CARD:
                 handleCards(response);
+                break;
             case MEMBER:
                 handleMembers(response);
+                break;
             case ORGANIZATION:
                 handleOrganization(response);
+                break;
         }
         mLock.unlock();
 
@@ -302,50 +320,35 @@ public class ApiHandler extends JsonHttpResponseHandler {
     }
 
     protected void handleMembers (JSONArray jsonArray) {
-
-        listsmembership = new ArrayList<TrelloMember>();
-
+        Log.d("test24", "ok");
         for(int i = 0 ; i < jsonArray.length(); i++)
         {
+
             try {
-                listsmembership.add(new TrelloMember(jsonArray.getJSONObject(i)));
+                boardMembers.addMember(new TrelloMember(jsonArray.getJSONObject(i)));
             } catch (JSONException e) {
                 Log.v(TAG, e.getMessage());
             }
         }
 
-        if (mListener != null) mListener.membersBoardCallback(listsmembership);
+        if (boardMembers != null)
+            Log.d("test8", String.valueOf(boardMembers.getmListMembers().size()));
+        else
+            Log.d("test8", "ERROR");
+
+        if (mListener != null) mListener.membersBoardCallback(boardMembers);
     }
 
     protected void handleOrganization(JSONArray jsonArray) {
 
-
-        listsmemberOrganization = new ArrayList<TrelloMember>();
-
-        for(int i = 0 ; i < jsonArray.length(); i++)
-        {
-            /*
-            try {
-                listsmemberOrganization.add(new TrelloMember(jsonArray.getJSONObject(i)));
-            } catch (JSONException e) {
-                Log.v(TAG, e.getMessage());
-            }*/
+        try {
+            boardMembers = new TrelloBoardMembers(jsonArray, this.idBoard);
+        } catch (JSONException e) {
+            Log.v(TAG, e.getMessage());
         }
-        Log.d("test5 or", String.valueOf(listsmembership.size()));
-        if (isFinishMember)
-            manageMembers();
-        else
-            isFinishMember  = true;
-    }
 
-    protected void manageMembers ()
-    {
-        TrelloBoardMembers boardMembers = new TrelloBoardMembers();
-
-
-        isFinishMember = false;
-        //use listener callback
-        if (mListener != null) mListener.membersBoardCallback(new ArrayList<TrelloMember>());
+        mLock.unlock();
+        this.fetchMembers();
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.github.agiledevgroup2.xpnavigator;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -22,17 +23,32 @@ public class TrelloBoardMembers {
         mMemberType = new HashMap<String, String>();
     }
 
-    public TrelloBoardMembers(JSONObject json, String idBoard) throws JSONException
+    public TrelloBoardMembers(JSONArray json, String idBoard) throws JSONException
     {
         mIdBoard = idBoard;
         mListMembers = new ArrayList<TrelloMember>();
         mMemberType = new HashMap<String, String>();
+
+
+        for(int i = 0 ; i < json.length(); i++)
+        {
+            JSONObject jsonObject = json.getJSONObject(i);
+            mMemberType.put(jsonObject.getString("idMember"), jsonObject.getString("memberType"));
+        }
     }
 
     public void addMember(TrelloMember member)
     {
-        mListMembers.add(member);
-        mMemberType.put(member.getmId(), "normal");
+
+        if (!mMemberType.containsKey(member.getmId()))
+            mListMembers.add(mListMembers.size(), member);
+        else
+            mListMembers.add(0, member);
+    }
+
+    public boolean containsKey (String id)
+    {
+        return mMemberType.containsKey(id);
     }
 
 

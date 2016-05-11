@@ -143,7 +143,7 @@ public class BoardListActivity extends AppCompatActivity implements ApiListener{
     }
 
     @Override
-    public void membersBoardCallback(List<TrelloMember> members) {
+    public void membersBoardCallback(TrelloBoardMembers boardMembers) {
 
     }
 
