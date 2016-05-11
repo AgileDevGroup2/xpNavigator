@@ -25,7 +25,7 @@
 
         <!-- android:name=".LoginActivity" -->
         <activity
-            android:name=".LoginActivity"
+            android:name=".view.activity.LoginActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.WithActionBar">
             <intent-filter>
@@ -45,26 +45,26 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".BoardActivity"
+            android:name=".view.activity.BoardActivity"
             android:label="@string/title_activity_board"
             android:theme="@style/AppTheme.WithActionBar" />
         <activity
-            android:name=".ListActivity"
+            android:name=".view.activity.ListActivity"
             android:label="@string/title_activity_list"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".EditCardActivity"
+            android:name=".view.activity.EditCardActivity"
             android:label="@string/title_activity_edit_card"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".BoardListActivity"
+            android:name=".view.activity.BoardListActivity"
             android:label="@string/title_activity_backlog"
             android:theme="@style/AppTheme.WithActionBar" />
         <activity
-            android:name=".LogoutActivity"
+            android:name=".view.activity.LogoutActivity"
             android:label="@string/title_activity_logout"></activity>
         <activity
-            android:name=".MembersBoardActivity"
+            android:name=".view.activity.MembersBoardActivity"
             android:label="@string/title_activity_board_members"></activity>
     </application>
 

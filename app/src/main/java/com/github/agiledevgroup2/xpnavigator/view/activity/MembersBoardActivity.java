@@ -1,17 +1,23 @@
-package com.github.agiledevgroup2.xpnavigator;
+package com.github.agiledevgroup2.xpnavigator.view.activity;
 
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ListView;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import com.github.agiledevgroup2.xpnavigator.controller.ApiHandler;
+import com.github.agiledevgroup2.xpnavigator.controller.ApiListener;
+import com.github.agiledevgroup2.xpnavigator.R;
+import com.github.agiledevgroup2.xpnavigator.model.TrelloBoard;
+import com.github.agiledevgroup2.xpnavigator.model.TrelloBoardMembers;
+import com.github.agiledevgroup2.xpnavigator.model.TrelloCard;
+import com.github.agiledevgroup2.xpnavigator.model.TrelloList;
+import com.github.agiledevgroup2.xpnavigator.view.adapter.MemberListAdapter;
+
 import java.util.List;
 
-public class MembersBoardActivity extends AppCompatActivity implements ApiListener{
+public class MembersBoardActivity extends AppCompatActivity implements ApiListener {
 
     private String idBoard = "";
     private String nameBoard = "";

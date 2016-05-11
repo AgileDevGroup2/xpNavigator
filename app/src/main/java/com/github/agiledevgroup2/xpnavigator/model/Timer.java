@@ -1,10 +1,12 @@
-package com.github.agiledevgroup2.xpnavigator;
+package com.github.agiledevgroup2.xpnavigator.model;
 
 import android.content.Context;
 import android.os.Looper;
 import android.os.Vibrator;
 import android.view.View;
 import android.widget.NumberPicker;
+
+import com.github.agiledevgroup2.xpnavigator.R;
 
 import java.util.TimerTask;
 

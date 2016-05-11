@@ -1,7 +1,14 @@
-package com.github.agiledevgroup2.xpnavigator;
+package com.github.agiledevgroup2.xpnavigator.controller;
 
 import android.util.Log;
 
+import com.github.agiledevgroup2.xpnavigator.other.ThreadIndependentLock;
+import com.github.agiledevgroup2.xpnavigator.model.TrelloApplication;
+import com.github.agiledevgroup2.xpnavigator.model.TrelloBoard;
+import com.github.agiledevgroup2.xpnavigator.model.TrelloBoardMembers;
+import com.github.agiledevgroup2.xpnavigator.model.TrelloCard;
+import com.github.agiledevgroup2.xpnavigator.model.TrelloList;
+import com.github.agiledevgroup2.xpnavigator.model.TrelloMember;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.apache.http.Header;

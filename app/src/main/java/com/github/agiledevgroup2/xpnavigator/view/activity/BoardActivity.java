@@ -1,4 +1,4 @@
-package com.github.agiledevgroup2.xpnavigator;
+package com.github.agiledevgroup2.xpnavigator.view.activity;
 
 import android.content.ClipData;
 import android.graphics.Color;
@@ -22,6 +22,16 @@ import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.agiledevgroup2.xpnavigator.controller.ApiHandler;
+import com.github.agiledevgroup2.xpnavigator.controller.ApiListener;
+import com.github.agiledevgroup2.xpnavigator.R;
+import com.github.agiledevgroup2.xpnavigator.model.Timer;
+import com.github.agiledevgroup2.xpnavigator.model.TrelloBoard;
+import com.github.agiledevgroup2.xpnavigator.model.TrelloBoardMembers;
+import com.github.agiledevgroup2.xpnavigator.model.TrelloCard;
+import com.github.agiledevgroup2.xpnavigator.model.TrelloList;
+import com.github.agiledevgroup2.xpnavigator.view.adapter.CustomExpandableListAdapter;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,7 +44,7 @@ import java.util.List;
  *
  * display the additional options when pressing a card
  * */
-public class BoardActivity extends AppCompatActivity implements ApiListener{
+public class BoardActivity extends AppCompatActivity implements ApiListener {
     private String mBoardId = "";
     private String mBoardName = "";
     private ApiHandler mHandler;

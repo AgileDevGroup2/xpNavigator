@@ -1,4 +1,4 @@
-package com.github.agiledevgroup2.xpnavigator;
+package com.github.agiledevgroup2.xpnavigator.view.activity;
 
 import android.app.AlertDialog;
 import android.app.SearchManager;
@@ -20,9 +20,18 @@ import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
+import com.github.agiledevgroup2.xpnavigator.controller.ApiHandler;
+import com.github.agiledevgroup2.xpnavigator.controller.ApiListener;
+import com.github.agiledevgroup2.xpnavigator.R;
+import com.github.agiledevgroup2.xpnavigator.model.Timer;
+import com.github.agiledevgroup2.xpnavigator.model.TrelloBoard;
+import com.github.agiledevgroup2.xpnavigator.model.TrelloBoardMembers;
+import com.github.agiledevgroup2.xpnavigator.model.TrelloCard;
+import com.github.agiledevgroup2.xpnavigator.model.TrelloList;
+
 import java.util.List;
 
-public class BoardListActivity extends AppCompatActivity implements ApiListener{
+public class BoardListActivity extends AppCompatActivity implements ApiListener {
 
     private static final String TAG = "BoardListActivity";
     public final static String BOARD_EXTRA_ID = "BOARD_ID";

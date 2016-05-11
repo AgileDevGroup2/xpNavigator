@@ -1,4 +1,4 @@
-package com.github.agiledevgroup2.xpnavigator;
+package com.github.agiledevgroup2.xpnavigator.model;
 
 import android.content.Context;
 

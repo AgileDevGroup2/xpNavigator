@@ -1,4 +1,4 @@
-package com.github.agiledevgroup2.xpnavigator;
+package com.github.agiledevgroup2.xpnavigator.model;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -6,7 +6,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by Thibault on 28/04/2016.

@@ -1,16 +1,12 @@
-package com.github.agiledevgroup2.xpnavigator;
+package com.github.agiledevgroup2.xpnavigator.view.activity;
 
-import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -22,31 +18,21 @@ import com.codepath.oauth.OAuthLoginActionBarActivity;
 import java.util.List;
 
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.Menu;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.LinearLayout.LayoutParams;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 //Library stuff
-import org.apache.http.Header;
-import com.codepath.oauth.OAuthLoginActionBarActivity;
-import com.loopj.android.http.JsonHttpResponseHandler;
+import com.github.agiledevgroup2.xpnavigator.controller.ApiHandler;
+import com.github.agiledevgroup2.xpnavigator.controller.ApiListener;
+import com.github.agiledevgroup2.xpnavigator.R;
+import com.github.agiledevgroup2.xpnavigator.model.TrelloBoard;
+import com.github.agiledevgroup2.xpnavigator.model.TrelloBoardMembers;
+import com.github.agiledevgroup2.xpnavigator.model.TrelloCard;
+import com.github.agiledevgroup2.xpnavigator.model.TrelloClient;
+import com.github.agiledevgroup2.xpnavigator.model.TrelloList;
 
 //JSON
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.io.Console;
-import java.util.List;
 
 /**
  * This class represents the apps main activity

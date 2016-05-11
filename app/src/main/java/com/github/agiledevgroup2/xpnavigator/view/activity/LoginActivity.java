@@ -1,4 +1,4 @@
-package com.github.agiledevgroup2.xpnavigator;
+package com.github.agiledevgroup2.xpnavigator.view.activity;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -14,6 +14,9 @@ import android.widget.NumberPicker;
 
 //Library stuff
 import com.codepath.oauth.OAuthLoginActionBarActivity;
+import com.github.agiledevgroup2.xpnavigator.R;
+import com.github.agiledevgroup2.xpnavigator.model.Timer;
+import com.github.agiledevgroup2.xpnavigator.model.TrelloClient;
 
 /**
  * This class represents the apps main activity
