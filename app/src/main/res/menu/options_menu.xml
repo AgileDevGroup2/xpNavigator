@@ -11,8 +11,4 @@
         app:actionViewClass="android.support.v7.widget.SearchView"
         tools:ignore="AppCompatResource" />
 
-
-
-
-
 </menu>

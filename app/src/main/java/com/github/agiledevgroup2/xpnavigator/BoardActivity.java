@@ -7,9 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
@@ -57,33 +55,33 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_board);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         Timer.setContext(getApplicationContext());
 
         mTrelloLists = new ArrayList<>();
 
-
         /*Handle Passed information from previous activity*/
         Intent previousIntent = getIntent();
-        mBoardId = previousIntent.getStringExtra(LoginActivity.BOARD_EXTRA_ID);
-        this.mBoardName = previousIntent.getStringExtra(LoginActivity.BOARD_EXTRA_NAME);
-
-        this.setTitle(mBoardName);
+        mBoardId = previousIntent.getStringExtra(BoardListActivity.BOARD_EXTRA_ID);
+        this.mBoardName = previousIntent.getStringExtra(BoardListActivity.BOARD_EXTRA_NAME);
 
         mHandler = new ApiHandler(this);
-
 
         /*Fetch the lists in background*/
         GenerateListsTask glt = new GenerateListsTask();
         glt.execute(mBoardId);
 
-
         mExpandableListView = (ExpandableListView) findViewById(R.id.expandableListView);
         mExpandableListOverview = new HashMap();
 
-        
+        /**
+         *  set the logo
+         */
+        // enabling action bar app icon and behaving it as toggle button
+        this.getSupportActionBar().setDisplayShowHomeEnabled(true);
+        this.getSupportActionBar().setLogo(R.mipmap.ic_launcher);
+        this.getSupportActionBar().setDisplayUseLogoEnabled(true);
+
+        ((TextView) findViewById(R.id.headline)).setText(mBoardName);
 
 
         /*Eventlisteners for the mExpandableListView*/
@@ -470,7 +468,6 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
             case R.id.action_logout:
                 mHandler.logout();
                 Intent login = new Intent(getApplicationContext(), LoginActivity.class);
-                //Pass the mBoardId to new activity
                 startActivity(login);
                 return true;
             case R.id.button_view_members:

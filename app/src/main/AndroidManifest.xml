@@ -47,7 +47,7 @@
         <activity
             android:name=".BoardActivity"
             android:label="@string/title_activity_board"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.WithActionBar" />
         <activity
             android:name=".ListActivity"
             android:label="@string/title_activity_list"
@@ -57,7 +57,7 @@
             android:label="@string/title_activity_edit_card"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".BacklogActivity"
+            android:name=".BoardListActivity"
             android:label="@string/title_activity_backlog"
             android:theme="@style/AppTheme.WithActionBar" />
         <activity
