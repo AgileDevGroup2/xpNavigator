@@ -41,7 +41,7 @@ public class ApiHandler extends JsonHttpResponseHandler {
 
     private List<TrelloMember> listsmembership;
 
-    private String idBoard;
+    private String mlastBoardId;
 
     TrelloBoardMembers boardMembers;
 
@@ -108,9 +108,14 @@ public class ApiHandler extends JsonHttpResponseHandler {
      */
     public void fetchMembers ()
     {
-        mLock.lock();
-        mCurState = State.MEMBER;
-        TrelloApplication.getTrelloClient().getMembers(this.idBoard, this);
+
+        new AsyncExec(State.MEMBER) {
+            @Override
+            protected void task(String... data) {
+                TrelloApplication.getTrelloClient().getMembers(data[0], ApiHandler.this);
+            }
+        }.execute(mlastBoardId);
+        //todo fix mlastBoardId! this should be given by a function parameter, not as an attribute!
 
     }
 
@@ -120,10 +125,15 @@ public class ApiHandler extends JsonHttpResponseHandler {
      */
     public void fetchOrganization (String boardId)
     {
-        this.idBoard = boardId;
-        mLock.lock();
-        mCurState = State.ORGANIZATION;
-        TrelloApplication.getTrelloClient().getOrganization(boardId, this);
+
+        new AsyncExec(State.ORGANIZATION) {
+            @Override
+            protected void task(String... data) {
+        //todo fix mlastBoardId! this should be given by a function parameter, not as an attribute!
+                mlastBoardId = data[0];
+                TrelloApplication.getTrelloClient().getOrganization(data[0], ApiHandler.this);
+            }
+        }.execute(boardId);
 
     }
 
@@ -386,7 +396,7 @@ public class ApiHandler extends JsonHttpResponseHandler {
     protected void handleOrganization(JSONArray jsonArray) {
 
         try {
-            boardMembers = new TrelloBoardMembers(jsonArray, this.idBoard);
+            boardMembers = new TrelloBoardMembers(jsonArray, mlastBoardId);
         } catch (JSONException e) {
             Log.v(TAG, e.getMessage());
         }
