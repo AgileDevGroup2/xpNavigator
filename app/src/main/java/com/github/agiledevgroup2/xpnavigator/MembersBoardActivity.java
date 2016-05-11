@@ -20,6 +20,8 @@ public class MembersBoardActivity extends AppCompatActivity implements ApiListen
     private MemberListAdapter adapter;
     private ListView listView;
 
+    private boolean isOrganization = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,6 +35,8 @@ public class MembersBoardActivity extends AppCompatActivity implements ApiListen
 
             this.setTitle(this.nameBoard);
         }
+
+
 
         handler = new ApiHandler(this);
 
