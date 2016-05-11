@@ -1,6 +1,7 @@
 package com.github.agiledevgroup2.xpnavigator;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
@@ -11,6 +12,7 @@ import java.util.concurrent.locks.Lock;
  */
 public class ThreadIndependentLock implements Lock {
 
+    private static final String TAG = "ThreadIndependentLock";
     private boolean mIsLocked;
 
     @Override
@@ -19,7 +21,7 @@ public class ThreadIndependentLock implements Lock {
             try {
                 Thread.sleep(10);
             } catch (InterruptedException e) {
-                //should not occur, might throw an error...
+                Log.e(TAG, "Error while try to acquire lock: \n " + e.getMessage());
             }
         }
         mIsLocked = true;

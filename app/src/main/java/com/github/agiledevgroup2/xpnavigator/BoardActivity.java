@@ -411,7 +411,7 @@ public class BoardActivity extends AppCompatActivity implements ApiListener{
                                                     mExpandableListTitle.get(groupPosition).
                                                             getId());
 
-                                                //update view (Todo: outsource this)
+                                                //update view
                                                 updateListView(mExpandableListTitle.
                                                         get(groupPosition));
                                                 //mExpandableListView.invalidate();
