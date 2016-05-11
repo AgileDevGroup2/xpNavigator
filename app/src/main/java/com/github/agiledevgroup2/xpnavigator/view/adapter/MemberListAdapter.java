@@ -30,13 +30,13 @@ public class MemberListAdapter extends BaseAdapter {
     @Override
     public int getCount() {
         // TODO Auto-generated method stub
-        return boardMembers.getmListMembers().size();
+        return boardMembers.nbPeople();
     }
 
     @Override
     public Object getItem(int position) {
         // TODO Auto-generated method stub
-        return boardMembers.getmListMembers().get(position);
+        return boardMembers.getMemberPosition(position);
     }
 
     @Override
@@ -55,15 +55,35 @@ public class MemberListAdapter extends BaseAdapter {
             convertView = inflater.inflate(R.layout.list_member_item, null);
         }
 
-        TrelloMember member = boardMembers.getMember(position);
+        TrelloMember member = boardMembers.getMemberPosition(position);
         String fullName = member.getmFullName();
-        String memberType = boardMembers.getMemberType(member);
+
 
         textView = (TextView) convertView.findViewById(R.id.member_name);
         textView.setText(fullName);
 
-        textView = (TextView) convertView.findViewById(R.id.member_type);
-        textView.setText(memberType);
+        if (position < boardMembers.getmListMembers().size()) {
+            String memberType = boardMembers.getMemberType(member);
+
+            textView = (TextView) convertView.findViewById(R.id.member_type);
+            textView.setText(memberType);
+        }
+
+        if(position == 0)
+        {
+            textView = (TextView) convertView.findViewById(R.id.header_memberlist);
+            textView.setVisibility(View.VISIBLE);
+            textView.setText("MEMBER");
+        }
+
+        if (position == boardMembers.getmListMembers().size())
+        {
+
+            textView = (TextView) convertView.findViewById(R.id.header_memberlist);
+            textView.setVisibility(View.VISIBLE);
+            textView.setText("NON MEMBER");
+
+        }
 
         return convertView;
     }

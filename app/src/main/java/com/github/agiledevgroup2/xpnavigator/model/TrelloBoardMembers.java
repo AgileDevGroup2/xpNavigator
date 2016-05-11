@@ -1,5 +1,7 @@
 package com.github.agiledevgroup2.xpnavigator.model;
 
+import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -14,21 +16,27 @@ public class TrelloBoardMembers {
 
     private String mIdBoard;
     private ArrayList<TrelloMember> mListMembers;
+    private ArrayList<TrelloMember> mListSupervisors;
+
     private HashMap<String, String> mMemberType;
 
     public TrelloBoardMembers ()
     {
         mListMembers = new ArrayList<TrelloMember>();
         mMemberType = new HashMap<String, String>();
+        mListSupervisors = new ArrayList<TrelloMember>();
     }
 
-    public TrelloBoardMembers(JSONArray json, String idBoard) throws JSONException
+    public TrelloBoardMembers( String idBoard)
     {
         mIdBoard = idBoard;
         mListMembers = new ArrayList<TrelloMember>();
         mMemberType = new HashMap<String, String>();
+        mListSupervisors = new ArrayList<TrelloMember>();
+    }
 
-
+    public void setOrganization (JSONArray json) throws JSONException
+    {
         for(int i = 0 ; i < json.length(); i++)
         {
             JSONObject jsonObject = json.getJSONObject(i);
@@ -39,10 +47,35 @@ public class TrelloBoardMembers {
     public void addMember(TrelloMember member)
     {
 
-        if (!mMemberType.containsKey(member.getmId()))
-            mListMembers.add(mListMembers.size(), member);
-        else
-            mListMembers.add(0, member);
+        if (mMemberType.containsKey(member.getmId()))
+        {
+            if (mMemberType.get(member.getmId()).equals("admin"))
+            {
+                mListMembers.add(0, member);
+            }
+            else mListMembers.add(mListMembers.size(), member);
+        }
+        else mListSupervisors.add(member);
+    }
+
+    public void addInvitatedMember(TrelloMember member)
+    {
+
+
+    }
+
+    public int nbPeople()
+    {
+        return mListMembers.size() + mListSupervisors.size();
+    }
+
+    public TrelloMember getMemberPosition (int position)
+    {
+        if (position < mListMembers.size())
+            return mListMembers.get(position);
+        else //if (position < mListMembers.size() + mListSupervisors.size())
+            return mListSupervisors.get(position - mListMembers.size());
+
     }
 
     public boolean containsKey (String id)
@@ -56,10 +89,9 @@ public class TrelloBoardMembers {
         return mMemberType.get(member.getmId());
     }
 
-    public TrelloMember getMember (int pos)
-    {
-        return mListMembers.get(pos);
-    }
+
+
+    // ---------------------  GETTERS AND SETTERS ---------------------
 
     public String getmIdBoard() {
         return mIdBoard;
@@ -75,6 +107,14 @@ public class TrelloBoardMembers {
 
     public void setmListMembers(ArrayList<TrelloMember> mListMembers) {
         this.mListMembers = mListMembers;
+    }
+
+    public ArrayList<TrelloMember> getmListSupervisors() {
+        return mListSupervisors;
+    }
+
+    public void setmListSupervisors(ArrayList<TrelloMember> mListSupervisors) {
+        this.mListSupervisors = mListSupervisors;
     }
 
     public HashMap<String, String> getmMemberType() {

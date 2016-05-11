@@ -26,7 +26,7 @@ import java.util.concurrent.locks.Lock;
 public class ApiHandler extends JsonHttpResponseHandler {
 
     private static final String TAG = "ApiHandler";
-    protected enum State {BOARD, LIST, CARD, MEMBER, ORGANIZATION, PUSH}
+    protected enum State {BOARD, LIST, CARD, MEMBER, ORGANIZATION ,NAME_TEAM, PUSH}
 
     protected State mCurState;
 
@@ -69,6 +69,12 @@ public class ApiHandler extends JsonHttpResponseHandler {
         mLock.lock();
         mCurState = State.BOARD;
         TrelloApplication.getTrelloClient().getBoards(this);
+    }
+
+    public void fetchNameBoardTeam(String boardId) {
+        mLock.lock();
+        mCurState = State.NAME_TEAM;
+        TrelloApplication.getTrelloClient().getNameBoardTeam(boardId, this);
     }
 
     /**
@@ -197,11 +203,17 @@ public class ApiHandler extends JsonHttpResponseHandler {
             return;
         }
 
-        try {
-            onSuccess(statusCode, headers, response.getJSONArray(""));
-        } catch (JSONException e) {
-            handleFailure(e.getMessage());
+        if (mCurState == State.NAME_TEAM) {
+            handleNameTeamBoard(response);
             mLock.unlock();
+        }
+        else {
+            try {
+                onSuccess(statusCode, headers, response.getJSONArray(""));
+            } catch (JSONException e) {
+                handleFailure(e.getMessage());
+                mLock.unlock();
+            }
         }
     }
 
@@ -243,7 +255,6 @@ public class ApiHandler extends JsonHttpResponseHandler {
         mLock.unlock();
 
     }
-
 
 
     /**
@@ -306,6 +317,21 @@ public class ApiHandler extends JsonHttpResponseHandler {
         if (mListener != null) mListener.boardsCallback(boards);
     }
 
+    private void handleNameTeamBoard(JSONObject response) {
+
+        Log.d("test55", "toto");
+        String name = "";
+
+        try {
+             name = response.getString("_value");
+        } catch (JSONException e) {
+            Log.v(TAG, e.getMessage());
+        }
+
+        //use listener callback
+        if (mListener != null) mListener.nameBoardTeamCallback(name);
+    }
+
     /**
      * creates a list of trello lists and sends it to the listeners callback method for lists
      * @param jsonArray json array given by the api call
@@ -348,8 +374,10 @@ public class ApiHandler extends JsonHttpResponseHandler {
 
     protected void handleOrganization(JSONArray jsonArray) {
 
+        boardMembers = new TrelloBoardMembers(this.idBoard);
+
         try {
-            boardMembers = new TrelloBoardMembers(jsonArray, this.idBoard);
+            boardMembers.setOrganization(jsonArray);
         } catch (JSONException e) {
             Log.v(TAG, e.getMessage());
         }

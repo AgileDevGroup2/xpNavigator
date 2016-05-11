@@ -38,4 +38,10 @@ public interface ApiListener {
      */
     void membersBoardCallback (TrelloBoardMembers boardMembers);
 
+    /**
+     *
+     * @param nameBoardTeam
+     */
+    void nameBoardTeamCallback (String nameBoardTeam);
+
 }

@@ -335,5 +335,10 @@ public class MainActivity  extends OAuthLoginActionBarActivity<TrelloClient> imp
 
     }
 
+    @Override
+    public void nameBoardTeamCallback(String nameBoardTeam) {
+        
+    }
+
 
 }

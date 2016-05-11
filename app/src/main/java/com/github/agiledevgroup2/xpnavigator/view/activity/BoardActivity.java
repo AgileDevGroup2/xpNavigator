@@ -580,6 +580,11 @@ public class BoardActivity extends AppCompatActivity implements ApiListener {
 
     }
 
+    @Override
+    public void nameBoardTeamCallback(String nameBoardTeam) {
+
+    }
+
 
     /**
      * creates a new countdown timer dialog
