@@ -23,6 +23,7 @@ import com.github.agiledevgroup2.xpnavigator.model.TrelloBoard;
 import com.github.agiledevgroup2.xpnavigator.model.TrelloBoardMembers;
 import com.github.agiledevgroup2.xpnavigator.model.TrelloCard;
 import com.github.agiledevgroup2.xpnavigator.model.TrelloList;
+import com.github.agiledevgroup2.xpnavigator.view.adapter.DialogBuilder;
 import com.github.agiledevgroup2.xpnavigator.view.adapter.MemberListAdapter;
 
 import java.util.List;
@@ -94,32 +95,10 @@ public class MembersBoardActivity extends AppCompatActivity implements ApiListen
                 return true;
 
             case R.id.action_timer:
-                createTimerDialog();
+                new DialogBuilder().createTimerDialog(this);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
-        }
-    }
-
-
-
-
-    public void updateDialog(View dialogView) {
-        ImageButton startB = (ImageButton) dialogView.findViewById(R.id.startButton);
-        String resource = "android:drawable/ic_media_play";
-        if (Timer.isRunning()) {
-            resource = "android:drawable/ic_media_pause";
-        }
-        int identifier = getResources().getIdentifier(resource, null, null);
-        startB.setImageDrawable(getResources().getDrawable(identifier));
-
-        NumberPicker pickers[] = {
-                (NumberPicker) dialogView.findViewById(R.id.hours),
-                (NumberPicker) dialogView.findViewById(R.id.minutes),
-                (NumberPicker) dialogView.findViewById(R.id.seconds)};
-        for (NumberPicker picker : pickers) {
-            if (Timer.isRunning()) picker.setEnabled(false);
-            else picker.setEnabled(true);
         }
     }
 
@@ -181,79 +160,20 @@ public class MembersBoardActivity extends AppCompatActivity implements ApiListen
 
 
 
-    public void createTimerDialog() {
-        final android.app.AlertDialog.Builder timeDialogBuilder = new android.app.AlertDialog.Builder(MembersBoardActivity.this);
-        LayoutInflater inflater = LayoutInflater.from(this);
-        final View dialogView = inflater.inflate(R.layout.dialog_timer, null);
+    private class GenerateNameTeamTask extends AsyncTask<String,Void,Boolean> {
+        private String[] info = new String[2];
+        @Override
+        protected Boolean doInBackground(String... params) {
+            String boardId = params[0];
+            try {
+                mHandler.fetchNameBoardTeam(boardId);
+            } catch (Exception e) {
+                Log.d("TaskError", "GenerateNameTeamTaskException");
+                e.printStackTrace();
+            }
 
-        NumberPicker pickers[] = {
-                (NumberPicker) dialogView.findViewById(R.id.hours),
-                (NumberPicker) dialogView.findViewById(R.id.minutes),
-                (NumberPicker) dialogView.findViewById(R.id.seconds)};
-        for (NumberPicker picker : pickers) {
-            picker.setMinValue(0);
-            picker.setMaxValue(59);
-
-            picker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-                @Override
-                public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-                    if (!Timer.isRunning()) {
-                        NumberPicker pickers[] = {
-                                (NumberPicker) dialogView.findViewById(R.id.hours),
-                                (NumberPicker) dialogView.findViewById(R.id.minutes),
-                                (NumberPicker) dialogView.findViewById(R.id.seconds)};
-                        Timer.setTime(pickers[0].getValue(), pickers[1].getValue(), pickers[2].getValue());
-                    }
-                }
-            });
+            return true;
         }
-        //setup buttons
-        ImageButton startB = (ImageButton) dialogView.findViewById(R.id.startButton);
-        updateDialog(dialogView);
-        startB.setOnClickListener(new View.OnClickListener() {
-            @Override
-            @SuppressWarnings("deprecation")
-            public void onClick(View v) {
-                if (Timer.isRunning()) {
-                    Timer.pause();
-                } else {
-                    Timer.start();
-                }
-                updateDialog(dialogView);
-            }
-        });
-        ImageButton resetB = (ImageButton) dialogView.findViewById(R.id.resetButton);
-        resetB.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Timer.reset();
-                updateDialog(dialogView);
-            }
-        });
 
-
-
-        //init values
-        pickers[0].setValue(Timer.getHoursLeft());
-        pickers[1].setValue(Timer.getMinutesLeft());
-        pickers[2].setValue(Timer.getSecondsLeft());
-
-        //init dialog
-        timeDialogBuilder.setTitle(getString(R.string.headline_timer));
-        timeDialogBuilder.setView(dialogView);
-        timeDialogBuilder.setPositiveButton(getString(R.string.lbl_done), null);
-
-        //register view
-        Timer.registerView(dialogView);
-
-        //create dialog
-        android.app.AlertDialog timerDialog = timeDialogBuilder.create();
-        timerDialog.show();
-        timerDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                Timer.removeView();
-            }
-        });
     }
 }

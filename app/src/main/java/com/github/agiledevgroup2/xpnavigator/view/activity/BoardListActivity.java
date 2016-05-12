@@ -28,6 +28,7 @@ import com.github.agiledevgroup2.xpnavigator.model.TrelloBoard;
 import com.github.agiledevgroup2.xpnavigator.model.TrelloBoardMembers;
 import com.github.agiledevgroup2.xpnavigator.model.TrelloCard;
 import com.github.agiledevgroup2.xpnavigator.model.TrelloList;
+import com.github.agiledevgroup2.xpnavigator.view.adapter.DialogBuilder;
 
 import java.util.List;
 
@@ -88,7 +89,7 @@ public class BoardListActivity extends AppCompatActivity implements ApiListener 
         switch (item.getItemId()) {
 
             case R.id.action_timer:
-                createTimerDialog();
+                new DialogBuilder().createTimerDialog(this);
                 return true;
 
             case R.id.action_logout:
@@ -112,6 +113,7 @@ public class BoardListActivity extends AppCompatActivity implements ApiListener 
         final Button boardButton = new Button(getApplicationContext());
         final String id = boardId;
         final String nameBoard = buttonText;
+        boardButton.setBackgroundColor(0xaa3f51b5);
 
         Log.d(TAG, "add Button: " + buttonText);
 
@@ -119,6 +121,10 @@ public class BoardListActivity extends AppCompatActivity implements ApiListener 
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         btnLayout.addView(boardButton, lp);
         boardButton.setText(boardButton.getText() + " " + buttonText);
+
+        TextView tv = new TextView(getApplicationContext());
+        tv.setBackgroundColor(0);
+        btnLayout.addView(tv, lp);
 
 
         /*Event Handler for each boardButton*/
@@ -167,107 +173,5 @@ public class BoardListActivity extends AppCompatActivity implements ApiListener 
     @Override
     public void nameBoardTeamCallback(String nameBoardTeam) {
 
-    }
-
-    /**
-     * creates a new countdown timer dialog
-     */
-    public void createTimerDialog() {
-        final AlertDialog.Builder timeDialogBuilder = new AlertDialog.Builder(BoardListActivity.this);
-        LayoutInflater inflater = LayoutInflater.from(this);
-        final View dialogView = inflater.inflate(R.layout.dialog_timer, null);
-
-        //init dialog
-        timeDialogBuilder.setTitle(getString(R.string.lbl_done));
-        timeDialogBuilder.setView(dialogView);
-        timeDialogBuilder.setPositiveButton(getString(R.string.lbl_done), null);
-
-        NumberPicker pickers[] = {
-                (NumberPicker) dialogView.findViewById(R.id.hours),
-                (NumberPicker) dialogView.findViewById(R.id.minutes),
-                (NumberPicker) dialogView.findViewById(R.id.seconds)};
-        for (NumberPicker picker : pickers) {
-            picker.setMinValue(0);
-            picker.setMaxValue(59);
-
-            picker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-                @Override
-                public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-                    if (!Timer.isRunning()) {
-                        NumberPicker pickers[] = {
-                                (NumberPicker) dialogView.findViewById(R.id.hours),
-                                (NumberPicker) dialogView.findViewById(R.id.minutes),
-                                (NumberPicker) dialogView.findViewById(R.id.seconds)};
-                        Timer.setTime(pickers[0].getValue(), pickers[1].getValue(), pickers[2].getValue());
-                    }
-                }
-            });
-        }
-        //setup buttons
-        ImageButton startB = (ImageButton) dialogView.findViewById(R.id.startButton);
-        updateDialog(dialogView);
-        startB.setOnClickListener(new View.OnClickListener() {
-            @Override
-            @SuppressWarnings("deprecation")
-            public void onClick(View v) {
-                if (Timer.isRunning()) {
-                    Timer.pause();
-                } else {
-                    Timer.start();
-                }
-                updateDialog(dialogView);
-            }
-        });
-        ImageButton resetB = (ImageButton) dialogView.findViewById(R.id.resetButton);
-        resetB.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Timer.reset();
-                updateDialog(dialogView);
-            }
-        });
-
-        //init values
-        pickers[0].setValue(Timer.getHoursLeft());
-        pickers[1].setValue(Timer.getMinutesLeft());
-        pickers[2].setValue(Timer.getSecondsLeft());
-
-        //register view
-        Timer.registerView(dialogView);
-
-        //create dialog
-        AlertDialog timerDialog = timeDialogBuilder.create();
-        timerDialog.show();
-        timerDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                Timer.removeView();
-            }
-        });
-    }
-
-    /**
-     * update the countdown timer dialogs elements <br>
-     * <font style:color="red">Warning:</font> Use only the timer dialog!
-     * @param dialogView dialog to update
-     */
-    @SuppressWarnings("deprecation")
-    public void updateDialog(View dialogView) {
-        ImageButton startB = (ImageButton) dialogView.findViewById(R.id.startButton);
-        String resource = "android:drawable/ic_media_play";
-        if (Timer.isRunning()) {
-            resource = "android:drawable/ic_media_pause";
-        }
-        int identifier = getResources().getIdentifier(resource, null, null);
-        startB.setImageDrawable(getResources().getDrawable(identifier));
-
-        NumberPicker pickers[] = {
-                (NumberPicker) dialogView.findViewById(R.id.hours),
-                (NumberPicker) dialogView.findViewById(R.id.minutes),
-                (NumberPicker) dialogView.findViewById(R.id.seconds)};
-        for (NumberPicker picker : pickers) {
-            if (Timer.isRunning()) picker.setEnabled(false);
-            else picker.setEnabled(true);
-        }
     }
 }
