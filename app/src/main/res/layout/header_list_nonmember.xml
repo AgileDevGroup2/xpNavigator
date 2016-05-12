@@ -31,6 +31,7 @@
         android:paddingBottom="10dp"
         android:background="@color/background_color_board_members_category"
         android:layout_below="@+id/header_nonmemberlist"
+        android:layout_marginBottom="5dp"
 
         android:text="@string/header_list_nonmember_category_name"
 
