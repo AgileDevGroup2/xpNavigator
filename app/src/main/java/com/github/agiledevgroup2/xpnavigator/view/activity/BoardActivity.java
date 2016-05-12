@@ -125,7 +125,7 @@ public class BoardActivity extends AppCompatActivity implements ApiListener {
                                         int childPosition, long id) {
 
                 /*Triggers even if longclick occurs*/
-                onChildLongClick(groupPosition,childPosition);
+                BoardActivity.this.onChildClick(groupPosition,childPosition);
                 return false;
             }
         });
@@ -149,7 +149,6 @@ public class BoardActivity extends AppCompatActivity implements ApiListener {
                 if (itemType == ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
                     onGroupLongClick(groupPosition);
                 } else if (itemType == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
-                    //onChildLongClick(groupPosition, childPosition);
 
                     /*On Child Longclick, start drag & drop*/
                     /*Pass the Card ID to be attatched to the drag-image, read android docs
@@ -355,7 +354,7 @@ public class BoardActivity extends AppCompatActivity implements ApiListener {
      * @param groupPosition
      * @param childPosition
      */
-    private void onChildLongClick(final int groupPosition, final int childPosition){
+    private void onChildClick(final int groupPosition, final int childPosition){
         final TrelloCard longClickedCard = mExpandableListOverview.get(
                 mExpandableListTitle.get(groupPosition).getName()).get(
                 childPosition);
