@@ -31,8 +31,8 @@ import java.util.List;
 public class MembersBoardActivity extends AppCompatActivity implements ApiListener {
 
     private String idBoard = "";
-    private String nameBoard = "";
-    private String mNameBoardTeam = "Loading";
+    private String mNameBoard = "";
+    private String mNameBoardTeam = "";
     private ApiHandler mHandler;
     private TrelloBoardMembers boardMembers;
     private MemberListAdapter adapter;
@@ -53,7 +53,9 @@ public class MembersBoardActivity extends AppCompatActivity implements ApiListen
         if (extras != null)
         {
             this.idBoard = extras.getString(BoardActivity.BOARD_MEMBERS_EXTRA_ID);
-            this.nameBoard = extras.getString(BoardActivity.BOARD_MEMBERS_EXTRA_NAME);
+            this.mNameBoard = extras.getString(BoardActivity.BOARD_MEMBERS_EXTRA_NAME);
+            this.mNameBoardTeam = extras.getString(BoardActivity.BOARD_MEMBERS_EXTRA_NAME_TEAM);
+            ((TextView) findViewById(R.id.headline)).setText(mNameBoardTeam);
 
             this.setTitle("BoardMembers");
         }
@@ -66,8 +68,6 @@ public class MembersBoardActivity extends AppCompatActivity implements ApiListen
         this.getSupportActionBar().setDisplayUseLogoEnabled(true);
 
 
-        GenerateNameTeamTask glt2 = new GenerateNameTeamTask();
-        glt2.execute(idBoard);
 
         /*Fetch the lists in background*/
         GenerateMembersTask glt = new GenerateMembersTask();
@@ -103,6 +103,11 @@ public class MembersBoardActivity extends AppCompatActivity implements ApiListen
     }
 
     @Override
+    public void failureCallback(String failure) {
+
+    }
+
+    @Override
     public void boardsCallback(List<TrelloBoard> boards) {
 
     }
@@ -127,9 +132,6 @@ public class MembersBoardActivity extends AppCompatActivity implements ApiListen
 
     @Override
     public void nameBoardTeamCallback(String nameBoardTeam) {
-
-        mNameBoardTeam = nameBoardTeam;
-        ((TextView) findViewById(R.id.headline)).setText(mNameBoardTeam);
     }
 
     private void initView() {
@@ -156,6 +158,8 @@ public class MembersBoardActivity extends AppCompatActivity implements ApiListen
         }
     }
 
+
+
     private class GenerateNameTeamTask extends AsyncTask<String,Void,Boolean> {
         private String[] info = new String[2];
         @Override
@@ -170,5 +174,6 @@ public class MembersBoardActivity extends AppCompatActivity implements ApiListen
 
             return true;
         }
+
     }
 }

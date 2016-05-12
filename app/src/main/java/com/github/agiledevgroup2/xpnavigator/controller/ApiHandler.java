@@ -350,6 +350,11 @@ public class ApiHandler extends JsonHttpResponseHandler {
      */
     protected void handleFailure(String message) {
         Log.e(TAG, message);
+
+        if (mCurState == State.NAME_TEAM)
+        {
+            if (mListener != null) mListener.failureCallback(message);
+        }
         requestFinished();
     }
 

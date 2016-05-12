@@ -313,6 +313,11 @@ public class MainActivity  extends OAuthLoginActionBarActivity<TrelloClient> imp
 
 
     @Override
+    public void failureCallback(String failure) {
+
+    }
+
+    @Override
     public void boardsCallback(List<TrelloBoard> boards) {
         for(TrelloBoard b:boards){
             addBoardButton(b.getName(),b.getId());

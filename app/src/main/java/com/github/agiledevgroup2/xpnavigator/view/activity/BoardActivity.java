@@ -49,6 +49,8 @@ import java.util.List;
 public class BoardActivity extends AppCompatActivity implements ApiListener {
     private String mBoardId = "";
     private String mBoardName = "";
+    private String mNameboardTeam = "";
+    private Menu menu;
     private ApiHandler mHandler;
     private ExpandableListView mExpandableListView;
     private CustomExpandableListAdapter mAdapter;
@@ -59,6 +61,7 @@ public class BoardActivity extends AppCompatActivity implements ApiListener {
 
     public final static String BOARD_MEMBERS_EXTRA_ID = "BOARD_MEMBERS_ID";
     public final static String BOARD_MEMBERS_EXTRA_NAME = "BOARD_MEMBERS_NAME";
+    public final static String BOARD_MEMBERS_EXTRA_NAME_TEAM = "BOARD_MEMBERS_EXTRA_NAME_TEAM";
 
     private static final String TAG = "BoardActivity";
 
@@ -81,6 +84,9 @@ public class BoardActivity extends AppCompatActivity implements ApiListener {
         /*Fetch the lists in background*/
         GenerateListsTask glt = new GenerateListsTask();
         glt.execute(mBoardId);
+
+        GenerateNameTeamTask glt2 = new GenerateNameTeamTask();
+        glt2.execute(mBoardId);
 
         mExpandableListView = (ExpandableListView) findViewById(R.id.expandableListView);
         mExpandableListOverview = new HashMap();
@@ -493,6 +499,7 @@ public class BoardActivity extends AppCompatActivity implements ApiListener {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_board, menu);
+        this.menu = menu;
         return true;
     }
 
@@ -511,6 +518,7 @@ public class BoardActivity extends AppCompatActivity implements ApiListener {
 
                 intent.putExtra(BoardActivity.BOARD_MEMBERS_EXTRA_ID, this.mBoardId);
                 intent.putExtra(BoardActivity.BOARD_MEMBERS_EXTRA_NAME, this.mBoardName);
+                intent.putExtra(BoardActivity.BOARD_MEMBERS_EXTRA_NAME_TEAM, this.mNameboardTeam);
 
                 startActivity(intent);
                 return true;
@@ -539,6 +547,22 @@ public class BoardActivity extends AppCompatActivity implements ApiListener {
         }
     }
 
+    private class GenerateNameTeamTask extends AsyncTask<String,Void,Boolean> {
+        private String[] info = new String[2];
+        @Override
+        protected Boolean doInBackground(String... params) {
+            String boardId = params[0];
+            try {
+                mHandler.fetchNameBoardTeam(boardId);
+            } catch (Exception e) {
+                Log.d("TaskError", "GenerateNameTeamTaskException");
+                e.printStackTrace();
+            }
+
+            return true;
+        }
+    }
+
 
     /** Async Task to fetch cards in background
      *
@@ -557,6 +581,13 @@ public class BoardActivity extends AppCompatActivity implements ApiListener {
             }
             return true;
         }
+    }
+
+    @Override
+    public void failureCallback(String failure) {
+
+        MenuItem menuItem = menu.findItem(R.id.button_view_members);
+        menuItem.setVisible(false);
     }
 
     @Override
@@ -607,6 +638,10 @@ public class BoardActivity extends AppCompatActivity implements ApiListener {
 
     @Override
     public void nameBoardTeamCallback(String nameBoardTeam) {
+
+        MenuItem menuItem = menu.findItem(R.id.button_view_members);
+        menuItem.setVisible(true);
+        this.mNameboardTeam = nameBoardTeam;
 
     }
 
