@@ -1,0 +1,42 @@
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/relative_header_nonmember"
+    android:clickable="false"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/header_nonmemberlist"
+        android:textColor="@android:color/black"
+        android:background="@color/background_color_board_members_titles"
+        android:gravity="center"
+        android:text="@string/header_list_nonmember_text"
+
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+
+        android:textSize="20sp"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/member_name"
+        android:textSize="16sp"
+        android:textColor="@android:color/black"
+        android:paddingTop="5dp"
+        android:paddingBottom="10dp"
+        android:background="@color/background_color_board_members_category"
+        android:layout_below="@+id/header_nonmemberlist"
+
+        android:text="@string/header_list_nonmember_category_name"
+
+        android:paddingLeft="40dp"
+        android:layout_alignParentLeft="true"
+
+        />
+
+</RelativeLayout>

@@ -8,6 +8,8 @@
     <color name="ButtonBorder">#4a91d2</color>
 
     <color name="titletextcolor">#ebc935</color>
+    <color name="background_color_board_members_titles">#49ebc935</color>
+    <color name="background_color_board_members_category">#23ebc935</color>
     <color name="titlebackgroundcolor">#3f51b5</color>
 
 

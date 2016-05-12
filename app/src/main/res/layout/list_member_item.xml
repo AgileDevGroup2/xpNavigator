@@ -5,20 +5,9 @@
     android:layout_height="72dp"
     android:id="@+id/relativelayout_list_member_item"
     android:textColor="#FFFFFF"
-    android:clickable="false"
-
+    android:paddingBottom="15dp"
 
     >
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/header_memberlist"
-
-        android:text="TOto"
-        android:visibility="invisible"
-        android:textSize="20sp"
-        />
 
 
     <TextView
@@ -27,24 +16,19 @@
         android:id="@+id/member_name"
         android:textSize="16sp"
 
-        android:layout_below="@+id/header"
         android:paddingLeft="40dp"
         android:layout_alignParentLeft="true"
-        android:paddingTop="20dp"
 
     />
 
     <TextView
         android:layout_width="100dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:id="@+id/member_type"
         android:textSize="16sp"
 
-        android:gravity="left"
+        android:gravity="left|center_vertical"
         android:paddingRight="40dp"
-        android:paddingTop="20dp"
-
-        android:layout_below="@+id/header"
 
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true" />
