@@ -26,7 +26,7 @@ public class DialogBuilder {
         final View dialogView = inflater.inflate(R.layout.dialog_timer, null);
 
         //init dialog
-        timeDialogBuilder.setTitle(context.getString(R.string.lbl_done));
+        timeDialogBuilder.setTitle(context.getString(R.string.timer_label));
         timeDialogBuilder.setView(dialogView);
         timeDialogBuilder.setPositiveButton(context.getString(R.string.lbl_done), null);
 
