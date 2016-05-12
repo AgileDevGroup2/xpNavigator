@@ -26,6 +26,7 @@
         android:layout_below="@+id/header_memberlist"
         android:id="@+id/categorie_title"
         android:paddingTop="5dp"
+        android:layout_marginBottom="5dp"
         android:paddingBottom="10dp"
         android:background="@color/background_color_board_members_category"
         >

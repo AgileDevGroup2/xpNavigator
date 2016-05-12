@@ -90,6 +90,7 @@ public class MemberListAdapter extends BaseAdapter {
             textView = (TextView) convertView.findViewById(R.id.member_type);
             params = (RelativeLayout.LayoutParams) textView.getLayoutParams();
             params.addRule(RelativeLayout.BELOW, R.id.relative_header_member);
+
         }
 
         if (position == boardMembers.getmListMembers().size())
