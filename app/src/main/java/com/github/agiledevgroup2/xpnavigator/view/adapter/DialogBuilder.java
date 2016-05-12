@@ -12,13 +12,14 @@ import com.github.agiledevgroup2.xpnavigator.R;
 import com.github.agiledevgroup2.xpnavigator.model.Timer;
 
 /**
- * Created by indidev on 5/12/16.
+ * Provides a function to build a timer dialog
  */
 public class DialogBuilder {
 
 
     /**
      * creates a new countdown timer dialog
+     * @param context context the dialog will be build in
      */
     public void createTimerDialog(final Context context) {
         final AlertDialog.Builder timeDialogBuilder = new AlertDialog.Builder(context);
@@ -96,11 +97,11 @@ public class DialogBuilder {
 
     /**
      * update the countdown timer dialogs elements <br>
-     * <font style:color="red">Warning:</font> Use only the timer dialog!
+     * <font style:color="red">Warning:</font> <b>Use only the timer dialog!</b>
      * @param dialogView dialog to update
      */
     @SuppressWarnings("deprecation")
-    public void updateDialog(View dialogView, Context context) {
+    protected void updateDialog(View dialogView, Context context) {
         ImageButton startB = (ImageButton) dialogView.findViewById(R.id.startButton);
         String resource = "android:drawable/ic_media_play";
         if (Timer.isRunning()) {
