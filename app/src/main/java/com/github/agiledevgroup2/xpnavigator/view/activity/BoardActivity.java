@@ -2,6 +2,7 @@ package com.github.agiledevgroup2.xpnavigator.view.activity;
 
 import android.content.ClipData;
 import android.graphics.Color;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -325,6 +326,19 @@ public class BoardActivity extends AppCompatActivity implements ApiListener {
                         break;
                 }
                 return true;
+            }
+        });
+
+        //add on refresh listener to layout
+        final SwipeRefreshLayout srl = (SwipeRefreshLayout) findViewById(R.id.refresh_layout);
+        srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                for (TrelloList list :mTrelloLists) {
+                    updateListView(list);
+                }
+
+                srl.setRefreshing(false);
             }
         });
     }
@@ -699,7 +713,7 @@ public class BoardActivity extends AppCompatActivity implements ApiListener {
     }
 
     protected TrelloList getList (String listId) {
-        for (TrelloList list : mExpandableListTitle) {
+        for (TrelloList list : mTrelloLists) {
             if (list.getId().equals(listId)) {
                 return list;
             }
@@ -708,7 +722,7 @@ public class BoardActivity extends AppCompatActivity implements ApiListener {
     }
 
     protected TrelloCard getCard (String cardId) {
-        for (TrelloList list : mExpandableListTitle) {
+        for (TrelloList list : mTrelloLists) {
             for (TrelloCard card : list.getCards())
                 if (card.getId().equals(cardId)) {
                     return card;
