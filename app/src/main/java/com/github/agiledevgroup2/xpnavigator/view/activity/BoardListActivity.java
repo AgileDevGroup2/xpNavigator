@@ -113,6 +113,7 @@ public class BoardListActivity extends AppCompatActivity implements ApiListener 
         final Button boardButton = new Button(getApplicationContext());
         final String id = boardId;
         final String nameBoard = buttonText;
+        boardButton.setBackgroundColor(0xaa3f51b5);
 
         Log.d(TAG, "add Button: " + buttonText);
 
@@ -120,6 +121,10 @@ public class BoardListActivity extends AppCompatActivity implements ApiListener 
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         btnLayout.addView(boardButton, lp);
         boardButton.setText(boardButton.getText() + " " + buttonText);
+
+        TextView tv = new TextView(getApplicationContext());
+        tv.setBackgroundColor(0);
+        btnLayout.addView(tv, lp);
 
 
         /*Event Handler for each boardButton*/
