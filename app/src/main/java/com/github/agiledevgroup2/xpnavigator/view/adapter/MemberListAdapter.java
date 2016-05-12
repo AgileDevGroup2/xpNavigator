@@ -1,10 +1,12 @@
 package com.github.agiledevgroup2.xpnavigator.view.adapter;
 
 import android.app.Activity;
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.github.agiledevgroup2.xpnavigator.R;
@@ -24,6 +26,7 @@ public class MemberListAdapter extends BaseAdapter {
     public MemberListAdapter(Activity act, TrelloBoardMembers boardMembers) {
         this.boardMembers = boardMembers;
         this.activity = act;
+
         inflater = act.getLayoutInflater();
     }
 
@@ -50,6 +53,7 @@ public class MemberListAdapter extends BaseAdapter {
         // TODO Auto-generated method stub
 
         TextView textView;
+        RelativeLayout.LayoutParams params;
 
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.list_member_item, null);
@@ -71,17 +75,41 @@ public class MemberListAdapter extends BaseAdapter {
 
         if(position == 0)
         {
-            textView = (TextView) convertView.findViewById(R.id.header_memberlist);
-            textView.setVisibility(View.VISIBLE);
-            textView.setText("MEMBER");
+            RelativeLayout rl = (RelativeLayout) convertView.findViewById(R.id.relativelayout_list_member_item);
+
+            LayoutInflater layoutInflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View childLayout = layoutInflater.inflate(R.layout.header_list_member,
+                    (ViewGroup) activity.findViewById(R.id.relative_header_member));
+            rl.addView(childLayout);
+
+
+            textView = (TextView) convertView.findViewById(R.id.member_name);
+            params  = (RelativeLayout.LayoutParams) textView.getLayoutParams();
+            params.addRule(RelativeLayout.BELOW, R.id.relative_header_member);
+
+            textView = (TextView) convertView.findViewById(R.id.member_type);
+            params = (RelativeLayout.LayoutParams) textView.getLayoutParams();
+            params.addRule(RelativeLayout.BELOW, R.id.relative_header_member);
         }
 
         if (position == boardMembers.getmListMembers().size())
         {
 
-            textView = (TextView) convertView.findViewById(R.id.header_memberlist);
-            textView.setVisibility(View.VISIBLE);
-            textView.setText("NON MEMBER");
+            RelativeLayout rl = (RelativeLayout) convertView.findViewById(R.id.relativelayout_list_member_item);
+
+
+            LayoutInflater layoutInflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View childLayout = layoutInflater.inflate(R.layout.header_list_nonmember,
+                    (ViewGroup) activity.findViewById(R.id.relative_header_nonmember));
+            rl.addView(childLayout);
+
+            textView = (TextView) convertView.findViewById(R.id.member_name);
+            params  = (RelativeLayout.LayoutParams) textView.getLayoutParams();
+            params.addRule(RelativeLayout.BELOW, R.id.relative_header_nonmember);
+
+            textView = (TextView) convertView.findViewById(R.id.member_type);
+            params = (RelativeLayout.LayoutParams) textView.getLayoutParams();
+            params.addRule(RelativeLayout.BELOW, R.id.relative_header_nonmember);
 
         }
 

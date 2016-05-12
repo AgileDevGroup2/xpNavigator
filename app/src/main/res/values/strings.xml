@@ -38,4 +38,11 @@
     <string name="search_title">Search</string>
     <string name="search_hint">search_hint</string>
     <string name="title_activity_logout">LogoutActivity</string>
+
+    <string name="header_list_member_category_type">Type</string>
+    <string name="header_list_member_category_name">Name</string>
+    <string name="header_list_member_text">MEMBER</string>
+
+    <string name="header_list_nonmember_category_name">Name</string>
+    <string name="header_list_nonmember_text">NONMEMBER</string>
 </resources>

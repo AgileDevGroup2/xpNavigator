@@ -103,8 +103,8 @@ public class ApiHandler extends JsonHttpResponseHandler {
     }
 
     /**
-     * Todo: comment your stuff if you add something!
-     *
+     * Fetch datas of members after getting the organization
+     * Wde have a callback after this to the Api listener
      */
     public void fetchMembers ()
     {
@@ -120,8 +120,8 @@ public class ApiHandler extends JsonHttpResponseHandler {
     }
 
     /**
-     * Todo: comment your stuff if you add something!
-     * @param boardId
+     * It's doing a request to the TrelloClient to get the organization of a board
+     * @param boardId is the corresponding id of the board
      */
     public void fetchOrganization (String boardId)
     {
@@ -137,6 +137,10 @@ public class ApiHandler extends JsonHttpResponseHandler {
 
     }
 
+    /**
+     * It's doing a request to the TrelloClient ti get the name of a team from a board
+     * @param boardId is the corresponding id
+     */
     public void fetchNameBoardTeam (String boardId)
     {
 
