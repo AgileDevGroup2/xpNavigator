@@ -12,6 +12,10 @@ import java.util.List;
  */
 public interface ApiListener {
 
+
+    void failureCallback (String failure);
+
+
     /**
      * method invoked after asynchronous api call for boards from trello
      * @param boards fetched boards from trello
@@ -43,5 +47,7 @@ public interface ApiListener {
      * @param nameBoardTeam
      */
     void nameBoardTeamCallback (String nameBoardTeam);
+
+
 
 }
