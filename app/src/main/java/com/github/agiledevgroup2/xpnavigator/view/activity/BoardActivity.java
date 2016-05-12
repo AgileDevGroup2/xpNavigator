@@ -439,6 +439,8 @@ public class BoardActivity extends AppCompatActivity implements ApiListener {
                                 final EditText cardDescription = (EditText) view.findViewById
                                         (R.id.cardDescription);
 
+                                ((TextView) view.findViewById(R.id.headline)).setText("New Card");
+
                                 new AlertDialog.Builder(BoardActivity.this,
                                         R.style.AlertDialogStyle)
                                         .setView(view)
