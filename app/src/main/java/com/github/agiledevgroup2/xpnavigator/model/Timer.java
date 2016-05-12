@@ -1,6 +1,10 @@
 package com.github.agiledevgroup2.xpnavigator.model;
 
 import android.content.Context;
+import android.media.MediaPlayer;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Looper;
 import android.os.Vibrator;
 import android.view.View;
@@ -57,13 +61,21 @@ public class Timer {
                 mIsRunning = false;
 
                 //alarm
-                if (mContext != null) {
-                    final Vibrator vibr = (Vibrator) mContext
-                            .getSystemService(Context.VIBRATOR_SERVICE);
-                    vibr.vibrate(2000);
-                    //TODO: maybe add audio and notification...
-                }
+                doAlarm();
             }
+        }
+    }
+
+    private void doAlarm() {
+
+        if (mContext != null) {
+            final Vibrator vibr = (Vibrator) mContext
+                    .getSystemService(Context.VIBRATOR_SERVICE);
+            vibr.vibrate(2000);
+            //TODO: maybe add audio and notification...,
+            //Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+            //Ringtone r = RingtoneManager.getRingtone(mContext, notification);
+            //r.play();
         }
     }
 
