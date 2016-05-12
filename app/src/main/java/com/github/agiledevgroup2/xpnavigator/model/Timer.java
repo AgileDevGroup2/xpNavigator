@@ -5,8 +5,10 @@ import android.media.MediaPlayer;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Looper;
 import android.os.Vibrator;
+import android.util.Log;
 import android.view.View;
 import android.widget.NumberPicker;
 
@@ -73,9 +75,7 @@ public class Timer {
                     .getSystemService(Context.VIBRATOR_SERVICE);
             vibr.vibrate(2000);
             //TODO: maybe add audio and notification...,
-            //Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-            //Ringtone r = RingtoneManager.getRingtone(mContext, notification);
-            //r.play();
+            new TimedSound().execute(2000);
         }
     }
 
@@ -210,5 +210,22 @@ public class Timer {
      */
     public static void setContext(Context context) {
         mSelf.mContext = context;
+    }
+
+    private class TimedSound extends AsyncTask<Integer, Void, Void> {
+        protected Void doInBackground(Integer... data) {
+            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+            Ringtone r = RingtoneManager.getRingtone(mContext, notification);
+            r.play();
+            try {
+                Thread.sleep(data[0]);
+            } catch (InterruptedException e) {
+                Log.e(TAG, e.getMessage());
+            }
+            r.stop();
+            return null;
+        }
+        protected void onProgressUpdate(Void... v) { }
+        protected void onPostExecute(Void v) { }
     }
 }
