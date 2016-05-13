@@ -55,7 +55,7 @@
         <activity
             android:name=".view.activity.EditCardActivity"
             android:label="@string/title_activity_edit_card"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.WithActionBar" />
         <activity
             android:name=".view.activity.BoardListActivity"
             android:label="@string/title_activity_backlog"

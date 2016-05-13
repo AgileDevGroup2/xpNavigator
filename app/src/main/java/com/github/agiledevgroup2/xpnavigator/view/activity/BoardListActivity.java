@@ -5,7 +5,9 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
@@ -38,17 +40,16 @@ public class BoardListActivity extends AppCompatActivity implements ApiListener 
     public final static String BOARD_EXTRA_ID = "BOARD_ID";
     public final static String BOARD_EXTRA_NAME = "BOARD_NAME";
 
-    private ApiHandler handler;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_board_list);
 
-        handler = new ApiHandler(this);
+
         Timer.setContext(getApplicationContext());
-        handler.fetchBoards();
+        ApiHandler.setListener(this);
+        ApiHandler.fetchBoards();
 
         /**
          *  set the logo
@@ -59,6 +60,12 @@ public class BoardListActivity extends AppCompatActivity implements ApiListener 
         this.getSupportActionBar().setDisplayUseLogoEnabled(true);
 
         ((TextView) findViewById(R.id.headline)).setText(getText(R.string.my_boards));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ApiHandler.setListener(this);
     }
 
     @Override
@@ -93,9 +100,10 @@ public class BoardListActivity extends AppCompatActivity implements ApiListener 
                 return true;
 
             case R.id.action_logout:
-                handler.logout();
+                ApiHandler.logout();
                 Intent login = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(login);
+                finish();
                 return true;
 
             default:
@@ -113,7 +121,11 @@ public class BoardListActivity extends AppCompatActivity implements ApiListener 
         final Button boardButton = new Button(getApplicationContext());
         final String id = boardId;
         final String nameBoard = buttonText;
-        boardButton.setBackgroundColor(0xaa3f51b5);
+        try {
+            boardButton.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.blue_btn));
+        } catch (Resources.NotFoundException e){
+            boardButton.setBackgroundColor(0xaa3f51b5);
+        }
 
         Log.d(TAG, "add Button: " + buttonText);
 

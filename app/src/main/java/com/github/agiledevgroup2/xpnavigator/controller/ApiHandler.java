@@ -27,19 +27,16 @@ import java.util.concurrent.locks.Lock;
 public class ApiHandler extends JsonHttpResponseHandler {
 
     private static final String TAG = "ApiHandler";
+    private static final ApiHandler SELF = new ApiHandler();
     protected enum State {NONE, BOARD, LIST, CARD, MEMBER, ORGANIZATION, NAME_TEAM, PUSH}
 
     protected State mCurState;
 
     private String mLName;
 
-    private boolean isFinishMember = false;
-
     protected ApiListener mListener;
 
     protected Lock mLock;
-
-    private List<TrelloMember> listsmembership;
 
     private String mlastBoardId;
 
@@ -47,10 +44,9 @@ public class ApiHandler extends JsonHttpResponseHandler {
 
     /**
      * creates a new ApiHandler
-     * @param listener listener the callbacks will be sent to
      */
-    public ApiHandler(ApiListener listener) {
-        mListener = listener;
+    private ApiHandler() {
+        mListener = null;
         mCurState = State.BOARD;
         mLock = new ThreadIndependentLock();
     }
@@ -59,14 +55,18 @@ public class ApiHandler extends JsonHttpResponseHandler {
      * Change the api listener of this handler
      * @param listener new ApiListener
      */
-    public void setListener(ApiListener listener) {
-        mListener = listener;
+    public static void setListener(ApiListener listener) {
+        SELF.mListener = listener;
     }
 
     /**
      * Fetch boards, callback will be send to ApiListener.setBoards
      */
-    public void fetchBoards() {
+    public static void fetchBoards() {
+        SELF.pFetchBoards();
+    }
+
+    private void pFetchBoards() {
         new AsyncExec(State.BOARD) {
             @Override
             protected void task(String... data) {
@@ -75,11 +75,16 @@ public class ApiHandler extends JsonHttpResponseHandler {
         }.execute();
     }
 
+
     /**
      * Fetch Lists from a specific board, callback will be send to ApiListener.setLists
      * @param boardId board's id the lists should be fetched from
      */
-    public void fetchLists(String boardId) {
+    public static void fetchLists(String boardId) {
+        SELF.pFetchLists(boardId);
+    }
+
+    private void pFetchLists(String boardId) {
         new AsyncExec(State.LIST) {
             @Override
             protected void task(String... data) {
@@ -92,7 +97,11 @@ public class ApiHandler extends JsonHttpResponseHandler {
      * Fetch Cards from a specific list, callback will be send to ApiListener.SetCards
      * @param listId list's id the cards should be fetched from
      */
-    public void fetchCards(String listId, String listName) {
+    public static void fetchCards(String listId, String listName) {
+        SELF.pFetchCards(listId, listName);
+    }
+
+    private void pFetchCards(String listId, String listName) {
         new AsyncExec(State.CARD) {
             @Override
             protected void task(String... data) {
@@ -106,8 +115,11 @@ public class ApiHandler extends JsonHttpResponseHandler {
      * Fetch datas of members after getting the organization
      * Wde have a callback after this to the Api listener
      */
-    public void fetchMembers ()
-    {
+    public static void fetchMembers() {
+        SELF.pFetchMembers();
+    }
+
+    private void pFetchMembers() {
 
         new AsyncExec(State.MEMBER) {
             @Override
@@ -123,8 +135,11 @@ public class ApiHandler extends JsonHttpResponseHandler {
      * It's doing a request to the TrelloClient to get the organization of a board
      * @param boardId is the corresponding id of the board
      */
-    public void fetchOrganization (String boardId)
-    {
+    public static void fetchOrganization(String boardId) {
+        SELF.pFetchOrganization(boardId);
+    }
+
+    private void pFetchOrganization(String boardId) {
 
         new AsyncExec(State.ORGANIZATION) {
             @Override
@@ -141,8 +156,11 @@ public class ApiHandler extends JsonHttpResponseHandler {
      * It's doing a request to the TrelloClient ti get the name of a team from a board
      * @param boardId is the corresponding id
      */
-    public void fetchNameBoardTeam (String boardId)
-    {
+    public static void fetchNameBoardTeam(String boardId) {
+        SELF.pFetchNameBoardTeam(boardId);
+    }
+
+    private void pFetchNameBoardTeam(String boardId) {
 
         new AsyncExec(State.NAME_TEAM) {
             @Override
@@ -161,7 +179,11 @@ public class ApiHandler extends JsonHttpResponseHandler {
      * @param desc description of the new card
      * @param listId the list associated with the new card
      */
-    public void addCard(String name, String desc, String listId) {
+    public static void addCard(String name, String desc, String listId) {
+        SELF.pAddCard(name, desc, listId);
+    }
+
+    private void pAddCard(String name, String desc, String listId) {
         new AsyncExec() {
             @Override
             protected void task(String... data) {
@@ -175,7 +197,7 @@ public class ApiHandler extends JsonHttpResponseHandler {
      * Add a Card to Trello, callback is currently ignored TODO: change that
      * @param card new Card (name and listId have to be set!)
      */
-    public void addCard(TrelloCard card) {
+    public static void addCard(TrelloCard card) {
         addCard(card.getName(), card.getDesc(), card.getListId());
     }
 
@@ -183,7 +205,11 @@ public class ApiHandler extends JsonHttpResponseHandler {
      * Remove a Card from Trello, callback is currently ignored TODO: change that
      * @param cardId id of card to remove from Trello
      */
-    public void removeCard(String cardId) {
+    public static void removeCard(String cardId) {
+        SELF.pRemoveCard(cardId);
+    }
+
+    private void pRemoveCard(String cardId) {
         new AsyncExec() {
             @Override
             protected void task(String... data) {
@@ -196,7 +222,7 @@ public class ApiHandler extends JsonHttpResponseHandler {
      * Remove a Card from Trello, callback is currently ignored TODO: change that
      * @param card card to remove from Trello
      */
-    public void removeCard(TrelloCard card) {
+    public static void removeCard(TrelloCard card) {
         removeCard(card.getId());
     }
 
@@ -205,7 +231,11 @@ public class ApiHandler extends JsonHttpResponseHandler {
      * @param cardId id of card to move
      * @param listId id of list to move card to
      */
-    public void moveCard(String cardId, String listId) {
+    public static void moveCard(String cardId, String listId) {
+        SELF.pMoveCard(cardId, listId);
+    }
+
+    private void pMoveCard(String cardId, String listId) {
         new AsyncExec() {
             @Override
             protected void task(String... data) {
@@ -221,7 +251,11 @@ public class ApiHandler extends JsonHttpResponseHandler {
      * @param cardId id of card to move
      * @param position position in the list to move to
      */
-    public void moveCardWithinList(String cardId,String position){
+    public static void moveCardWithinList(String cardId,String position){
+        SELF.pMoveCardWithinList(cardId, position);
+    }
+
+    private void pMoveCardWithinList(String cardId,String position){
 
         new AsyncExec() {
             @Override
@@ -236,8 +270,37 @@ public class ApiHandler extends JsonHttpResponseHandler {
      * @param card card to move
      * @param list list to move card to
      */
-    public void moveCard(TrelloCard card, TrelloList list) {
+    public static void moveCard(TrelloCard card, TrelloList list) {
         moveCard(card.getId(), list.getId());
+    }
+
+    /**
+     * update a trello card
+     * @param cardId id of card to update
+     * @param name (new) name of card
+     * @param desc (new) description of the card
+     * @param listId (new) id of list the card belongs to
+     */
+    public static void updateCard(String cardId, String name, String desc, String listId) {
+        SELF.pUpdateCard(cardId, name, desc, listId);
+    }
+
+    private void pUpdateCard(String cardId, String name, String desc, String listId) {
+        new AsyncExec() {
+            @Override
+            protected void task(String... data) {
+                TrelloApplication.getTrelloClient().updateCard(data[0], data[1], data[2]
+                        , data[3], ApiHandler.this);
+            }
+        }.execute(cardId, name, desc, listId);
+    }
+
+    /**
+     * update a trello card
+     * @param card card to update
+     */
+    public static void updateCard(TrelloCard card) {
+        updateCard(card.getId(), card.getName(), card.getDesc(), card.getListId());
     }
     /**
      * Failure handler if only one JSONObject is received
@@ -473,7 +536,7 @@ public class ApiHandler extends JsonHttpResponseHandler {
     /**
      * logout from Trello
      */
-    public void logout() {
+    public static void logout() {
         TrelloApplication.getTrelloClient().clearAccessToken();
     }
 

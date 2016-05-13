@@ -33,7 +33,6 @@ public class MembersBoardActivity extends AppCompatActivity implements ApiListen
     private String idBoard = "";
     private String mNameBoard = "";
     private String mNameBoardTeam = "";
-    private ApiHandler mHandler;
     private TrelloBoardMembers boardMembers;
     private MemberListAdapter adapter;
     private ListView listView;
@@ -60,7 +59,7 @@ public class MembersBoardActivity extends AppCompatActivity implements ApiListen
             this.setTitle("BoardMembers");
         }
 
-        mHandler = new ApiHandler(this);
+        ApiHandler.setListener(this);
 
         // enabling action bar app icon and behaving it as toggle button
         this.getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -72,9 +71,12 @@ public class MembersBoardActivity extends AppCompatActivity implements ApiListen
         /*Fetch the lists in background*/
         GenerateMembersTask glt = new GenerateMembersTask();
         glt.execute(idBoard);
+    }
 
-
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ApiHandler.setListener(this);
     }
 
     // Inflate the menu; this adds items to the action bar if it is present.
@@ -89,9 +91,10 @@ public class MembersBoardActivity extends AppCompatActivity implements ApiListen
         switch(item.getItemId()) {
 
             case R.id.action_logout:
-                mHandler.logout();
+                ApiHandler.logout();
                 Intent login = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(login);
+                finish();
                 return true;
 
             case R.id.action_timer:
@@ -148,7 +151,7 @@ public class MembersBoardActivity extends AppCompatActivity implements ApiListen
         protected Boolean doInBackground(String... params) {
             String boardId = params[0];
             try {
-                mHandler.fetchOrganization(boardId);
+                ApiHandler.fetchOrganization(boardId);
             } catch (Exception e) {
                 Log.d("TaskError", "GenerateMemberTaskException");
                 e.printStackTrace();
@@ -166,7 +169,7 @@ public class MembersBoardActivity extends AppCompatActivity implements ApiListen
         protected Boolean doInBackground(String... params) {
             String boardId = params[0];
             try {
-                mHandler.fetchNameBoardTeam(boardId);
+                ApiHandler.fetchNameBoardTeam(boardId);
             } catch (Exception e) {
                 Log.d("TaskError", "GenerateNameTeamTaskException");
                 e.printStackTrace();

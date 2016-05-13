@@ -5,6 +5,7 @@ import com.github.agiledevgroup2.xpnavigator.other.Util;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -18,6 +19,8 @@ public class TrelloCard implements Comparable<TrelloCard> {
     private String mBoardId;
     private String mListId;
     private Date mLastChanged;
+
+    private JSONObject mJson;
 
     /**
      * empty constructor
@@ -38,6 +41,8 @@ public class TrelloCard implements Comparable<TrelloCard> {
         mListId = json.getString("idList");
 
         mLastChanged = Util.getDateFromJson(json.getString("dateLastActivity"));
+
+        mJson = json;
     }
 
     /**
@@ -164,5 +169,13 @@ public class TrelloCard implements Comparable<TrelloCard> {
     @Override
     public String toString() {
         return "Id:" + mId + "-Name:" + mName + "-Desc:" + mDesc + "-IdBoard:" + mBoardId + "-IdList:" + mListId;
+    }
+
+    /**
+     * get json representation of this class
+     * @return return json representation of this class
+     */
+    public JSONObject getJson() {
+        return mJson;
     }
 }

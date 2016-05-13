@@ -147,11 +147,37 @@ public class TrelloClient extends OAuthBaseClient {
         client.put(apiUrl, params, handler);
     }
 
-    public void moveCardWithinList(String cardId, String position, AsyncHttpResponseHandler handler){
-        String apiUrl = getApiUrl("1/cards/"+cardId+"/pos");
+    /**
+     * move card within a list
+     * @param cardId id of card to move
+     * @param position new position of the card
+     * @param handler http handler to process the endpoints response
+     */
+    public void moveCardWithinList(String cardId, String position
+            , AsyncHttpResponseHandler handler){
+        String apiUrl = getApiUrl("1/cards/" + cardId + "/pos");
         RequestParams params = new RequestParams();
-        params.put("value",position);
+        params.put("value", position);
 
-        client.put(apiUrl,params,handler);
+        client.put(apiUrl, params, handler);
+    }
+
+    /**
+     * update a card
+     * @param cardId id of card to update
+     * @param name (new) name of card
+     * @param desc (new) description of the card
+     * @param listId (new) id of list the card belongs to
+     * @param handler http handler to process the endpoints response
+     */
+    public void updateCard(String cardId, String name, String desc, String listId
+            , AsyncHttpResponseHandler handler) {
+        String apiUrl = getApiUrl("1/cards/" + cardId);
+        RequestParams params = new RequestParams();
+        params.put("name", name);
+        params.put("idList", listId);
+        if (!desc.isEmpty()) params.put("desc", desc);
+
+        client.put(apiUrl, params, handler);
     }
 }

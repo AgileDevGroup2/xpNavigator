@@ -13,7 +13,8 @@
     <string name="timer_label">Timer</string>
     <string name="my_boards">MY BOARDS</string>
     <string name="lists">Lists</string>
-
+    <string name="card_title">Card Title</string>
+    <string name="description">Description</string>
     <string name="imageviewdescription">imageViewDescription</string>
     <string name="imageView">imageView</string>
     <string name="tacofirstpage">TacoFirstPage</string>

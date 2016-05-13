@@ -34,6 +34,9 @@ import com.github.agiledevgroup2.xpnavigator.model.TrelloList;
 import com.github.agiledevgroup2.xpnavigator.view.adapter.CustomExpandableListAdapter;
 import com.github.agiledevgroup2.xpnavigator.view.adapter.DialogBuilder;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -47,6 +50,14 @@ import java.util.List;
  * display the additional options when pressing a card
  * */
 public class BoardActivity extends AppCompatActivity implements ApiListener {
+
+    private static final String TAG = "BoardActivity";
+    private static final int EDT_CARD_CODE = 0;
+
+    public final static String BOARD_MEMBERS_EXTRA_ID = "BOARD_MEMBERS_ID";
+    public final static String BOARD_MEMBERS_EXTRA_NAME = "BOARD_MEMBERS_NAME";
+    public final static String BOARD_MEMBERS_EXTRA_NAME_TEAM = "BOARD_MEMBERS_EXTRA_NAME_TEAM";
+
     private String mBoardId = "";
     private String mBoardName = "";
     private String mNameboardTeam = "";
@@ -57,14 +68,6 @@ public class BoardActivity extends AppCompatActivity implements ApiListener {
     private List<TrelloList> mExpandableListTitle;
     private HashMap<String, List<TrelloCard>> mExpandableListOverview;
     private List<TrelloList> mTrelloLists;
-
-
-    public final static String BOARD_MEMBERS_EXTRA_ID = "BOARD_MEMBERS_ID";
-    public final static String BOARD_MEMBERS_EXTRA_NAME = "BOARD_MEMBERS_NAME";
-    public final static String BOARD_MEMBERS_EXTRA_NAME_TEAM = "BOARD_MEMBERS_EXTRA_NAME_TEAM";
-
-    private static final String TAG = "BoardActivity";
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +82,7 @@ public class BoardActivity extends AppCompatActivity implements ApiListener {
         mBoardId = previousIntent.getStringExtra(BoardListActivity.BOARD_EXTRA_ID);
         this.mBoardName = previousIntent.getStringExtra(BoardListActivity.BOARD_EXTRA_NAME);
 
-        mHandler = new ApiHandler(this);
+        ApiHandler.setListener(this);
 
         /*Fetch the lists in background*/
         GenerateListsTask glt = new GenerateListsTask();
@@ -349,65 +352,53 @@ public class BoardActivity extends AppCompatActivity implements ApiListener {
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ApiHandler.setListener(this);
+    }
+
     /**
-     * TODO EVALUATE IF THIS METHOD IS STILL NEEDED SOMEHOW
-     *  Long Click Listener for a Child of a Group, i.e a Card in a List
-     *  Generates an AlertDialog where the user can choose to
-     *  (0)Edit
-     *  (1)Delete
-     *  (2)Move
-     *  the clicked card.
+     *  Click listener for opening the view/edit card activity
      * @param groupPosition
      * @param childPosition
      */
     private void onChildClick(final int groupPosition, final int childPosition){
-        final TrelloCard longClickedCard = mExpandableListOverview.get(
+        TrelloCard card = mExpandableListOverview.get(
                 mExpandableListTitle.get(groupPosition).getName()).get(
                 childPosition);
-        new AlertDialog.Builder(this,R.style.AlertDialogStyle)
-            .setItems(R.array.board_activity_child_popup, new DialogInterface.OnClickListener(){
-                @Override
-                public void onClick(DialogInterface dialog, int which){
-                    switch(which){
-                        /*0 Edit, 1 Delete, 2 Move*/
+
+        Intent edtCard = new Intent(getApplicationContext(), EditCardActivity.class);
+
+        edtCard.putExtra(EditCardActivity.CARD_EXTRA, card.getJson().toString());
+
+        String listNames[] = new String[mTrelloLists.size()];
+        String listIds[] = new String[mTrelloLists.size()];
+
+        for (int i = 0; i < mTrelloLists.size(); i++) {
+            listNames[i] = mTrelloLists.get(i).getName();
+            listIds[i] = mTrelloLists.get(i).getId();
+        }
+
+        edtCard.putExtra(EditCardActivity.ALL_LIST_NAMES, listNames);
+        edtCard.putExtra(EditCardActivity.ALL_LIST_IDS, listIds);
 
 
-                        case 0:
-                            /*Popup edit or new activity?*/
-                            break;
-                        case 1:
-                            mHandler.removeCard(longClickedCard.getId());
-                            updateListView(mExpandableListTitle.get(groupPosition));
+        startActivityForResult(edtCard, EDT_CARD_CODE); //start board list activity
 
-                            break;
-                        case 2:
-                            /*Quickfix to dynamically display names*/
-                            List<String> titles = new ArrayList<String>();
-                            for(TrelloList tl:mExpandableListTitle){
-                                titles.add(tl.getName());
-                            }
-                            CharSequence [] cs = titles.toArray(new CharSequence[titles.size()]);
-                            new AlertDialog.Builder(BoardActivity.this,R.style.AlertDialogStyle)
-                                    .setItems(cs, new DialogInterface.OnClickListener(){
-                                     @Override
-                                     public void onClick(DialogInterface dialog, int which) {
-                                         String listId = mExpandableListTitle.get(which).getId();
-                                         Log.d("CHILDLONGCLICK",
-                                                 "Moved Card" + longClickedCard.getName()
-                                                 + " to List "
-                                                         + mExpandableListTitle.get(which).getName()
-                                         );
-                                         mHandler.moveCard(longClickedCard.getId(),listId);
-                                         updateListView(mExpandableListTitle.get(which));
-                                         updateListView(mExpandableListTitle.get(groupPosition));
-                                     }
-                                    })
-                                    .show();
-                    }
-                }
-            })
-        .setIcon(android.R.drawable.ic_dialog_alert)
-                .show();
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode,
+                                    Intent data) {
+        if (requestCode == EDT_CARD_CODE) {
+            if (resultCode == RESULT_OK) {
+                TrelloList list1 = getList(data.getStringExtra(EditCardActivity.LIST_ID_1));
+                TrelloList list2 = getList(data.getStringExtra(EditCardActivity.LIST_ID_2));
+
+                if (list1 != null) updateListView(list1);
+                if (list2 != null) updateListView(list2);
+            }
+        }
     }
 
     /**
@@ -511,6 +502,7 @@ public class BoardActivity extends AppCompatActivity implements ApiListener {
                 mHandler.logout();
                 Intent login = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(login);
+                finish();
                 return true;
             case R.id.button_view_members:
 
