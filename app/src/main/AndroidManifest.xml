@@ -49,10 +49,6 @@
             android:label="@string/title_activity_board"
             android:theme="@style/AppTheme.WithActionBar" />
         <activity
-            android:name=".view.activity.ListActivity"
-            android:label="@string/title_activity_list"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".view.activity.EditCardActivity"
             android:label="@string/title_activity_edit_card"
             android:theme="@style/AppTheme.WithActionBar" />
@@ -60,9 +56,6 @@
             android:name=".view.activity.BoardListActivity"
             android:label="@string/title_activity_backlog"
             android:theme="@style/AppTheme.WithActionBar" />
-        <activity
-            android:name=".view.activity.LogoutActivity"
-            android:label="@string/title_activity_logout"></activity>
         <activity
             android:name=".view.activity.MembersBoardActivity"
             android:label="@string/title_activity_board_members"></activity>

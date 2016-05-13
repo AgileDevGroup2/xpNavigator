@@ -38,6 +38,7 @@ public class EditCardActivity extends AppCompatActivity {
     private TrelloCard mCard;
     private TextView mNameEdt;
     private TextView mDescEdt;
+    private TextView mHeadline;
     private Spinner mListSpnnr;
     private Switch mEdtSwtch;
     private Button mCnclBtn;
@@ -69,6 +70,7 @@ public class EditCardActivity extends AppCompatActivity {
         mEdtSwtch = (Switch) findViewById(R.id.edt_switch);
         mCnclBtn = (Button) findViewById(R.id.cancel_btn);
         mSaveBtn = (Button) findViewById(R.id.save_btn);
+        mHeadline = (TextView) findViewById(R.id.headline);
 
         mEdtSwtch.setChecked(false);
         mListSpnnr.setEnabled(false);
@@ -76,13 +78,21 @@ public class EditCardActivity extends AppCompatActivity {
         mDescEdt.setText(mCard.getDesc());
         mCnclBtn.setVisibility(View.INVISIBLE);
         mSaveBtn.setVisibility(View.INVISIBLE);
+        mHeadline.setText(mNameEdt.getText().toString());
 
         mListSpnnr.setEnabled(false);
         mNameEdt.setEnabled(false);
         mDescEdt.setEnabled(false);
-
         initSpinner();
         initListeners();
+
+        /**
+         *  set the logo
+         */
+        // enabling action bar app icon and behaving it as toggle button
+        this.getSupportActionBar().setDisplayShowHomeEnabled(true);
+        this.getSupportActionBar().setLogo(R.mipmap.ic_launcher);
+        this.getSupportActionBar().setDisplayUseLogoEnabled(true);
 
     }
 
@@ -139,6 +149,7 @@ public class EditCardActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
+                mHeadline.setText(mNameEdt.getText().toString());
                 onEdit();
             }
         });
