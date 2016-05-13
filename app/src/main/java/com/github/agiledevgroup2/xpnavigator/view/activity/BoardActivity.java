@@ -62,7 +62,6 @@ public class BoardActivity extends AppCompatActivity implements ApiListener {
     private String mBoardName = "";
     private String mNameboardTeam = "";
     private Menu menu;
-    private ApiHandler mHandler;
     private ExpandableListView mExpandableListView;
     private CustomExpandableListAdapter mAdapter;
     private List<TrelloList> mExpandableListTitle;
@@ -297,7 +296,7 @@ public class BoardActivity extends AppCompatActivity implements ApiListener {
                                 TrelloCard card = getCard(cardId);
                                 TrelloList oldList = card != null?getList(card.getListId()):null;
 
-                                mHandler.moveCard(cardId,groupId);
+                                ApiHandler.moveCard(cardId,groupId);
 
                                 TrelloList newList = getList(groupId);
 
@@ -323,7 +322,7 @@ public class BoardActivity extends AppCompatActivity implements ApiListener {
                                 * there will be no difference since the target card is pushed down
                                 * in the list.
                                 * */
-                                mHandler.moveCardWithinList(cardId,childPos);
+                                ApiHandler.moveCardWithinList(cardId,childPos);
                                 updateListView(mExpandableListTitle.get(groupPosition));
                             }
                             mExpandableListView.getChildAt(oldPos).
@@ -438,7 +437,7 @@ public class BoardActivity extends AppCompatActivity implements ApiListener {
                                         .setPositiveButton("Add", new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialog, int id) {
-                                                mHandler.addCard(cardTitle.getText().toString(),
+                                                ApiHandler.addCard(cardTitle.getText().toString(),
                                                         cardDescription.getText().toString(),
                                                     mExpandableListTitle.get(groupPosition).
                                                             getId());
@@ -469,7 +468,7 @@ public class BoardActivity extends AppCompatActivity implements ApiListener {
      * @param list list to update the view of
      */
     private void updateListView(TrelloList list) {
-        mHandler.fetchCards(list.getId(), list.getName());
+        ApiHandler.fetchCards(list.getId(), list.getName());
     }
 
     /**
@@ -499,7 +498,7 @@ public class BoardActivity extends AppCompatActivity implements ApiListener {
         switch(item.getItemId()) {
 
             case R.id.action_logout:
-                mHandler.logout();
+                ApiHandler.logout();
                 Intent login = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(login);
                 finish();
@@ -530,7 +529,7 @@ public class BoardActivity extends AppCompatActivity implements ApiListener {
         protected Boolean doInBackground(String... params) {
             String mBoardId = params[0];
             try {
-                mHandler.fetchLists(mBoardId);
+                ApiHandler.fetchLists(mBoardId);
             } catch (Exception e) {
                 Log.d("TaskError", "GenerateListTaskException");
                 e.printStackTrace();
@@ -545,7 +544,7 @@ public class BoardActivity extends AppCompatActivity implements ApiListener {
         protected Boolean doInBackground(String... params) {
             String boardId = params[0];
             try {
-                mHandler.fetchNameBoardTeam(boardId);
+                ApiHandler.fetchNameBoardTeam(boardId);
             } catch (Exception e) {
                 Log.d("TaskError", "GenerateNameTeamTaskException");
                 e.printStackTrace();
@@ -566,7 +565,7 @@ public class BoardActivity extends AppCompatActivity implements ApiListener {
             String listName = params[1];
             try {
 
-                mHandler.fetchCards(listId,listName);
+                ApiHandler.fetchCards(listId,listName);
             } catch (Exception e) {
                 Log.d("TaskError", "GenerateCardTaskException");
                 e.printStackTrace();
