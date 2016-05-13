@@ -395,7 +395,7 @@ public class BoardActivity extends AppCompatActivity implements ApiListener {
                 TrelloList list2 = getList(data.getStringExtra(EditCardActivity.LIST_ID_2));
 
                 if (list1 != null) updateListView(list1);
-                if (list2 != null) updateListView(list2);
+                if (list2 != null && list2.compareTo(list1) != 0) updateListView(list2);
             }
         }
     }

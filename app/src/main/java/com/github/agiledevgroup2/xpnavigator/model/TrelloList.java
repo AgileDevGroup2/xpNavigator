@@ -121,7 +121,7 @@ public class TrelloList implements Comparable<TrelloList> {
      */
     @Override
     public int compareTo(TrelloList other) {
-        return other.toString().compareTo(this.toString());
+        return other!=null?this.toString().compareTo(other.toString()):1;
     }
     
     /**
