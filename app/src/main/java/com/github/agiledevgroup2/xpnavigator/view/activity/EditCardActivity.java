@@ -217,7 +217,7 @@ public class EditCardActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
 
         // Inflate the menu; this adds items to the action bar if it is present
-        getMenuInflater().inflate(R.menu.menu_board, menu);
+        getMenuInflater().inflate(R.menu.menu_card, menu);
 
         return super.onCreateOptionsMenu(menu);
 
@@ -238,6 +238,16 @@ public class EditCardActivity extends AppCompatActivity {
                 startActivity(login);
                 finish();
                 return true;
+
+            case R.id.action_delete:
+
+                Intent result = new Intent();
+                result.putExtra(LIST_ID_1, mCard.getListId());
+                ApiHandler.removeCard(mCard);
+
+                setResult(Activity.RESULT_OK, result);
+                finish();
+
 
             default:
                 return super.onOptionsItemSelected(item);
