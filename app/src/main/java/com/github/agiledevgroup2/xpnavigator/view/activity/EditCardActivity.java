@@ -1,6 +1,8 @@
 package com.github.agiledevgroup2.xpnavigator.view.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -241,16 +243,36 @@ public class EditCardActivity extends AppCompatActivity {
 
             case R.id.action_delete:
 
-                Intent result = new Intent();
-                result.putExtra(LIST_ID_1, mCard.getListId());
-                ApiHandler.removeCard(mCard);
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-                setResult(Activity.RESULT_OK, result);
-                finish();
+                builder.setMessage("Do you really want to delete this card?")
+                        .setTitle("Delete Card");
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        delete();
+                    }
+                });
+
+                builder.setNegativeButton("no", null);
+
+                AlertDialog dialog = builder.create();
+
+                dialog.show();
+                return true;
 
 
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    void delete()  {
+        Intent result = new Intent();
+        result.putExtra(LIST_ID_1, mCard.getListId());
+        ApiHandler.removeCard(mCard);
+
+        setResult(Activity.RESULT_OK, result);
+        finish();
     }
 }
